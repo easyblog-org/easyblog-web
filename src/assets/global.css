@@ -1,0 +1,14 @@
+.top-bar{
+
+}
+
+.bar-title{
+    color: black !important;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.container{
+    margin-left: 150px !important;
+    margin-right: 150px !important;
+}

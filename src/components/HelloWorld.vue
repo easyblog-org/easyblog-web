@@ -1,15 +1,20 @@
 <template>
   <v-container>
+
+    <span>{{ base_url }}</span>
     <v-row class="text-center">
+
       <v-col cols="12">
         <v-img
-          :src="require('../assets/logo.svg')"
+          :src="require('../assets/logo.png')"
           class="my-3"
           contain
           height="200"
         />
       </v-col>
-
+      <v-col>
+        <router-link to="/about">About</router-link>
+      </v-col>
       <v-col class="mb-4">
         <h1 class="display-2 font-weight-bold mb-3">
           Welcome to Vuetify
@@ -25,10 +30,7 @@
         </p>
       </v-col>
 
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
+      <v-col class="mb-5" cols="12">
         <h2 class="headline font-weight-bold mb-3">
           What's next?
         </h2>
@@ -46,10 +48,7 @@
         </v-row>
       </v-col>
 
-      <v-col
-        class="mb-5"
-        cols="12"
-      >
+      <v-col class="mb-5" cols="12">
         <h2 class="headline font-weight-bold mb-3">
           Important Links
         </h2>
@@ -88,15 +87,17 @@
         </v-row>
       </v-col>
     </v-row>
-    <router-link to="/about">About</router-link>
   </v-container>
 </template>
 
 <script>
+import globel from '@/assets/global'
+
 export default {
   name: 'HelloWorld',
 
   data: () => ({
+    base_url: globel.BASE_URL,
     ecosystem: [
       {
         text: 'vuetify-loader',
