@@ -56,7 +56,13 @@
             ></v-avatar>
           </div>
           <div class="bar-login-btn" v-else>
-            <router-link to="/login">登录|注册</router-link>
+            <v-btn
+              class="ma-2"
+              outlined
+              color="indigo"
+            >
+              <router-link to="/login" tag="span">登录 | 注册</router-link>
+            </v-btn>
           </div>
         </div>
       </v-container>
