@@ -5,6 +5,8 @@ import AboutView from '../views/AboutView'
 import LoginView from '@/views/LoginView'
 import RegisterView from '@/views/RegisterView'
 import GetBackPasswordView from '@/views/GetBackPasswordView'
+import ServiceProtocolView from '@/views/ServiceProtocolView'
+import PrivacyView from '@/views/PrivacyView'
 
 Vue.use(VueRouter)
 
@@ -23,6 +25,16 @@ const routes = [
     path: '/login',
     name: 'LoginView',
     component: LoginView
+  },
+  {
+    path: '/protocol',
+    name: 'ServiceProtocol',
+    component: ServiceProtocolView
+  },
+  {
+    path: '/privacy',
+    name: 'UserPrivacyView',
+    component: PrivacyView
   },
   {
     path: '/register',
