@@ -2,6 +2,86 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
+.login-container,
+.register-container {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+    background: #f4f5f5 no-repeat center;
+    background-size: cover;
+}
+
+.login-card,
+.register-card {
+    max-width: 444px !important;
+}
+
+.login-title {
+    padding: 30px 30px !important;
+}
+
+
+.register-title {
+    padding: 30px 30px 5px !important;
+}
+
+.login-body {
+    margin: 0 15px;
+    min-height: 300px;
+}
+
+.register-body {
+    margin: 0 15px;
+    min-height: 240px;
+}
+
+.login-tab-title,
+.register-tab-title {
+    padding: 0 16px;
+}
+
+.third-party-login-box {
+    margin-top: 10px;
+}
+
+.third-party-wrapper {
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+}
+
+.third-party-wrapper .txt {
+    color: rgba(0, 0, 0, 0.40);
+    vertical-align: -4px;
+    font-size: 12px;
+}
+
+.privacy_box {
+    margin-top: 20px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.40);
+}
+
+.privacy_box .content {
+    color: rgba(0, 0, 0, 0.60);
+    text-decoration: unset;
+}
+
+.email-go-register-box,
+.email-go-login-box {
+    margin-top: 15px;
+    float: right;
+}
+
+.email-go-register-box .content,
+.email-go-login-box .content {
+    text-decoration: unset;
+}
+
 .top-bar {
 
 }
