@@ -88,7 +88,7 @@
 <script>
 
 import AppCommonBar from '@/components/AppCommonBar'
-import AppCommonFooter from '@/components/AppCommonFooter'
+import AppCommonFooter from '@/components/AppHomeFooter'
 
 export default {
   name: 'HomeView',
