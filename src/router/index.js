@@ -27,7 +27,7 @@ const routes = [
     component: LoginView
   },
   {
-    path: '/protocol',
+    path: '/service',
     name: 'ServiceProtocol',
     component: ServiceProtocolView
   },

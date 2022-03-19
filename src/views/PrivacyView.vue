@@ -20,15 +20,11 @@
           <p>欢迎您来到EasyBlog。</p>
 
           <p>
-            我们深知个人信息对您的重要性，同时我们也非常重视您的隐私保护和个人信息保护。您在使用EasyBlog服务时，我们可能会收集和使用您的相关个人信息，请您在使用EasyBlog及相关服务前，仔细阅读并充分理解本隐私政策。
-          </p>
-
-          <p>
-            本隐私政策适用于提供EasyBlog产品和服务的杭州语源科技有限公司及其关联公司（以下简称“我们”或“EasyBlog”）。
+            作为EasyBlog的运营者，我们深知个人信息对您的重要性，同时我们也非常重视您的隐私保护和个人信息保护。您在使用EasyBlog提供的服务时，我们也可能会收集和使用您的相关信息。我们希望通过本《隐私政策》向您说明，在使用我们的服务时，我们如何收集、使用、储存和分享这些信息，以及我们为您提供的访问、更新、控制和保护这些信息的方式。本《隐私政策》与您所使用的EasyBlog服务息息相关，希望您仔细阅读，在需要时，按照本《隐私政策》的指引，作出您认为适当的选择。本《隐私政策》中涉及的相关技术词汇，我们尽量以简明扼要的表述，并提供进一步说明的链接，以便您的理解。
           </p>
 
           <div class="content-box">
-            <p style="margin: unset">
+            <p style="margin-bottom: 5px">
               本隐私政策将帮助您了解以下内容：
             </p>
             <ul class="privacy_content">
@@ -71,27 +67,22 @@
               </p>
               <p>
                 若您以其他方式关联登录EasyBlog，我们会向关联第三方请求您的个人信息。当您使用微信登录时，我们会获取您的微信头像、昵称，以及您设置的昵称；当您使用QQ登录时，我们会访问获取您的QQ头像、昵称、性别，以及您设置的昵称、电子邮箱、手机号码；当您使用
-                GitHub 登录时，我们会获取您的 GitHub
+                GitHub/Gitee 登录时，我们会获取您的 GitHub/Gitee
                 头像、昵称，以及您设置的电子邮箱、手机号码。在您使用第三方帐号注册或登录后，您的第三方帐号将会与EasyBlog账号进行绑定，您可以在【账户中心】的“关联第三方账户”中解除绑定。 </p>
               <p>
                 为了确保账号安全和落实网络实名制，在您使用其他方式关联登录、使用EasyBlog的某些功能时，您可能仍然需要绑定有效的手机号码。收集这些信息是为了帮您创建EasyBlog账号和对您进行实名验证，如果您拒绝提供这些信息，将影响您注册EasyBlog账号。 </p>
             </div>
             <div class="inner-content-box">
-              <h4 class="inner-rule">1.2 申请博客</h4>
+              <h4 class="inner-rule">1.2 内容发布与互动</h4>
               <p>
-                在您申请个人博客时，我们会收集您的真实姓名、单位、职位、技术兴趣，这些信息非必须填写。我们知道这部分信息对您是敏感的，您可以拒绝提供，但您需要详细填写申请博客的具体用途，我们会根据您提供的信息判断是否为您开通博客服务。前述信息仅供开通博客服务使用及法律法规所规定的用途，未经您明示授权，不会用作其他目的。 </p>
-            </div>
-            <div class="inner-content-box">
-              <h4 class="inner-rule">1.3 内容发布与互动</h4>
-              <p>
-                在您注册、登录EasyBlog并成功申请了博客后，您可以在EasyBlog平台上发布博文（包括随笔、文章、日记）、评论、闪存动态、招聘信息，创建小组、班级，发起提问及回答。在此过程中，我们会收集您发布的信息（包括文字、图片或视频），并展示您的显示昵称、头像、发布内容。
+                在您注册、登录EasyBlog并成功申请了博客后，您可以在EasyBlog平台上发布博文（包括随笔、文章、日记）、评论。在此过程中，我们会收集您发布的信息（包括文字、图片或视频），并展示您的显示昵称、头像、发布内容。
               </p>
               <p>
                 您可以通过EasyBlog平台与其他用户进行互动，包括收藏、推荐或反对用户的博文，订阅博客，关注其他用户。我们会收集您关注的帐号、订阅的博客列表，并向您展示您关注帐号发布的内容及订阅的博客内容。
               </p>
             </div>
             <div class="inner-content-box">
-              <h4 class="inner-rule">1.4 搜索功能</h4>
+              <h4 class="inner-rule">1.3 搜索功能</h4>
               <p>
                 当您使用EasyBlog提供的搜索功能时，我们会收集和使用您的搜索关键字信息并进行本地存储，我们不会向EasyBlog服务器上传您的历史关键词。搜索结果将根据您的搜索关键词进行展示。
               </p>
@@ -192,7 +183,7 @@
             <div class="inner-content-box">
               <h4 class="inner-rule">5.1 访问和修改您的个人信息</h4>
               <p>
-                您在完成EasyBlog账号的注册后，可以通过EasyBlog【账户中心】查看、修改您提交给我们的个人信息，包括：头像、用户名、邮箱、手机号码、关联的第三方账户等。您也可以通过【账户中心】完善或修改“个人资料”页面的信息，包括：您的姓名、性别、出生日期、技术兴趣、自我介绍等，同时您可以对这部分信息设置仅部分用户可见或隐藏。
+                您在完成EasyBlog账号的注册后，可以通过EasyBlog【个人中心】查看、修改您提交给我们的个人信息，包括：头像、用户名、邮箱、手机号码、关联的第三方账户等。您也可以通过【个人中心】完善或修改“个人资料”页面的信息，包括：您的姓名、性别、出生日期、技术兴趣、自我介绍等，同时您可以对这部分信息设置仅部分用户可见或隐藏。
               </p>
             </div>
             <div class="inner-content-box">
@@ -256,7 +247,7 @@
 
           <div class="content-box">
             <h2 class="rule">八、联系我们</h2>
-            <p>联系邮箱：easyblog-kefu@163.com（相关事务请发函至该邮箱）</p>
+            <p>联系邮箱：easyblog_kefu@163.com（相关事务请发函至该邮箱）</p>
           </div>
         </div>
       </v-row>
@@ -267,18 +258,18 @@
         <v-divider></v-divider>
       </v-row>
       <v-row class="footer">
-        <v-footer>
-          Copyright © 2019-2022 <a style="font-size: 15px;color: inherit;text-decoration: none" href="/">
-          www.easyblog.top </a> 版权所有.
-        </v-footer>
+        <SimpleFooter></SimpleFooter>
       </v-row>
     </v-container>
   </div>
 </template>
 
 <script>
+import SimpleFooter from '@/components/SimpleFooter'
+
 export default {
-  name: 'UserPrivacyView'
+  name: 'UserPrivacyView',
+  components: { SimpleFooter }
 }
 </script>
 
@@ -319,10 +310,6 @@ export default {
 .update_day {
   float: right;
   margin: 20px auto 1px auto;
-}
-
-.footer {
-  margin-top: 30px;
 }
 
 ul {

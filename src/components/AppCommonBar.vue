@@ -28,6 +28,7 @@
 
         <v-responsive max-width="400">
           <v-text-field
+            v-model="query_key"
             class="search-input"
             ref="searchInputRef"
             dense
@@ -37,10 +38,10 @@
             :background-color="'#f2f2f2'"
             clearable
             :color="'black'"
-            label="SpringBoot实战项目"
+            :placeholder="query_placeholder"
             append-icon="mdi-magnify"
-            @focus="onSearchInputLevelIn"
-            @blur="onSearchInputLevelOut"
+            @click:append="search"
+            @keypress.enter="search"
           ></v-text-field>
         </v-responsive>
 
@@ -83,15 +84,35 @@ export default {
       '开源项目',
       '在线工具'
     ],
-    search_input_width: 310
+    search_input_width: 310,
+    query_key: '',
+    query_placeholder: '搜索',
+    hot_query_key: [
+      'SpringBoot实战项目',
+      'SpringCloud全家桶从入门到入土',
+      'Java高级教程',
+      'C语言从入门到入土',
+      'Vue+ElementUI后台管理项目实战',
+      '计算年毕业设计'
+    ]
   }),
   methods: {
-    onSearchInputLevelIn () {
-
+    //搜索
+    search () {
+      if (this.query_key === null || undefined === this.query_key || this.query_key === '') {
+        console.log('搜索key为空')
+        return
+      }
+      console.log('搜索：' + this.query_key)
     },
-    onSearchInputLevelOut () {
-
+    pollingHotQueryKey () {
+      setTimeout(function () {
+        this.query_placeholder = "Vue+ElementUI后台管理项目实战"
+      }, 3000)
     }
+  },
+  created () {
+    this.pollingHotQueryKey()
   },
   computed: {
     /**

@@ -169,7 +169,7 @@
 
           <div class="content-box">
             <h2 class="rule">联系方式</h2>
-            <p>联系邮箱：easyblog-kefu@163.com（相关事务请发函至该邮箱）</p>
+            <p>联系邮箱：easyblog_kefu@163.com（相关事务请发函至该邮箱）</p>
           </div>
         </div>
       </v-row>
@@ -180,10 +180,7 @@
         <v-divider></v-divider>
       </v-row>
       <v-row class="footer">
-        <v-footer>
-          Copyright © 2019-2022 <a style="font-size: 15px;color: inherit;text-decoration: none" href="/">www.easyblog.top</a>
-          版权所有.
-        </v-footer>
+        <SimpleFooter></SimpleFooter>
       </v-row>
     </v-container>
   </div>
@@ -191,8 +188,10 @@
 
 <script>
 
+import SimpleFooter from '@/components/SimpleFooter'
 export default {
   name: 'ServiceProtocolView',
+  components: { SimpleFooter },
 }
 </script>
 
@@ -226,7 +225,4 @@ export default {
   margin: 20px auto 1px auto;
 }
 
-.footer {
-  margin-top: 30px;
-}
 </style>

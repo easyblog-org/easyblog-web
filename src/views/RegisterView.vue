@@ -11,9 +11,12 @@
               <!--密码-->
               <v-text-field
                 v-model="email_account.password"
+                :append-icon="email_password_show ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="email_password_show ? 'text' : 'password'"
+                @click:append="email_password_show = !email_password_show"
                 label="密码"
-                required
-              ></v-text-field>
+                required>
+              </v-text-field>
               <!--注册按钮-->
               <v-btn :color="'#3370FF'" style="color: aliceblue;" width="100%">
                 注册
@@ -29,7 +32,7 @@
       <ThirdPartyLoginBox></ThirdPartyLoginBox>
       <!--隐私协议-->
       <div class="privacy_box">
-        <span>登录注册即代表同意EasyBlog <router-link class="content" to="/protocol">《服务协议》</router-link> 和 <router-link
+        <span>登录注册即代表同意EasyBlog <router-link class="content" to="/service">《服务协议》</router-link> 和 <router-link
           class="content" to="/privacy">《用户隐私政策》</router-link></span>
       </div>
     </v-card>
@@ -44,6 +47,7 @@ export default {
   components: { ThirdPartyLoginBox },
   data: () => ({
     register_tab: null,
+    email_password_show: false,
     //邮箱账号登录
     email_account: {
       email: '',
