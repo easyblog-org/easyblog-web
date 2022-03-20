@@ -58,11 +58,11 @@
     </canvas>
   </div>
 </template>
-<script type="text/babel">
-/**
+<script type="text/babel">/**
  * VerifySlideverify-sub-block
  * @description 滑块
  * */
+import { isMobile } from '@/assets/util'
 
 export default {
   name: 'SlideVerifier',
@@ -223,7 +223,7 @@ export default {
 
     //鼠标按下
     start: function (e) {
-      if (this.isEnd == false) {
+      if (this.isEnd === false) {
         this.text = ''
         this.moveBlockBackgroundColor = '#337ab7'
         this.leftBarBorderColor = '#337AB7'
@@ -234,11 +234,7 @@ export default {
     },
     //鼠标移动
     move: function (e) {
-      if (this.status && this.isEnd == false) {
-//                    if (this.mode == 'pop') {
-//                        this.showImage = true
-//                    }
-
+      if (this.status && this.isEnd === false) {
         if (!e.touches) {    //兼容移动端
           var x = e.clientX
         } else {     //兼容PC端
@@ -275,11 +271,10 @@ export default {
     end: function () {
       var _this = this
 
-//                判断是否重合
-      if (this.status && this.isEnd == false) {
-
-        if (this.type !== '1') {		//图片滑动
-
+      //判断是否重合
+      if (this.status && this.isEnd === false) {
+        if (this.type !== '1') {
+          //图片滑动
           var vOffset = parseInt(this.vOffset)
           if (parseInt(this.left) >= (parseInt((this.moveBlockLeft || '').replace('px', '')) - vOffset) &&
             parseInt(this.left) <= (parseInt((this.moveBlockLeft || '').replace('px', '')) + vOffset)) {
@@ -291,7 +286,6 @@ export default {
             this.isEnd = true
             this.finishText = '验证成功'
             this.$parent.$emit('success', this)
-
           } else {
             this.moveBlockBackgroundColor = '#d9534f'
             this.leftBarBorderColor = '#d9534f'
@@ -303,9 +297,8 @@ export default {
 
             this.$parent.$emit('error', this)
           }
-
-        } else {		//普通滑动
-
+        } else {
+          //普通滑动
           if (parseInt((this.moveBlockLeft || '').replace('px', '')) >= (parseInt(this.setSize.barWidth) - parseInt(this.barSize.height) - parseInt(this.vOffset))) {
             this.moveBlockBackgroundColor = '#5cb85c'
             this.leftBarBorderColor = '#5cb85c'
