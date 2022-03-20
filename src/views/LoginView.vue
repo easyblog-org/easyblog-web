@@ -1,11 +1,13 @@
 <template>
   <div class="login-container">
-    <v-card class="mx-auto my-12 rounded-lg login-card" max-width="444" height="80%" min-height="500">
+    <v-card class="mx-auto my-12 rounded-lg login-card" max-width="444"
+            height="575" min-height="500">
       <v-card-title class="login-title"><h2>欢迎使用EasyBlog</h2></v-card-title>
       <div class="login-body">
         <v-tabs class="login-tab-title" v-model="login_tab"
                 background-color="transparent"
                 color="basil"
+                @change="onLoginTabsChange"
                 grow>
           <v-tab>
             手机号
@@ -48,13 +50,16 @@
                       <v-text-field v-model="phone_account.captcha" :counter="6" label="验证码" required></v-text-field>
                     </v-col>
                     <v-col cols="5">
-                      <v-btn :color="'#3370FF'" style="color: aliceblue" width="100%">
+                      <v-btn :color="'#3370FF'" style="color: aliceblue" width="100%"
+                             @click="onGetCaptchaBtnClick">
                         获取验证码
                       </v-btn>
                     </v-col>
                   </v-row>
+
                   <!--登录按钮-->
-                  <v-btn :color="'#3370FF'" style="color: aliceblue;margin-top: 20px" width="100%">
+                  <v-btn :color="'#3370FF'" style="color: aliceblue;margin-top: 20px" width="100%"
+                         @click="phoneLogin">
                     注册/登录
                   </v-btn>
                 </v-form>
@@ -75,7 +80,8 @@
                     label="密码"
                     required
                   ></v-text-field>
-                  <v-btn :color="'#3370FF'" style="color: aliceblue;" width="100%">
+                  <v-btn :color="'#3370FF'" style="color: aliceblue;" width="100%"
+                         @click="emailLogin">
                     登录
                   </v-btn>
                   <div class="email-go-register-box">
@@ -97,74 +103,89 @@
           class="content" to="/privacy">《用户隐私政策》</router-link></span>
       </div>
     </v-card>
+
+    <!--弹出文字验证框-->
+    <v-overlay
+      :z-index="1000"
+      :value="dialog_verifier_show"
+    >
+      <PointsVerifier mode="fixed"
+                      :default-num="4"
+                      :check-num="4"
+                      @close="closePointVerifyWindow"
+                      @success="pointVerifySuccess"
+      ></PointsVerifier>
+    </v-overlay>
   </div>
 </template>
 
 <script>
 import ThirdPartyLoginBox from '@/components/ThirdPartyLoginBox'
+import PointsVerifier from '@/components/verify/PointsVerifier'
 
 export default {
   name: 'LoginView',
-  components: { ThirdPartyLoginBox },
+  components: {
+    PointsVerifier,
+    ThirdPartyLoginBox
+  },
   data: () => ({
-    login_tab: null,
-    email_password_show: false,
-    selected_location: {
-      code: '+86',
-      name: '中国'
-    },
-    locations: [
-      {
+      login_tab: null,
+      email_password_show: false,
+      dialog_verifier_show: false,
+      selected_location: {
         code: '+86',
         name: '中国'
       },
-      {
-        name: '中国香港',
-        code: '+825',
+      locations: [
+        {
+          code: '+86',
+          name: '中国'
+        },
+        {
+          name: '中国香港',
+          code: '+825',
+        },
+        {
+          name: '中国台湾',
+          code: '+886',
+        },
+        {
+          name: '中国澳门',
+          code: '+853',
+        },
+      ],
+      //手机验证码登录
+      phone_account: {
+        //
+        phone: '',
+        captcha: ''
       },
-      {
-        name: '中国台湾',
-        code: '+886',
+      //表单是否通过检验
+      phone_valid: false,
+      //手机号验证器
+      phoneVerifier: [
+        v => !!v || '手机号不能为空',
+        v => {
+          const pattern = /^1([3|5|6|7|8|9])\d{9}$/
+          return pattern.test(v) || '请输入正确的手机号'
+        }
+      ],
+      //邮箱账号登录
+      email_account: {
+        email: '',
+        password: ''
       },
-      {
-        name: '中国澳门',
-        code: '+853',
-      },
-    ],
-    //手机验证码登录
-    phone_account: {
-      //
-      phone: '',
-      captcha: ''
-    },
-    //表单是否通过检验
-    phone_valid: false,
-    //手机号验证器
-    phoneVerifier: [
-      v => !!v || '手机号不能为空',
-      v => {
-        const pattern = /^1([3|5|6|7|8|9])\d{9}$/
-        return pattern.test(v) || '请输入正确的手机号'
-      }
-    ],
-    //邮箱账号登录
-    email_account: {
-      email: '',
-      password: ''
-    },
-    emailVerifier: [
-      v => !!v || '邮箱号不能为空',
-      v => {
-        const pattern = /.+@.+\..+/
-        return pattern.test(v) || '请输入正确的邮箱号'
-      }
-    ]
-  }),
+      emailVerifier: [
+        v => !!v || '邮箱号不能为空',
+        v => {
+          const pattern = /.+@.+\..+/
+          return pattern.test(v) || '请输入正确的邮箱号'
+        }
+      ]
+    }
+  ),
   methods: {
-    //用户登录
-    login: () => {
-
-    },
     //区号下拉框数据变更
     onLocationSelection (any) {
       console.log(any)
@@ -179,6 +200,30 @@ export default {
         }
         console.log('校验通过')
       })
+    },
+    onLoginTabsChange () {
+      //将弹窗验证强制隐藏
+
+    },
+    //获取验证码
+    onGetCaptchaBtnClick () {
+      this.dialog_verifier_show = true
+    },
+    //文字验证
+    pointVerifySuccess (data) {
+      console.log("验证成功，"+data+"发起请求获取验证码")
+    },
+    //手机登录
+    phoneLogin () {
+
+    },
+    //邮箱登录
+    emailLogin () {
+
+    },
+    //关闭文字验证框
+    closePointVerifyWindow (state) {
+      this.dialog_verifier_show = state
     }
   }
 }

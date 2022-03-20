@@ -18,7 +18,8 @@
                 required>
               </v-text-field>
               <!--注册按钮-->
-              <v-btn :color="'#3370FF'" style="color: aliceblue;" width="100%">
+              <v-btn :color="'#3370FF'" style="color: aliceblue;" width="100%"
+                     @click="dialog_verifier_show = !dialog_verifier_show">
                 注册
               </v-btn>
               <div class="email-go-login-box">
@@ -48,6 +49,7 @@ export default {
   data: () => ({
     register_tab: null,
     email_password_show: false,
+    dialog_verifier_show: false,
     //邮箱账号登录
     email_account: {
       email: '',

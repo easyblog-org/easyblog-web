@@ -38,6 +38,7 @@ module.exports = {
     'no-multi-spaces':'off',
     'no-unused-vars':'off',
     'camelcase ':'off',
-    'quote-props':'off'
+    'quote-props':'off',
+    'vue/no-mutating-props': 0
   }
 }
