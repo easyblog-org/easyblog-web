@@ -3,6 +3,5 @@ module.exports = defineConfig({
   transpileDependencies: [
     'vuetify'
   ],
-  lintOnSave: false,
-  useEslint: false,
+  lintOnSave: false
 })
