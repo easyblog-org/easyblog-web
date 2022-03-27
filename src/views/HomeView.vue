@@ -7,16 +7,25 @@
     <v-main class="grey lighten-3">
       <v-container>
         <v-row>
-          <!--列表视图-->
-          <v-col>
+          <v-col cols="8">
             <v-sheet
-              min-height="70vh"
               rounded="lg"
             >
-              <!--  -->
+              <!--自定义滑动窗口-->
+              <CustomSwiper :height="340"></CustomSwiper>
             </v-sheet>
           </v-col>
-
+          <v-col cols="4">
+            <!--热搜-->
+            <HotSearchBox></HotSearchBox>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="9">
+            <v-card>
+              <v-card-text>car text</v-card-text>
+            </v-card>
+          </v-col>
           <!--侧边栏-->
           <v-col cols="3">
             <v-sheet rounded="lg">
@@ -76,7 +85,6 @@
               </v-list>
             </v-sheet>
           </v-col>
-
         </v-row>
       </v-container>
     </v-main>
@@ -89,12 +97,20 @@
 
 import AppCommonBar from '@/components/AppCommonBar'
 import AppCommonFooter from '@/components/AppHomeFooter'
+import CustomSwiper from '@/components/CustomSwiper'
+import HotSerachBox from '@/components/HotSearchBox'
+import HotSearchBox from '@/components/HotSearchBox'
 
 export default {
   name: 'HomeView',
   components: {
+    HotSearchBox,
+    CustomSwiper,
     AppCommonFooter,
     AppCommonBar
   },
 }
 </script>
+<style scoped>
+
+</style>

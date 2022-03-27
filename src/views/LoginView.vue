@@ -18,8 +18,8 @@
         </v-tabs>
 
         <v-tabs-items v-model="login_tab">
+          <!--手机号登录-->
           <v-tab-item>
-            <!--手机号登录-->
             <v-card color="basil" flat>
               <v-card-text>
                 <v-form ref="phoneFormRef" v-model="phone_valid" lazy-validation>
