@@ -30,7 +30,7 @@
         </v-card>
       </div>
       <!--第三方登录框-->
-      <ThirdPartyLoginBox></ThirdPartyLoginBox>
+      <app-third-party-login-box></app-third-party-login-box>
       <!--隐私协议-->
       <div class="privacy_box">
         <span>登录注册即代表同意EasyBlog <router-link class="content" to="/service">《服务协议》</router-link> 和 <router-link
@@ -41,11 +41,11 @@
 </template>
 
 <script>
-import ThirdPartyLoginBox from '@/components/ThirdPartyLoginBox'
 
+import AppThirdPartyLoginBox from '@/components/AppThirdPartyLoginBox'
 export default {
   name: 'RegisterView',
-  components: { ThirdPartyLoginBox },
+  components: { AppThirdPartyLoginBox  },
   data: () => ({
     register_tab: null,
     email_password_show: false,

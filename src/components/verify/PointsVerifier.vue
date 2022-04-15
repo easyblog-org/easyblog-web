@@ -98,7 +98,7 @@ function getOffset (Node, offset = {
 }
 
 export default {
-  name: 'PointsVerifier',
+  name: 'points-verifier',
   props: {
     //弹出式pop，固定fixed
     mode: {

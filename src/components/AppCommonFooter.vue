@@ -31,7 +31,7 @@
 import global from '@/assets/global'
 
 export default {
-  name: 'AppCommonFooter',
+  name: 'app-common-footer',
   data: () => ({
     icons: [
       'mdi-facebook',

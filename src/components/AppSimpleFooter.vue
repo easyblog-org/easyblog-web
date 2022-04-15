@@ -14,7 +14,7 @@
 import global from '@/assets/global'
 
 export default {
-  name: 'SimpleFooter',
+  name: 'app-simple-footer',
   data: () => ({
     domain: global.SYSTEM_CONSTANTS.domain,
   }),

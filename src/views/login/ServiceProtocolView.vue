@@ -188,7 +188,7 @@
 
 <script>
 
-import SimpleFooter from '@/components/SimpleFooter'
+import SimpleFooter from '@/components/AppSimpleFooter'
 export default {
   name: 'ServiceProtocolView',
   components: { SimpleFooter },

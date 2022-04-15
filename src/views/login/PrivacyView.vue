@@ -258,18 +258,19 @@
         <v-divider></v-divider>
       </v-row>
       <v-row class="footer">
-        <SimpleFooter></SimpleFooter>
+        <app-simple-footer></app-simple-footer>
       </v-row>
     </v-container>
   </div>
 </template>
 
 <script>
-import SimpleFooter from '@/components/SimpleFooter'
 
+
+import AppSimpleFooter from '@/components/AppSimpleFooter'
 export default {
   name: 'UserPrivacyView',
-  components: { SimpleFooter }
+  components: { AppSimpleFooter  }
 }
 </script>
 

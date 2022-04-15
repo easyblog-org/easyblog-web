@@ -1,4 +1,3 @@
-
 const SYSTEM_CONSTANTS = {
   base_url: 'localhost:8080',
   domain: 'www.easyblog.top',
@@ -6,5 +5,5 @@ const SYSTEM_CONSTANTS = {
 }
 
 export default {
-  SYSTEM_CONSTANTS
+  SYSTEM_CONSTANTS,
 }

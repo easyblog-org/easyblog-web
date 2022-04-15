@@ -95,7 +95,7 @@
       </div>
 
       <!--第三方登录框-->
-      <ThirdPartyLoginBox></ThirdPartyLoginBox>
+      <app-third-party-login-box></app-third-party-login-box>
 
       <!--隐私协议-->
       <div class="privacy_box">
@@ -109,25 +109,25 @@
       :z-index="1000"
       :value="dialog_verifier_show"
     >
-      <PointsVerifier mode="fixed"
+      <points-verifier mode="fixed"
                       :default-num="4"
                       :check-num="4"
                       @close="closePointVerifyWindow"
                       @success="pointVerifySuccess"
-      ></PointsVerifier>
+      ></points-verifier>
     </v-overlay>
   </div>
 </template>
 
 <script>
-import ThirdPartyLoginBox from '@/components/ThirdPartyLoginBox'
 import PointsVerifier from '@/components/verify/PointsVerifier'
+import AppThirdPartyLoginBox from '@/components/AppThirdPartyLoginBox'
 
 export default {
   name: 'LoginView',
   components: {
     PointsVerifier,
-    ThirdPartyLoginBox
+    AppThirdPartyLoginBox
   },
   data: () => ({
       login_tab: null,

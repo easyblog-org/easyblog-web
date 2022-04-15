@@ -1,8 +1,8 @@
 <template>
-  <v-card class="hot-search-box">
+  <v-card class="hot-search-box align-center rounded-sm" elevation="0">
     <v-card-title class="hot-search-title-box">
-      <v-row>
-        <v-col cols="9">
+      <v-row justify="space-between">
+        <v-col cols="8">
           <div class="hot-search-icon">
             <svg t="1648301586764" class="icon" viewBox="0 0 1024 1024" version="1.1"
                  xmlns="http://www.w3.org/2000/svg" p-id="2207" width="22" height="22">
@@ -11,23 +11,23 @@
                 p-id="2208" fill="#d81e06"></path>
             </svg>
           </div>
-          <span class="hot-search-title">热门搜索</span>
+          <span class="hot-search-title" v-text="this.title"></span>
         </v-col>
-        <v-col cols="3" class="page">
+        <v-col cols="4" class="page">
           <span>
-        <span>
-          <svg @click="onHotSearchPageBtnClick(1)" v-show="card_show === 2" t="1648308912652" class="icon"
-               viewBox="0 0 1024 1024" version="1.1"
-               xmlns="http://www.w3.org/2000/svg"
-               p-id="8198" width="22" height="22"><path
-            d="M503.466667 490.666667l174.933333 174.933333-59.733333 59.733333L384 490.666667 618.666667 256l59.733333 59.733333-174.933333 174.933334z"
-            fill="#515151" p-id="8199"></path></svg>
-          <svg @click="onHotSearchPageBtnClick(1)" v-show="card_show === 1" t="1648309106345" class="icon"
-               viewBox="0 0 1024 1024" version="1.1"
-               xmlns="http://www.w3.org/2000/svg" p-id="8867" width="22" height="22"><path
-            d="M503.466667 490.666667l174.933333 174.933333-59.733333 59.733333L384 490.666667 618.666667 256l59.733333 59.733333-174.933333 174.933334z"
-            fill="#cdcdcd" p-id="8868"></path></svg>
-        </span>
+             <span>
+               <svg @click="onHotSearchPageBtnClick(1)" v-show="card_show === 2" t="1648308912652" class="icon"
+                    viewBox="0 0 1024 1024" version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    p-id="8198" width="22" height="22"><path
+                 d="M503.466667 490.666667l174.933333 174.933333-59.733333 59.733333L384 490.666667 618.666667 256l59.733333 59.733333-174.933333 174.933334z"
+                 fill="#515151" p-id="8199"></path></svg>
+               <svg @click="onHotSearchPageBtnClick(1)" v-show="card_show === 1" t="1648309106345" class="icon"
+                    viewBox="0 0 1024 1024" version="1.1"
+                    xmlns="http://www.w3.org/2000/svg" p-id="8867" width="22" height="22"><path
+                 d="M503.466667 490.666667l174.933333 174.933333-59.733333 59.733333L384 490.666667 618.666667 256l59.733333 59.733333-174.933333 174.933334z"
+                 fill="#cdcdcd" p-id="8868"></path></svg>
+             </span>
         <span>
           <svg @click="onHotSearchPageBtnClick(2)" v-show="card_show === 1" t="1648308957781" class="icon"
                viewBox="0 0 1024 1024"
@@ -47,8 +47,8 @@
       </v-row>
     </v-card-title>
     <v-card-text tag="div" class="hot-search-content-box">
-      <v-card-text v-for="(item,i) in this.articles_for_show" class="hot-search-content">
-        <v-row tag="a" :href="item.url">
+      <v-card-text v-for="(item,i) in this.articles_for_show" :key="item.id" class="hot-search-content">
+        <v-row tag="a" :href="item.url" :title="item.name">
           <v-col cols="9" class="text">
             <span class="rank-num" :style="{'color':item.rank_icon}">{{ item.rank }}</span>
             {{ item.name }}
@@ -62,82 +62,110 @@
 
 <script>
 export default {
-  name: 'HotSearchBox',
+  name: 'app-common-hot-search-list',
   props: {
+    title:{
+      type: String,
+      default: '热搜榜'
+    },
     height: {
       type: String | Number,
       default: '340px'
+    },
+    page_size: {
+      type: Number,
+      default: 10
+    },
+    page_no: {
+      type: Number,
+      default: 1
+    },
+    list_size: {
+      type: Number,
+      default: 20
     }
   },
   data: () => ({
     original_hot_search_articles: [
       {
+        id: '1',
         article_name: '海量数据处理：如何从10亿个数中，找出最大的10000个数？（top K问题',
         click_num: 188000,
         rank: 1,
         url: '/'
       },
       {
+        id: '2',
         article_name: 'HashMap是如何工作的',
         click_num: 178000,
         rank: 2,
         url: '/'
       },
       {
+        id: '3',
         article_name: 'Redis五种常见数据结构的实现及使用场景',
         click_num: 163001,
         rank: 3,
         url: '/'
       },
       {
+        id: '4',
         article_name: 'Redisson 实现分布式锁原理浅析',
         click_num: 100099,
         rank: 4,
         url: '/'
       },
       {
+        id: '5',
         article_name: '深入理解JVM—垃圾回收器（Grabage Collector）基础篇',
         click_num: 51000,
         rank: 5,
         url: '/'
       },
       {
+        id: '6',
         article_name: 'SpringBoot从入门到精通—SpringBoot快速入门',
         click_num: 60088,
         rank: 6,
         url: '/'
       },
       {
+        id: '7',
         article_name: '高并发编程之AQS（AbstractQueuedSynchornizer）—源码剖析',
         click_num: 50002,
         rank: 7,
         url: '/'
       },
       {
+        id: '8',
         article_name: 'SpringBoot网站基于OAuth2添加第三方登录之GitHub登录',
         click_num: 49999,
         rank: 8,
         url: '/'
       },
       {
+        id: '9',
         article_name: 'SpringBoot从入门到精通—SpringBoot快速入门',
         click_num: 30000,
         rank: 9,
         url: '/'
       },
       {
+        id: '10',
         article_name: '作为Java工程师你真的理解synchronized吗',
         click_num: 1444,
         rank: 10,
         url: '/'
       },
       {
+        id: '11',
         article_name: 'RocketMQ Linux 安装配置',
         click_num: 1234,
         rank: 11,
         url: '/'
       },
       {
+        id: '12',
         article_name: 'Spring教程：事物详解（一）初探事物',
         click_num: 500,
         rank: 12,
@@ -172,11 +200,14 @@ export default {
           icon = '#ff9406'
         } else if (item.rank === 3) {
           icon = '#fec42d'
-        } else {
+        } else if (item.rank <= 10) {
           icon = '#52afff'
+        } else {
+          icon = '#999aaa'
         }
 
         let article = {
+          id: item.id,
           name: item.article_name,
           click_num: this.formatClickNum(item.click_num),
           rank: item.rank,
@@ -184,9 +215,9 @@ export default {
           url: item.url
         }
 
-        if (card === 1 && item.rank <= 6) {
+        if (card === 1 && item.rank <= this.page_size) {
           articles.push(article)
-        } else if (card === 2 && item.rank >= 7 && item.rank <= 12) {
+        } else if (card === 2 && item.rank > this.page_size && item.rank <= this.list_size) {
           articles.push(article)
         }
       }
@@ -217,7 +248,8 @@ export default {
 }
 
 .hot-search-box {
-   min-height: 340px;
+  min-height: 340px;
+  border: 1px solid #e1e1e1;
 }
 
 /*热搜icon图标*/
@@ -244,7 +276,11 @@ export default {
   text-align: left;
   margin: auto 5px auto 0;
   font-weight: 800;
-  font-size: 16px;
+  font-size: 12px;
+}
+
+.rank-num {
+  font-size: 14px !important;
 }
 
 .hot-search-content .text {
@@ -259,7 +295,9 @@ export default {
 .hot-search-content .click {
   text-align: end;
   color: #939393;
-  font-size: 13px;
+  font-size: 12px;
+  padding-left: 0;
+  padding-right: 0;
 }
 
 .hot-search-content a {
@@ -273,6 +311,6 @@ export default {
 
 .hot-search-box .page svg {
   cursor: pointer;
-  margin-right: 6px;
+  /*margin-right: 6px;*/
 }
 </style>

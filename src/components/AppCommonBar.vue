@@ -75,7 +75,7 @@
 import global from '@/assets/global'
 
 export default {
-  name: 'AppCommonBar',
+  name: 'app-common-bar',
   data: () => ({
     links: [
       '编程入门教程',

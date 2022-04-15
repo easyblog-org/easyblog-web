@@ -109,7 +109,7 @@
 
 <script>
 export default {
-  name: 'ThirdPartyLoginBox'
+  name: 'app-third-party-login-box'
 }
 </script>
 

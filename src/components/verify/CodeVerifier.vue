@@ -29,7 +29,7 @@
  * @description 常规的图片文字识别或者数字计算
  * */
 export default {
-  name: 'CodeVerifier',
+  name: 'code-verifier',
   props: {
     type: {
       type: String,

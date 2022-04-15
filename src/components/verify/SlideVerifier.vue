@@ -65,7 +65,7 @@
 import { isMobile } from '@/assets/util'
 
 export default {
-  name: 'SlideVerifier',
+  name: 'slide-verifier',
   props: {
     type: {
       type: String,

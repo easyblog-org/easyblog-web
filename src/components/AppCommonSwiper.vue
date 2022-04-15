@@ -20,7 +20,7 @@
 <script>
 
 export default {
-  name: 'CustomSwiper',
+  name: 'app-common-swiper',
   props: {
     height: {
       type: String | Number,
