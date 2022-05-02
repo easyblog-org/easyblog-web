@@ -131,18 +131,18 @@ export default {
 }
 
 .article-info {
-  margin-top: 15px !important;
+  margin-top: 13px !important;
 }
 
 .article-list-author {
   color: #333;
   margin: 0 5px 0 0;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .article-list-time {
   color: #b3b2b2;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .article-list-time:before {
