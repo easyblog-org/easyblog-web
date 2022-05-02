@@ -1,3 +1,9 @@
+/***********************************************************************************
+ * Copyright (c) 2019-2022 EasyBlog and/or its affiliates. All rights reserved.
+ *
+ * EASYBLOG UI CSS File FOR VERIFY COMPONENTS(@/components/verify/*)
+ ************************************************************************************/
+
 /*常规验证码*/
 .verify-code {
     font-size: 20px;

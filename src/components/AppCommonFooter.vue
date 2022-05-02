@@ -1,56 +1,141 @@
 <template>
-  <v-footer dark padless app :color="'#1d273d'">
-    <v-card flat tile class="indigo lighten-1 white--text text-center">
+  <v-footer padless :width="width" class="sidebar-box-border">
+    <v-card flat tile class="text-center" :width="width">
+      <v-card-text class="grey--text pt-8 footer-tag">
+        <v-row>
+          <v-col cols="4">
+            <router-link to="/about" target="_blank">关于网站</router-link>
+          </v-col>
+          <v-col cols="4">
+            <router-link to="/contact" target="_blank">联系我们</router-link>
+          </v-col>
+          <v-col cols="4">
+            <a href="https://www.cnzz.com/stat/website.php?web_id=1278953609" target="_blank">
+              网站统计
+            </a>
+          </v-col>
+        </v-row>
+        <v-row style="margin-top: 20px">
+          <v-col cols="4">
+            <router-link to="/service" target="_blank">用户协议</router-link>
+          </v-col>
+          <v-col cols="4">
+            <router-link to="/privacy" target="_blank">隐私协议</router-link>
+          </v-col>
+          <v-col cols="4">
+            <router-link to="/sitemap" target="_blank">网站地图</router-link>
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+
       <v-card-text>
-        <v-btn
-          v-for="icon in icons"
-          :key="icon"
-          class="mx-4 white--text"
-          icon
-        >
-          <v-icon size="24px">
-            {{ icon }}
-          </v-icon>
-        </v-btn>
+        <v-row>
+          <v-col cols="6" class="pb-0">
+            <v-img
+              :width="concat_img_width"
+              :src="require('../assets/img/QR-wechat.jpg')"
+            />
+            <div class="concat_img_desc">联系开发者</div>
+          </v-col>
+          <v-col cols="6" class="pb-0">
+            <v-img
+              :width="concat_img_width"
+              :src="require('../assets/img/QR-public-account.jpg')"
+            />
+            <div class="concat_img_desc">关注公众号</div>
+          </v-col>
+        </v-row>
       </v-card-text>
 
-      <v-card-text class="white--text pt-0">
-        Phasellus feugiat arcu sapien, et iaculis ipsum elementum sit amet. Mauris cursus commodo interdum. Praesent ut risus eget metus luctus accumsan id ultrices nunc. Sed at orci sed massa consectetur dignissim a sit amet dui. Duis commodo vitae velit et faucibus. Morbi vehicula lacinia malesuada. Nulla placerat augue vel ipsum ultrices, cursus iaculis dui sollicitudin. Vestibulum eu ipsum vel diam elementum tempor vel ut orci. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-      </v-card-text>
-
-      <v-divider></v-divider>
-
-      <v-card-text class="white--text">
-        Copyright © 2019-{{getFullYear}}  <a style="font-size: 15px;color: inherit;text-decoration: none" href="/">{{ domain }}</a> 版权所有.
+      <v-card-text class="pt-1 my-copyright text-justify">
+        <div>
+          <a href="http://beian.miit.gov.cn" target="_blank">陕ICP备19025460号-1</a>
+          <router-link tag='a' to="/disclaimer" class="ma-2">免责声明</router-link><br/>
+          <a href="https://www.12377.cn/">有害信息举报</a>
+          <a href="http://www.cyberpolice.cn/wfjb/" class="ma-2">网络110报警服务</a>
+        </div>
+        <div style="color: #999AAA">
+          ©2019-{{ getFullYear }}
+          <a href="/">EasyBlog</a>
+          版权所有.
+        </div>
       </v-card-text>
     </v-card>
   </v-footer>
 </template>
 
 <script>
-import global from '@/assets/global'
+import {SYSTEM_CONSTANTS} from '@/assets/global'
 
 export default {
   name: 'app-common-footer',
+  props: {
+    width: {
+      type: String | Number,
+      default: 270.25
+    }
+  },
   data: () => ({
-    icons: [
-      'mdi-facebook',
-      'mdi-twitter',
-      'mdi-linkedin',
-      'mdi-instagram',
-    ],
-    domain: global.SYSTEM_CONSTANTS.domain
+    domain: SYSTEM_CONSTANTS.domain,
+    concat_img_width: 100
   }),
   computed: {
     getFullYear () {
       return new Date().getFullYear()
     }
+  },
+  created () {
+    document.write(unescape("%3Cspan id='cnzz_stat_icon_1278953609'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1278953609%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));
   }
 }
 </script>
 
 <style scoped>
-.v-footer--fixed{
+.concat_img_desc{
+  margin-top: 8px;
+}
+
+.v-footer--fixed {
   position: unset !important;
+}
+
+.footer-tag .col {
+  padding: 0 !important;
+  border-right: solid 1px #999AAA;
+  line-height: 16px;
+}
+
+/**
+  最后一个不设置右边框
+ */
+.footer-tag .col:last-child {
+  border-right: unset;
+}
+
+.my-copyright,
+.footer-tag {
+  font-size: 14px;
+  color: #999AAA;
+}
+
+.my-copyright a,
+.footer-tag a {
+  color: #999AAA;
+  text-decoration: none
+}
+
+.my-copyright a:hover,
+.footer-tag a:hover {
+  cursor: pointer;
+  color: #1976d2;
+}
+
+.my-copyright div {
+  margin-top: 5px;
+}
+
+.sidebar-box-border {
+  border: 1px solid #e1e1e1;
 }
 </style>
