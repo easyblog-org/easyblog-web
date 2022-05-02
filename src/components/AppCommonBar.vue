@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import global from '@/assets/global'
+import {SYSTEM_CONSTANTS} from '@/assets/global'
 
 export default {
   name: 'app-common-bar',
@@ -121,7 +121,7 @@ export default {
      */
     checkLoginStatus: function () {
       //登录时会将用户登录token存放到本地
-      return localStorage.getItem(global.SYSTEM_CONSTANTS.login_token_key) != null
+      return localStorage.getItem(SYSTEM_CONSTANTS.login_token_key) != null
     }
   }
 }

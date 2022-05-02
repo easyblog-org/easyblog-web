@@ -1,5 +1,5 @@
 <template>
-  <v-card class="hot-search-box align-center rounded-sm" elevation="0">
+  <v-card class="hot-search-box sidebar-box-border align-center rounded-sm" elevation="0">
     <v-card-title class="hot-search-title-box">
       <v-row justify="space-between">
         <v-col cols="8">
@@ -249,7 +249,6 @@ export default {
 
 .hot-search-box {
   min-height: 340px;
-  border: 1px solid #e1e1e1;
 }
 
 /*热搜icon图标*/
@@ -311,6 +310,9 @@ export default {
 
 .hot-search-box .page svg {
   cursor: pointer;
-  /*margin-right: 6px;*/
+}
+
+.sidebar-box-border {
+  border: 1px solid #e1e1e1;
 }
 </style>

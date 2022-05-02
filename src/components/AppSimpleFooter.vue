@@ -2,7 +2,7 @@
   <div class="footer">
     <span>Copyright © 2019-{{ getFullYear }} </span>
     <span>
-      <a class="domain" href="/">{{ domain }}</a> 版权所有.
+      <a class="domain" href="/">EasyBlog</a> 版权所有.
     </span>
     <a href="http://beian.miit.gov.cn" class="beian" target="_blank">
       陕ICP备19025460号-1
@@ -11,13 +11,9 @@
 </template>
 
 <script>
-import global from '@/assets/global'
 
 export default {
   name: 'app-simple-footer',
-  data: () => ({
-    domain: global.SYSTEM_CONSTANTS.domain,
-  }),
   computed: {
     getFullYear () {
       return new Date().getFullYear()
