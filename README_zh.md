@@ -1,6 +1,6 @@
 # easyblog-ui: EasyBlog 2.0 Front-end
 
-[中文文档](./README_zh.md)
+[English Document](./README.md)
 
 ## Quick Start
 
@@ -40,10 +40,9 @@ Customize configuration See [Configuration Reference](https://cli.vuejs.org/conf
 ## Tech stack
 
 ### Vue
-Vue  is a JavaScript framework for building user interfaces. It builds on top of standard HTML, CSS and JavaScript, and provides a declarative and component-based programming model that helps you efficiently develop user interfaces, be it simple or complex. [more...](https://vuejs.org/guide/introduction.html#what-is-vue)
+Vue (pronounced /vjuː/, like view) is a JavaScript framework for building user interfaces. It builds on top of standard HTML, CSS and JavaScript, and provides a declarative and component-based programming model that helps you efficiently develop user interfaces, be it simple or complex. [more...](https://vuejs.org/guide/introduction.html#what-is-vue)
+### Axios
 
-### axios
-axios is a promise based HTTP client for the browser and node.js. [more...](https://github.com/axios/axios)
 ### Vuetify
 Vuetify is a complete UI framework built on top of Vue.js. The goal of the project is to provide developers with the tools they need to build rich and engaging user experiences. Unlike other frameworks, Vuetify is designed from the ground up to be easy to learn and rewarding to master with hundreds of carefully crafted components from the Material Design specification.
 
