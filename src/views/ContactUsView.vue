@@ -13,7 +13,7 @@
         }]"></app-common-bread-crumb-navigation>
 
     <v-container class="pr-0 pl-0 pt-0">
-      <v-row>
+      <v-row style="min-height: 543px">
         <v-col>
           <v-card>
             <v-card-title class="pl-3">联系我们</v-card-title>
@@ -76,7 +76,7 @@
                         class="mt-3"
                         color="primary"
                         tag="a"
-                        href="http://localhost:8001/community"
+                        href="http://localhost:8081/community"
                         label
                       >
                         <v-icon left>
