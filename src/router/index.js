@@ -4,7 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView'
 import LoginView from '@/views/login/LoginView'
 import RegisterView from '@/views/login/RegisterView'
-import GetBackPasswordView from '@/views/GetBackPasswordView'
+import ForgetPasswordView from '@/views/login/ForgetPasswordView'
 import ServiceProtocolView from '@/views/ServiceProtocolView'
 import PrivacyView from '@/views/PrivacyView'
 import ContactUsView from '@/views/ContactUsView'
@@ -45,9 +45,9 @@ const routes = [
     component: RegisterView
   },
   {
-    path: '/get-back-password',
-    name: 'GetBackPasswordView',
-    component: GetBackPasswordView
+    path: '/forget-password',
+    name: 'ForgetPasswordView',
+    component: ForgetPasswordView
   },
   {
     path: '/contact',

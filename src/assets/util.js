@@ -1,15 +1,31 @@
+import {SYSTEM_CONSTANTS} from "@/assets/global";
+
 export const _code_chars = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 export const _code_color1 = ['#fffff0', '#f0ffff', '#f0fff0', '#fff0f0']
 export const _code_color2 = ['#FF0033', '#006699', '#993366', '#FF9900', '#66CC66', '#FF33CC']
 
-export function isMobile () {
-  if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) { //移动端
+/**
+ * 判断是否移动端
+ * @returns {boolean}
+ */
+export function isMobile() {
+  if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+    //移动端
     return true
   }
   return false
 }
 
-export function resetSize (vm) {
+/**
+ * 请求是否成功
+ * @param rc
+ * @returns {boolean}
+ */
+export function isSuccess(rc) {
+  return SYSTEM_CONSTANTS.SUCCESS === rc;
+}
+
+export function resetSize(vm) {
   //图片的宽度、高度，移动条的宽度、高度
   var img_width, img_height, bar_width, bar_height, block_width, block_height, circle_radius
 
@@ -74,7 +90,7 @@ export function resetSize (vm) {
  * @param pattern    时间样式
  * @returns {string}
  */
-export function formatDate (timestamp, pattern) {
+export function formatDate(timestamp, pattern) {
   if (timestamp != null) {
     const date = new Date(timestamp)
     const year = date.getFullYear()

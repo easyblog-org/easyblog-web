@@ -43,10 +43,10 @@ export default {
         src: 'https://7n.w3cschool.cn/attachments/knowledge/202108/93852.png',
       },
       {
-        src: 'http://image.easyblog.top/1635135654148e7c3eb50-c424-40ac-8d47-5027a3901f16.jpeg',
+        src: 'https://img10.360buyimg.com/ddimg/jfs/t1/157602/14/5070/254362/60101928Ec4c1b566/19d09acc0c8429fb.jpg',
       },
       {
-        src: 'http://image.easyblog.top/16078345961712141a9b7-c9d7-4e6d-89c0-3df304d6097a.jpeg'
+        src: 'https://img0.baidu.com/it/u=1102563411,3149738677&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1675098000&t=79983869302123f8d4be47a3ad45ee3e'
       }
     ],
   }),

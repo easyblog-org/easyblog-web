@@ -9,9 +9,11 @@
  * @type {{domain: string, base_url: string, login_token_key: string}}
  */
 export const SYSTEM_CONSTANTS = {
-  base_url: 'localhost:8080',
-  domain: 'www.easyblog.top',
-  login_token_key: 'easyblog_session'
+  BASE_URL: 'localhost:8080',
+  DOMAIN: 'www.easyblog.top',
+  LOGIN_TOKEN: 'easyblog_session',
+  SUCCESS: "ok",
+  COUNTDOWN_BTN_DEFAULT_TIME: 60
 }
 
 /**

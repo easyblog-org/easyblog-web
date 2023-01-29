@@ -82,6 +82,11 @@ body {
     text-decoration: unset;
 }
 
+.email-forget-password-box{
+    margin-top: 15px;
+    float: left;
+}
+
 .email-go-register-box,
 .email-go-login-box {
     margin-top: 15px;

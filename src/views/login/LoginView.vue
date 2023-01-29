@@ -50,9 +50,10 @@
                       <v-text-field v-model="phone_account.captcha" :counter="6" label="验证码" required></v-text-field>
                     </v-col>
                     <v-col cols="5">
-                      <v-btn :color="'#3370FF'" style="color: aliceblue" width="100%"
-                             @click="onGetCaptchaBtnClick">
-                        获取验证码
+                      <v-btn :color="'#3370FF'" :disabled="captcha_btn_disable"
+                             style="color: aliceblue" width="100%"
+                             @click="onGetCaptchaBtnClick" v-text="captcha_btn_text" ref="captchaBtnRef">
+
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -84,6 +85,9 @@
                          @click="emailLogin">
                     登录
                   </v-btn>
+                  <div class="email-forget-password-box">
+                    <span><router-link tag="span" style="color: #1976d2;text-underline: none;cursor: pointer" to="/forget-password" class="content">忘记密码</router-link></span>
+                  </div>
                   <div class="email-go-register-box">
                     <span>没有账号？<router-link to="/register" class="content">立即注册</router-link></span>
                   </div>
@@ -99,8 +103,8 @@
 
       <!--隐私协议-->
       <div class="privacy_box">
-        <span>登录注册即代表同意EasyBlog <router-link class="content" to="/service">《服务协议》</router-link> 和 <router-link
-          class="content" to="/privacy">《用户隐私政策》</router-link></span>
+        <span>登录注册即代表同意 EasyBlog <router-link class="content" to="/service" tag="span" style="color: #1976d2;text-underline: none;cursor: pointer">《服务协议》</router-link> 和 <router-link
+          class="content" to="/privacy" tag="span" style="color: #1976d2;text-underline: none;cursor: pointer">《用户隐私政策》</router-link></span>
       </div>
     </v-card>
 
@@ -110,10 +114,10 @@
       :value="dialog_verifier_show"
     >
       <points-verifier mode="fixed"
-                      :default-num="4"
-                      :check-num="4"
-                      @close="closePointVerifyWindow"
-                      @success="pointVerifySuccess"
+                       :default-num="4"
+                       :check-num="4"
+                       @close="closePointVerifyWindow"
+                       @success="pointVerifySuccess"
       ></points-verifier>
     </v-overlay>
   </div>
@@ -122,6 +126,8 @@
 <script>
 import PointsVerifier from '@/components/verify/PointsVerifier'
 import AppThirdPartyLoginBox from '@/components/AppThirdPartyLoginBox'
+import {isSuccess} from "@/assets/util";
+import {SYSTEM_CONSTANTS} from "@/assets/global";
 
 export default {
   name: 'LoginView',
@@ -130,9 +136,18 @@ export default {
     AppThirdPartyLoginBox
   },
   data: () => ({
+      //登录Tab
       login_tab: null,
+      //邮箱登录密码隐藏与显示控制
       email_password_show: false,
+      //发送短信验证码验证图案通过
       dialog_verifier_show: false,
+      // 验证码获取按钮是否可以点击
+      captcha_btn_disable: false,
+      // 验证码按钮文本
+      captcha_btn_text: "获取验证码",
+      // 验证码倒计时
+      captcha_total_time: SYSTEM_CONSTANTS.COUNTDOWN_BTN_DEFAULT_TIME,
       selected_location: {
         code: '+86',
         name: '中国'
@@ -187,12 +202,12 @@ export default {
   ),
   methods: {
     //区号下拉框数据变更
-    onLocationSelection (any) {
+    onLocationSelection(any) {
       console.log(any)
       console.log(this.selected_location)
     },
     //手机号输入框发生变更
-    onPhoneInputUpdate (any) {
+    onPhoneInputUpdate(any) {
       console.log(any)
       this.$refs.phoneFormRef.validate(valid => {
         if (!valid) {
@@ -201,28 +216,52 @@ export default {
         console.log('校验通过')
       })
     },
-    onLoginTabsChange () {
+    onLoginTabsChange() {
       //将弹窗验证强制隐藏
 
     },
     //获取验证码
-    onGetCaptchaBtnClick () {
+    onGetCaptchaBtnClick() {
       this.dialog_verifier_show = true
     },
-    //文字验证
-    pointVerifySuccess (data) {
-      console.log("验证成功，"+data+"发起请求获取验证码")
+    //文字验证成功==>发送验证码
+    pointVerifySuccess(data) {
+      if (!data) return
+      this.captcha_btn_disable = true
+      //TODO 请求后端获取验证码
+      if (isSuccess("ok")) {
+        this.captcha_btn_text = this.captcha_total_time + 's后重新发送'
+        const clock = window.setInterval(() => {
+          this.captcha_total_time--
+          this.captcha_btn_text = this.captcha_total_time + 's后重新发送'
+          this.$refs.captchaBtnRef.innerText = this.captcha_btn_text
+          if (this.captcha_total_time < 0) {
+            window.clearInterval(clock)
+            this.captcha_total_time = SYSTEM_CONSTANTS.COUNTDOWN_BTN_DEFAULT_TIME
+            this.captcha_btn_text = '重新发送验证码'
+            this.$refs.captchaBtnRef.innerText = "重新发送验证码"
+            this.captcha_btn_disable = false
+          }
+        }, 1000)
+      }
     },
     //手机登录
-    phoneLogin () {
-
+    phoneLogin() {
+      //TODO 请求后端使用手机验证码登录
+      this.saveLocalSession('')
     },
     //邮箱登录
-    emailLogin () {
+    emailLogin() {
+      //TODO 请求后端使用邮箱密码登录
 
+      this.saveLocalSession('')
+    },
+    // 登录成功之后保存localSession
+    saveLocalSession(token) {
+      localStorage.setItem(SYSTEM_CONSTANTS.LOGIN_TOKEN,token)
     },
     //关闭文字验证框
-    closePointVerifyWindow (state) {
+    closePointVerifyWindow(state) {
       this.dialog_verifier_show = state
     }
   }

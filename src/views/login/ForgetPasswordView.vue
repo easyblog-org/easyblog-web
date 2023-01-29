@@ -4,7 +4,7 @@
 
 <script>
 export default {
-name: "GetBackPasswordView"
+name: "ForgetPasswordView"
 }
 </script>
 

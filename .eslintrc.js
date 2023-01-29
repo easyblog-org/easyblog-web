@@ -40,6 +40,7 @@ module.exports = {
     'no-unused-vars': 'off',
     'quote-props': 'off',
     'vue/no-mutating-props': 0,
-    'vue/require-prop-type-constructor':'off'
+    'vue/require-prop-type-constructor':'off',
+    'object-curly-spacing':'off'
   }
 }
