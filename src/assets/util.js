@@ -10,7 +10,8 @@ export function isMobile () {
 }
 
 export function resetSize (vm) {
-  var img_width, img_height, bar_width, bar_height, block_width, block_height, circle_radius	//图片的宽度、高度，移动条的宽度、高度
+  //图片的宽度、高度，移动条的宽度、高度
+  var img_width, img_height, bar_width, bar_height, block_width, block_height, circle_radius
 
   var parentWidth = vm.$el.parentNode.offsetWidth || window.offsetWidth
   var parentHeight = vm.$el.parentNode.offsetHeight || window.offsetHeight
@@ -83,19 +84,19 @@ export function formatDate (timestamp, pattern) {
     const min = (date.getMonth() + 1 + '').padStart(2, '0')
     const sec = (date.getMonth() + 1 + '').padStart(2, '0')
 
-    if ('yyyy-MM-dd HH:mm:ss' === pattern) {
+    if (pattern === 'yyyy-MM-dd HH:mm:ss') {
       return `${year}-${mon}-${day} ${hour}:${min}:${sec}`
-    } else if ('yyyy-MM-dd HH:mm' === pattern) {
+    } else if (pattern === 'yyyy-MM-dd HH:mm') {
       return `${year}-${mon}-${day} ${hour}:${min}`
-    } else if ('yyyy-MM-dd HH' === pattern) {
+    } else if (pattern === 'yyyy-MM-dd HH') {
       return `${year}-${mon}-${day} ${hour}`
-    } else if ('yyyy-MM-dd' === pattern) {
+    } else if (pattern === 'yyyy-MM-dd') {
       return `${year}-${mon}-${day}`
-    } else if ('yyyy-MM' === pattern) {
+    } else if (pattern === 'yyyy-MM') {
       return `${year}-${mon}`
-    } else if ('yyyy' === pattern) {
+    } else if (pattern === 'yyyy') {
       return `${year}`
-    } else if ('HH:mm:ss' === pattern) {
+    } else if (pattern === 'HH:mm:ss') {
       return `${hour}:${min}:${sec}`
     }
   }

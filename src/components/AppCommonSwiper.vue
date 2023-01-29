@@ -43,10 +43,10 @@ export default {
         src: 'https://7n.w3cschool.cn/attachments/knowledge/202108/93852.png',
       },
       {
-        src: 'https://qntemp4.json.cn/202101/eaf3c9ac796cf.png',
+        src: 'http://image.easyblog.top/1635135654148e7c3eb50-c424-40ac-8d47-5027a3901f16.jpeg',
       },
       {
-        src: 'http://image.easyblog.top/160768866799439db1527-8047-416d-805c-06f3a1221a17.jpeg'
+        src: 'http://image.easyblog.top/16078345961712141a9b7-c9d7-4e6d-89c0-3df304d6097a.jpeg'
       }
     ],
   }),

@@ -51,7 +51,8 @@
       <v-card-text class="pt-1 my-copyright text-justify">
         <div>
           <a href="http://beian.miit.gov.cn" target="_blank">陕ICP备19025460号-1</a>
-          <router-link tag='a' to="/disclaimer" class="ma-2">免责声明</router-link><br/>
+          <router-link tag='a' to="/disclaimer" class="ma-2">免责声明</router-link>
+          <br/>
           <a href="https://www.12377.cn/">有害信息举报</a>
           <a href="http://www.cyberpolice.cn/wfjb/" class="ma-2">网络110报警服务</a>
         </div>
@@ -81,18 +82,18 @@ export default {
     concat_img_width: 100
   }),
   computed: {
-    getFullYear () {
+    getFullYear() {
       return new Date().getFullYear()
     }
   },
-  created () {
+  created() {
     document.write(unescape("%3Cspan id='cnzz_stat_icon_1278953609'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1278953609%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));
   }
 }
 </script>
 
 <style scoped>
-.concat_img_desc{
+.concat_img_desc {
   margin-top: 8px;
 }
 

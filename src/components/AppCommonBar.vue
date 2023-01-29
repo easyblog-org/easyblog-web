@@ -6,7 +6,7 @@
       elevation="2"
       flat
     >
-      <v-container class="py-0 fill-height">
+      <v-container class="py-0 fill-height" ref="barRef">
 
         <div>
           <a href="/" class="bar-title"><h1>EasyBlog</h1></a>
@@ -26,7 +26,7 @@
 
         <v-spacer></v-spacer>
 
-        <v-responsive max-width="400">
+        <v-responsive max-width="400" :width="searchInputDynamicWidth">
           <v-text-field
             v-model="query_key"
             class="search-input"
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import {SYSTEM_CONSTANTS} from '@/assets/global'
+import { SYSTEM_CONSTANTS } from '@/assets/global'
 
 export default {
   name: 'app-common-bar',
@@ -98,20 +98,20 @@ export default {
   }),
   methods: {
     //搜索
-    search () {
+    search() {
       if (this.query_key === null || undefined === this.query_key || this.query_key === '') {
         console.log('搜索key为空')
         return
       }
       console.log('搜索：' + this.query_key)
     },
-    pollingHotQueryKey () {
+    pollingHotQueryKey() {
       setTimeout(function () {
         this.query_placeholder = "Vue+ElementUI后台管理项目实战"
-      }, 3000)
+      }, 1000)
     }
   },
-  created () {
+  created() {
     this.pollingHotQueryKey()
   },
   computed: {
@@ -122,6 +122,13 @@ export default {
     checkLoginStatus: function () {
       //登录时会将用户登录token存放到本地
       return localStorage.getItem(SYSTEM_CONSTANTS.login_token_key) != null
+    },
+    /**
+     * 搜索框宽度
+     * @returns {number}
+     */
+    searchInputDynamicWidth() {
+      return document.body.clientWidth * (1/6)
     }
   }
 }

@@ -1,54 +1,53 @@
-# easyblog-ui: EasyBlog 2.0 Front-end
+# easyblog-ui: EasyBlog 2.0
 
 [English Document](./README.md)
 
-## Quick Start
+## 快速开始 
 
-### Deploy easyblog-ui on cloud
+### 运行 EasyBlog UI
 
-You can deploy easyblog-ui on cloud, which is the easiest and most convenient way to start easyblog-ui.
-
-Use the following easyblog-ui deployment guide to see more information and deploy a stable and out-of-the-box easyblog-ui server.
-
-#### Step 1: Clone Project code locally
+您可以使用以下easyblog ui部署指南查看更多信息，并部署一个稳定的开箱即用的easyblogUI服务器。
+#### 1、 本地克隆项目代码
 ```shell
 git clone https://github.com/easyblog-org/easyblog-ui
 ```
 
-#### Step 2: Project dependencies setup
+#### 2、导入项目依赖
 ```shell
 npm install
 ```
 
-#### Step 3: Compiles and hot-reloads for development
+#### 3、在开发（热重载）模式下启动
 ```shell
 npm run dev
 ```
 
-#### Step 4: Compiles and minifies for production
+#### 4、在生产（压缩）模式下启动
 ```shell
 npm run build
 ```
 
-#### Step 5: Lints and fixes files
+#### 5、 Lints和修复文件
 ```shell
 npm run lint
 ```
 
-Customize configuration See [Configuration Reference](https://cli.vuejs.org/config/).
+自定义配置请参阅 [Vue Configuration Reference](https://cli.vuejs.org/config/).
 
-## Tech stack
+## 技术栈
 
 ### Vue
-Vue (pronounced /vjuː/, like view) is a JavaScript framework for building user interfaces. It builds on top of standard HTML, CSS and JavaScript, and provides a declarative and component-based programming model that helps you efficiently develop user interfaces, be it simple or complex. [more...](https://vuejs.org/guide/introduction.html#what-is-vue)
+Vue 是一个用于构建用户界面的JavaScript框架。它建立在标准HTML、CSS和JavaScript之上，并提供了一个声明性和基于组件的编程模型，帮助您高效地开发用户界面，无论是简单的还是复杂的。[更多…](https://vuejs.org/guide/introduction.html#what-是vue)
+
 ### Axios
 
-### Vuetify
-Vuetify is a complete UI framework built on top of Vue.js. The goal of the project is to provide developers with the tools they need to build rich and engaging user experiences. Unlike other frameworks, Vuetify is designed from the ground up to be easy to learn and rewarding to master with hundreds of carefully crafted components from the Material Design specification.
 
-Vuetify takes a mobile first approach to design which means your application just works out of the box—whether it’s on a phone, tablet, or desktop computer. [more...](https://vuetifyjs.com/en/introduction/why-vuetify/#getting-started)
+### Vuetify
+Vuetify是一个建立在Vue.js之上的完整UI框架。该项目的目标是为开发人员提供所需的工具，以构建丰富而吸引人的用户体验。与其他框架不同，Vuetify从一开始就被设计为易于学习，并通过数百个精心制作的材料设计规范组件来掌握。
+
+Vuetify采用移动第一的设计方法，这意味着无论是在手机、平板电脑还是台式电脑上，您的应用程序都可以开箱即用。[更多…](https://vuetifyjs.com/en/introduction/why-vuetify/#getting-已启动)
 
 ### Swiper
-Swiper is the most modern free mobile touch slider with hardware accelerated transitions and amazing native behavior. It is intended to be used in mobile websites, mobile web apps, and mobile native/hybrid apps.
+Swiper是最现代的免费移动触摸滑块，具有硬件加速过渡和惊人的原生行为。它旨在用于移动网站、移动web应用程序和移动原生/混合应用程序。
 
-Swiper is not compatible with all platforms, it is a modern touch slider which is focused only on modern apps/platforms to bring the best experience and simplicity. [more...](https://swiperjs.com/)
+Swiper不兼容所有平台，它是一个现代触摸滑块，只专注于现代应用程序/平台，以带来最佳体验和简单性。[更多…](https://swiperjs.com/)

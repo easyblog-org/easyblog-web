@@ -186,13 +186,13 @@ export default {
     },
     //获取用于展示的文章
     getShowArticles () {
-      let original_articles = this.original_hot_search_articles
+      const original_articles = this.original_hot_search_articles
       if (original_articles === null || original_articles.length === 0) {
         return []
       }
-      let articles = []
-      let card = this.card_show
-      for (let item of original_articles) {
+      const articles = []
+      const card = this.card_show
+      for (const item of original_articles) {
         let icon = ''
         if (item.rank === 1) {
           icon = '#d81e06'
@@ -206,7 +206,7 @@ export default {
           icon = '#999aaa'
         }
 
-        let article = {
+        const article = {
           id: item.id,
           name: item.article_name,
           click_num: this.formatClickNum(item.click_num),
