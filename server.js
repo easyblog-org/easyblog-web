@@ -21,8 +21,13 @@ app.use(express.static("./dist/client", { index: false }))
 //将路由的处理交给vue
 app.get("*", async (req, res) => {
     try {
+        response.status(200)
+        response.setHeader("Content-type", "text/html;charset=utf-8")
+        const { url } = request
+        // favicon.ico 图标用于收藏夹图标和浏览器标签上的显示，如果不设置，浏览器会请求网站根目录的这个图标，如果网站根目录也没有这图标会产生 404。
+        if (url ==='/favicon.ico') return
         const context = {
-            url: req.url,
+            url: url,
             title: ""
         }
         //````````````渲染一个string类型的Vue实例（内容少时）````````````````
@@ -41,7 +46,8 @@ app.get("*", async (req, res) => {
         res.status(500).send("服务器内部错误！")
     }
 })
+
  
-app.listen(9999, () => {
-    console.log("服务器渲染成功！")
+app.listen(3000, () => {
+    console.log("Server start at port 3000 succesfully!")
 })
