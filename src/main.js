@@ -13,13 +13,29 @@ import { formatDate } from '@/assets/util'
 
 Vue.config.productionTip = false
 
-new Vue({
-  router,
-  vuetify,
-  filters: {
-    simpleDateFormat (timestamp, pattern) {
-      return formatDate(timestamp, pattern)
-    }
-  },
-  render: h => h(App)
-}).$mount('#app')
+// new Vue({
+//   router,
+//   vuetify,
+//   filters: {
+//     simpleDateFormat (timestamp, pattern) {
+//       return formatDate(timestamp, pattern)
+//     }
+//   },
+//   render: h => h(App)
+// }).$mount('#app')
+
+//创建createApp工厂函数
+export default function createApp() {
+  //创建vue实例
+  const app = new Vue({
+      router,
+      vuetify,
+      filters: {
+        simpleDateFormat (timestamp, pattern) {
+         return formatDate(timestamp, pattern)
+      }
+    },
+      render: h => h(App),
+  })
+  return { app, router }
+}
