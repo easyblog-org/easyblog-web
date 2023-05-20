@@ -12,7 +12,7 @@ export const SYSTEM_CONSTANTS = {
   BASE_URL: 'localhost:8080',
   DOMAIN: 'www.easyblog.top',
   LOGIN_TOKEN: 'easyblog_session',
-  SUCCESS: "ok",
+  SUCCESS: "success",     //后端请求响应码 success
   COUNTDOWN_BTN_DEFAULT_TIME: 60
 }
 

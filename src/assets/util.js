@@ -16,15 +16,6 @@ export function isMobile() {
   return false
 }
 
-/**
- * 请求是否成功
- * @param rc
- * @returns {boolean}
- */
-export function isSuccess(rc) {
-  return SYSTEM_CONSTANTS.SUCCESS === rc;
-}
-
 export function resetSize(vm) {
   //图片的宽度、高度，移动条的宽度、高度
   var img_width, img_height, bar_width, bar_height, block_width, block_height, circle_radius
@@ -117,4 +108,45 @@ export function formatDate(timestamp, pattern) {
     }
   }
   return ''
+}
+
+/**
+ * 判断对象是否为空
+ * @param obj
+ * @returns
+ */
+export function isEmpty(obj) {
+  // 数字判空
+  if (isNumber(obj)) {
+    return false;
+  }
+  // 字符串和数组判空
+  if (obj && obj.length > 0) {
+    return false;
+  }
+  // 按照对应的数据类型进行数据判空
+  const objType = Object.prototype.toString.call(obj);
+  // 字符串和数组判空
+  if (objType === '[object Array]' || objType === '[object String]') {
+    if (obj && obj.length > 0) {
+      return false;
+    }
+  }
+  // 如果是对象
+  if (objType === '[object Object]' && !(JSON.stringify(obj) === "{}")) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * 判断是否为数字
+ * @param obj
+ * @returns
+ */
+export function isNumber(obj) {
+  if (parseFloat(obj).toString() === "NaN") {
+    return false;
+  }
+  return true;
 }

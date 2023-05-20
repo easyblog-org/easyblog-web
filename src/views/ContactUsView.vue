@@ -5,11 +5,11 @@
     <!--面包屑导航-->
     <app-common-bread-crumb-navigation :items="[{
           text: '首页',
-          href: 'http://localhost:8081/',
+          href: 'http://localhost:8080/',
         },
         {
           text: '联系我们',
-          href: 'http://localhost:8081/#/contact',
+          href: 'http://localhost:8080/#/contact',
         }]"></app-common-bread-crumb-navigation>
 
     <v-container class="pr-0 pl-0 pt-0">

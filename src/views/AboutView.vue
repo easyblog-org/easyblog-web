@@ -6,15 +6,15 @@
     <!--面包屑导航-->
     <app-common-bread-crumb-navigation :items="[{
           text: '首页',
-          href: 'http://localhost:8081/',
+          href: 'http://localhost:8080/',
         },
         {
           text: '关于网站',
-          href: 'http://localhost:8081/#/about',
+          href: 'http://localhost:8080/#/about',
         }]"></app-common-bread-crumb-navigation>
 
     <v-container class="pr-0 pl-0 pt-0">
-      <v-card>
+      <v-card class="pr-3 pl-3">
         <v-card-title>关于网站</v-card-title>
         <v-divider></v-divider>
         <v-card-text class="text-left mb-10">

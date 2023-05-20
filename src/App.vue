@@ -1,6 +1,8 @@
 <template>
   <v-app class="app">
-    <router-view></router-view>
+    <transition enter-active-class="animated bounceInDown" leave-active-class="animated bounceOutDown">
+      <router-view></router-view>
+    </transition>
   </v-app>
 </template>
 

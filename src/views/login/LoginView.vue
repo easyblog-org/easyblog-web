@@ -50,10 +50,10 @@
                       <v-text-field v-model="phone_account.captcha" :counter="6" label="验证码" required></v-text-field>
                     </v-col>
                     <v-col cols="5">
-                      <v-btn :color="'#3370FF'" :disabled="captcha_btn_disable"
+                      <v-btn :color="'#3370FF'"
+                             v-text="captcha_btn_text"
                              style="color: aliceblue" width="100%"
-                             @click="onGetCaptchaBtnClick" v-text="captcha_btn_text" ref="captchaBtnRef">
-
+                             @click="onGetCaptchaBtnClick" ref="captchaBtnRef">
                       </v-btn>
                     </v-col>
                   </v-row>
@@ -86,7 +86,8 @@
                     登录
                   </v-btn>
                   <div class="email-forget-password-box">
-                    <span><router-link tag="span" style="color: #1976d2;text-underline: none;cursor: pointer" to="/forget-password" class="content">忘记密码</router-link></span>
+                    <span><router-link tag="span" style="color: #1976d2;text-underline: none;cursor: pointer"
+                                       to="/forget-password" class="content">忘记密码</router-link></span>
                   </div>
                   <div class="email-go-register-box">
                     <span>没有账号？<router-link to="/register" class="content">立即注册</router-link></span>
@@ -103,8 +104,15 @@
 
       <!--隐私协议-->
       <div class="privacy_box">
-        <span>登录注册即代表同意 EasyBlog <router-link class="content" to="/service" tag="span" style="color: #1976d2;text-underline: none;cursor: pointer">《服务协议》</router-link> 和 <router-link
-          class="content" to="/privacy" tag="span" style="color: #1976d2;text-underline: none;cursor: pointer">《用户隐私政策》</router-link></span>
+        <span>登录注册即代表同意 EasyBlog
+          <transition enter-active-class="animated bounceInDown" leave-active-class="animated bounceOutDown">
+            <router-link class="content" to="/service" style="color: #1976d2;text-underline: none;cursor: pointer">《服务协议》</router-link>
+          </transition> 和
+          <transition enter-active-class="animated bounceInDown" leave-active-class="animated bounceOutDown">
+            <router-link
+              class="content" to="/privacy"
+              style="color: #1976d2;text-underline: none;cursor: pointer">《用户隐私政策》</router-link>
+          </transition></span>
       </div>
     </v-card>
 
@@ -126,8 +134,11 @@
 <script>
 import PointsVerifier from '@/components/verify/PointsVerifier'
 import AppThirdPartyLoginBox from '@/components/AppThirdPartyLoginBox'
-import {isSuccess} from "@/assets/util";
+import {isEmpty} from "@/assets/util";
+import {isSuccess, isFail} from '@/request/http.js'
 import {SYSTEM_CONSTANTS} from "@/assets/global";
+import {sendCaptchaCode, login, logout, register} from '@/request/client/LoginClient'
+import {Toast} from "vant";
 
 export default {
   name: 'LoginView',
@@ -208,7 +219,6 @@ export default {
     },
     //手机号输入框发生变更
     onPhoneInputUpdate(any) {
-      console.log(any)
       this.$refs.phoneFormRef.validate(valid => {
         if (!valid) {
           console.log('校验不通过')
@@ -222,14 +232,20 @@ export default {
     },
     //获取验证码
     onGetCaptchaBtnClick() {
+      const phone = this.phone_account.phone
+      if (this.captcha_btn_disable || isEmpty(phone)) {
+        return
+      }
       this.dialog_verifier_show = true
     },
     //文字验证成功==>发送验证码
     pointVerifySuccess(data) {
       if (!data) return
       this.captcha_btn_disable = true
-      //TODO 请求后端获取验证码
-      if (isSuccess("ok")) {
+      //请求获取验证码
+      sendCaptchaCode({
+        'identifier': this.phone_account.phone
+      }).then((res) => {
         this.captcha_btn_text = this.captcha_total_time + 's后重新发送'
         const clock = window.setInterval(() => {
           this.captcha_total_time--
@@ -243,7 +259,10 @@ export default {
             this.captcha_btn_disable = false
           }
         }, 1000)
-      }
+
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     //手机登录
     phoneLogin() {
@@ -253,12 +272,11 @@ export default {
     //邮箱登录
     emailLogin() {
       //TODO 请求后端使用邮箱密码登录
-
       this.saveLocalSession('')
     },
     // 登录成功之后保存localSession
     saveLocalSession(token) {
-      localStorage.setItem(SYSTEM_CONSTANTS.LOGIN_TOKEN,token)
+      localStorage.setItem(SYSTEM_CONSTANTS.LOGIN_TOKEN, token)
     },
     //关闭文字验证框
     closePointVerifyWindow(state) {

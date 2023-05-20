@@ -6,11 +6,11 @@
     <!--面包屑导航-->
     <app-common-bread-crumb-navigation :items="[{
           text: '首页',
-          href: 'http://localhost:8081/',
+          href: 'http://localhost:8080/',
         },
         {
           text: '网站地图',
-          href: 'http://localhost:8081/#/sitemap',
+          href: 'http://localhost:8080/#/sitemap',
         }]"></app-common-bread-crumb-navigation>
 
     <v-container class="pr-0 pl-0 pt-0">

@@ -5,11 +5,11 @@
     <!--面包屑导航-->
     <app-common-bread-crumb-navigation :items="[{
           text: '首页',
-          href: 'http://localhost:8081/',
+          href: 'http://localhost:8080/',
         },
         {
           text: '版权与免责声明',
-          href: 'http://localhost:8081/#/disclaimer',
+          href: 'http://localhost:8080/#/disclaimer',
         }]"></app-common-bread-crumb-navigation>
 
     <v-container class="pr-0 pl-0 pt-0">
