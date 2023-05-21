@@ -148,3 +148,22 @@ export function isNumber(obj) {
   }
   return true;
 }
+
+/**
+ * 获取窗口高度
+ * @returns {number}
+ */
+export function getClientHeight() {
+  let clientHeight = 0;
+  // 获取窗口高度
+  if (window.innerHeight) {
+    clientHeight = window.innerHeight;
+  } else if ((document.body) && (document.body.clientHeight)) {
+    clientHeight = document.body.clientHeight;
+  } else if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth) {
+    // 通过深入 Document 内部对 body 进行检测，获取窗口大小
+    clientHeight = document.documentElement.clientHeight;
+  }
+  return clientHeight;
+}
+

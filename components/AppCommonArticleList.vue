@@ -18,7 +18,9 @@
           <v-col cols="9">
             <!--标题-->
             <v-row>
-              <v-card-title class="article-list-title" v-text="item.title"></v-card-title>
+              <v-card-title class="article-list-title">
+                <NuxtLink to="/article">{{ item.title }}</NuxtLink>
+              </v-card-title>
             </v-row>
             <v-row>
               <p v-text="item.content"></p>
@@ -114,8 +116,16 @@ export default {
   cursor: pointer;
 }
 
-.article-list-title:hover {
+.article-list-title:hover,
+.article-list-title a:hover {
   color: #16499d;
+}
+
+
+.article-list a,
+.article-list-title a {
+  color: #333333;
+  text-decoration: none;
 }
 
 .article-list p {
