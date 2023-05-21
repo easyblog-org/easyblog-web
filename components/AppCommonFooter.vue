@@ -17,7 +17,7 @@
         </v-row>
         <v-row style="margin-top: 20px">
           <v-col cols="4">
-            <NuxtLink to="/service" target="_blank">用户协议</NuxtLink>
+            <NuxtLink to="/service-protocol" target="_blank">用户协议</NuxtLink>
           </v-col>
           <v-col cols="4">
             <NuxtLink to="/privacy" target="_blank">隐私协议</NuxtLink>
@@ -34,14 +34,14 @@
           <v-col cols="6" class="pb-0">
             <v-img
               :width="concat_img_width"
-              :src="require('../assets/img/QR-wechat.jpg')"
+              :src="require('@/assets/img/QR-wechat.jpg')"
             />
             <div class="concat_img_desc">联系开发者</div>
           </v-col>
           <v-col cols="6" class="pb-0">
             <v-img
               :width="concat_img_width"
-              :src="require('../assets/img/QR-public-account.jpg')"
+              :src="require('@/assets/img/QR-public-account.jpg')"
             />
             <div class="concat_img_desc">关注公众号</div>
           </v-col>
