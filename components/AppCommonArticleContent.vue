@@ -1,7 +1,57 @@
 <template>
-  <!--文章详情主体-->
-  <div class="vditor-container">
-    <div id="vditor"/>
+  <div class="article-content-box">
+    <!--文章标题-->
+    <v-row>
+      <input v-model="title" placeholder="请输入标题"/>
+    </v-row>
+    <!--作者信息-->
+    <v-row>
+      <div class="author">
+        <v-col class="author-img-box" cols="1" style="display:inline-block">
+          <v-img
+        :src="`https://picsum.photos/500/300?image=15`"
+        :lazy-src="`https://picsum.photos/10/6?image=15`"
+        :min-width="43"
+        :max-width="43"
+        :max-height="43"
+        :min-height="43"
+        aspect-ratio="1"
+        class="grey lighten-2"
+      >
+        <template v-slot:placeholder>
+          <v-row
+            class="fill-height ma-0"
+            align="center"
+            justify="center"
+          >
+            <v-progress-circular
+              indeterminate
+              color="grey lighten-5"
+            ></v-progress-circular>
+          </v-row>
+        </template>
+      </v-img>
+        </v-col>
+        <v-col cols="10" style="display:inline-block">
+          <v-row>
+            <span>{{authorName}}</span>
+          </v-row>
+          <v-row>
+            <span> {{publishTime | formatDates('YYYY-MM-dd HH:mm')}} </span>
+            <span class="views-count">
+                    &nbsp;&nbsp;·&nbsp;&nbsp;阅读
+                   <span>{{pageViews}}</span>
+                  </span>
+          </v-row>
+        </v-col>
+      </div>
+    </v-row>
+    <!--文章详情主体-->
+    <v-row>
+      <div class="vditor-container">
+        <div id="vditor"></div>
+       </div>
+    </v-row>
   </div>
 </template>
 
@@ -11,10 +61,31 @@ import "vditor/dist/index.css"
 
 
 export default {
-  name: "app-common-article-content",
+  name: "app-common-article-editor",
   props: {
+    pageViews:{
+      type: Number,
+      required: false,
+      default: 0
+    },
+    authorName: {
+      type: String,
+      required: false,
+      default: 'EasyBlog用户'
+    },
+    publishTime:{
+      type: Number,
+      required: false,
+      default: 0
+    },
     value: {
       type: String,
+      required: false,
+      default: ''
+    },
+     title: {
+      type: String,
+      required: false,
       default: ''
     },
     id: {
@@ -42,13 +113,13 @@ export default {
     width: {
       type: String,
       required: false,
-      default: "auto"
+      default: "100%"
     },
     mode: {
       type: String,
       required: false,
       default: 'ir'
-    },
+    }
   },
   data() {
     return {
@@ -71,6 +142,7 @@ export default {
   },
   mounted() {
     this.vditor = new Vditor("vditor", {
+      placeholder:"在这里记录你的灵感吧！",
       height: this.height,
       width: this.width,
       toolbarConfig: {
@@ -89,6 +161,10 @@ export default {
         mode: "both",
         actions: []
       },
+      // outline:{
+      //   enable:true,
+      //   position: "left"
+      // },
       upload: {
         accept: 'image/*',// 规定上传的图片格式
         url: "/api/uploadFile",// 请求的接口
@@ -151,5 +227,65 @@ export default {
 
 
 </script>
-<style scoped>
+<style scoped lang="scss">
+.vditor-container {
+  width:100% !important;
+  ::v-deep .vditor-toolbar--hide {
+    display: none !important;
+  }
+
+  ::v-deep .vditor{
+    display: flex;
+    flex-direction: column;
+    border: none;
+    border-radius: 3px;
+    box-sizing: border-box;
+    font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", "Hiragino Sans GB", "Microsoft Yahei", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
+  }
+
+  ::v-deep .vditor-reset {
+    padding: 10px 13px !important;
+  }
+}
+
+
+.article-content-box {
+  .author{
+    width: 100%;
+    min-height: 43px;
+    margin: 0 13px;
+    .v-image{
+       border-radius: 30px;
+    }
+
+    .author-img-box{
+      padding: 5px 0 5px 5px;
+    }
+  }
+}
+
+input{
+    outline: none;// 使用outline属性去掉淡蓝色边框
+    margin:0 13px; //默认带有margin
+    width: 100%;
+    height: 60px;
+    line-height: 60px !important;
+    font-size: 2vw !important;
+    text-align: left;
+    border: 0;
+    //background:rgba(235,82,134,1);
+    border-radius:0;
+    // font-size:***;字体大小最好不要设置 ios上有兼容性问题
+    font-family:Source Han Sans CN !important;
+    font-weight:500 !important;
+    color:#1f2329 !important;//字体颜色
+    caret-color:#1f2329 !important;//光标颜色
+}
+
+input::placeholder {
+    line-height: 60px !important;
+    font-size: 2vw !important;
+    color: #bbbfc4;
+    text-align: left;
+}
 </style>

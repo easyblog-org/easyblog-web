@@ -18,6 +18,9 @@
                 :height="editorHeight"
                 :value="content"
                 :is-hide-tools="true"
+                :publishTime="1683889351000"
+                :pageViews="100308"
+                :authorName="'我是小胖'"
                 mode="ir"></app-common-article-content>
             </v-card>
           </v-col>
@@ -59,11 +62,5 @@ export default {
 .article-container {
   padding: 0 !important;
   margin-top: 1.767rem !important;
-}
-
-.vditor-container {
-  ::v-deep .vditor-toolbar--hide {
-    display: none !important;
-  }
 }
 </style>
