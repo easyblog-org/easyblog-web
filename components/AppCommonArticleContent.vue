@@ -2,46 +2,44 @@
   <div class="article-content-box">
     <!--文章标题-->
     <v-row>
-      <input v-model="title" placeholder="请输入标题"/>
+      <input v-model="title" placeholder="请输入标题" />
     </v-row>
     <!--作者信息-->
     <v-row>
       <div class="author">
-        <v-col class="author-img-box" cols="1" style="display:inline-block">
+        <v-col class="author-img" cols="1" style="display: inline-block">
           <v-img
-        :src="`https://picsum.photos/500/300?image=15`"
-        :lazy-src="`https://picsum.photos/10/6?image=15`"
-        :min-width="43"
-        :max-width="43"
-        :max-height="43"
-        :min-height="43"
-        aspect-ratio="1"
-        class="grey lighten-2"
-      >
-        <template v-slot:placeholder>
-          <v-row
-            class="fill-height ma-0"
-            align="center"
-            justify="center"
+            :src="authorImgUrl"
+            :lazy-src="authorImgUrl"
+            :min-width="40"
+            :max-width="40"
+            :max-height="40"
+            :min-height="40"
+            aspect-ratio="1"
+            class="grey lighten-2"
           >
-            <v-progress-circular
-              indeterminate
-              color="grey lighten-5"
-            ></v-progress-circular>
-          </v-row>
-        </template>
-      </v-img>
+            <template v-slot:placeholder>
+              <v-row class="fill-height ma-0" align="center" justify="center">
+                <v-progress-circular
+                  indeterminate
+                  color="grey lighten-5"
+                ></v-progress-circular>
+              </v-row>
+            </template>
+          </v-img>
         </v-col>
-        <v-col cols="10" style="display:inline-block">
+        <v-col cols="10" style="display: inline-block">
           <v-row>
-            <span>{{authorName}}</span>
+            <span class="author-name">{{ authorName }}</span>
           </v-row>
           <v-row>
-            <span> {{publishTime | formatDates('YYYY-MM-dd HH:mm')}} </span>
-            <span class="views-count">
-                    &nbsp;&nbsp;·&nbsp;&nbsp;阅读
-                   <span>{{pageViews}}</span>
-                  </span>
+            <span class="publish-time">
+              {{ publishTime | formatDates('YYYY-MM-dd HH:mm') }}
+            </span>
+            <span class="page-views">
+              &nbsp;&nbsp;·&nbsp;&nbsp;阅读
+              <span>{{ pageViews }}</span>
+            </span>
           </v-row>
         </v-col>
       </div>
@@ -50,99 +48,107 @@
     <v-row>
       <div class="vditor-container">
         <div id="vditor"></div>
-       </div>
+      </div>
     </v-row>
   </div>
 </template>
 
 <script>
-import Vditor from "vditor"
-import "vditor/dist/index.css"
-
+import Vditor from 'vditor'
+import 'vditor/dist/index.css'
 
 export default {
-  name: "app-common-article-editor",
+  name: 'app-common-article-editor',
   props: {
-    pageViews:{
+    pageViews: {
       type: Number,
       required: false,
-      default: 0
+      default: 0,
     },
     authorName: {
       type: String,
       required: false,
-      default: 'EasyBlog用户'
+      default: 'EasyBlog用户',
     },
-    publishTime:{
+    authorImgUrl: {
+      type: String,
+      required: false,
+      default: 'https://avatars.githubusercontent.com/u/52988156?s=400&u=1c23aaf03691b86f9b2e97fbdeeb6a6512b8c4be&v=4',
+    },
+    publishTime: {
       type: Number,
       required: false,
-      default: 0
+      default: 0,
     },
     value: {
       type: String,
       required: false,
-      default: ''
+      default: '',
     },
-     title: {
+    title: {
       type: String,
       required: false,
-      default: ''
+      default: '',
     },
     id: {
       type: String,
       required: false,
       default() {
-        return 'markdown-editor-' + +new Date() + ((Math.random() * 1000).toFixed(0) + '')
-      }
+        return (
+          'markdown-editor-' +
+          +new Date() +
+          ((Math.random() * 1000).toFixed(0) + '')
+        )
+      },
     },
     isHideTools: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     isPin: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
     height: {
       type: String,
       required: false,
-      default: '300px'
+      default: '300px',
     },
     width: {
       type: String,
       required: false,
-      default: "100%"
+      default: '100%',
     },
     mode: {
       type: String,
       required: false,
-      default: 'ir'
-    }
+      default: 'ir',
+    },
   },
   data() {
     return {
-      vditor: ""
+      vditor: '',
     }
   },
   methods: {
     getValue() {
-      return this.vditor.getValue();
+      return this.vditor.getValue()
     },
     getHTML() {
-      return this.vditor.getHTML();
+      return this.vditor.getHTML()
     },
     setValue(value) {
-      return this.vditor.setValue(value);
+      return this.vditor.setValue(value)
     },
     disabled() {
-      return this.vditor.disabled();
+      return this.vditor.disabled()
     },
   },
   mounted() {
-    this.vditor = new Vditor("vditor", {
-      placeholder:"在这里记录你的灵感吧！",
+    this.vditor = new Vditor('vditor', {
+      placeholder: '在这里记录你的灵感吧！',
       height: this.height,
       width: this.width,
       toolbarConfig: {
@@ -150,7 +156,7 @@ export default {
         hide: this.isHideTools,
       },
       cache: {
-        enable: true
+        enable: true,
       },
       after: () => {
         this.vditor.setValue(this.value)
@@ -158,21 +164,21 @@ export default {
       mode: this.mode,
       theme: 'ant-design',
       preview: {
-        mode: "both",
-        actions: []
+        mode: 'both',
+        actions: [],
       },
       // outline:{
       //   enable:true,
       //   position: "left"
       // },
       upload: {
-        accept: 'image/*',// 规定上传的图片格式
-        url: "/api/uploadFile",// 请求的接口
+        accept: 'image/*', // 规定上传的图片格式
+        url: '/api/uploadFile', // 请求的接口
         multiple: false,
         fieldName: 'file',
-        max: 10 * 1024 * 1024,//上传图片的大小
+        max: 10 * 1024 * 1024, //上传图片的大小
         // extraData: { 'access_token': this.token }, // 为 FormData 添加额外的参数
-        linkToImgUrl: "/api/admin/uploadFile",
+        linkToImgUrl: '/api/admin/uploadFile',
         validate(files) {
           const isLessthan10M = files[0].size / 1024 / 1024 < 10
           if (!isLessthan10M) {
@@ -180,34 +186,36 @@ export default {
           }
         },
         format(files, responseText) {
-          var self = this;
+          var self = this
           var data = JSON.parse(responseText)
           // 上传图片请求状态
           if (data.status) {
             let filName = data.msg
-            let lastTipNum = filName.substr(filName.lastIndexOf('/', filName.lastIndexOf('/') - 1) + 1);
-            let index = lastTipNum.lastIndexOf("\/");
+            let lastTipNum = filName.substr(
+              filName.lastIndexOf('/', filName.lastIndexOf('/') - 1) + 1
+            )
+            let index = lastTipNum.lastIndexOf('/')
             let succ = {}
-            succ[filName] = "/api" + data.data
+            succ[filName] = '/api' + data.data
             //图片回显
             return JSON.stringify({
               data: {
                 errFiles: [],
-                succMap: succ
-              }
+                succMap: succ,
+              },
             })
           } else {
             // Message({
             //   message: "图片上传失败",
             //   type: 'error',
             // })
-            console.log("图片上传失败")
+            console.log('图片上传失败')
           }
         },
         error(msg) {
-          console.log(msg + "上传失败")
+          console.log(msg + '上传失败')
         },
-      }
+      },
     })
     this.unwatch = this.$watch('value', (val) => {
       if (this.vditor && this.getValue() !== val) {
@@ -224,23 +232,24 @@ export default {
     }
   },
 }
-
-
 </script>
 <style scoped lang="scss">
 .vditor-container {
-  width:100% !important;
+  width: 100% !important;
   ::v-deep .vditor-toolbar--hide {
     display: none !important;
   }
 
-  ::v-deep .vditor{
+  ::v-deep .vditor {
     display: flex;
     flex-direction: column;
     border: none;
     border-radius: 3px;
     box-sizing: border-box;
-    font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", "Hiragino Sans GB", "Microsoft Yahei", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Segoe UI Symbol", "Android Emoji", "EmojiSymbols";
+    font-family: 'Helvetica Neue', 'Luxi Sans', 'DejaVu Sans',
+      'Hiragino Sans GB', 'Microsoft Yahei', sans-serif, 'Apple Color Emoji',
+      'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol', 'Android Emoji',
+      'EmojiSymbols';
   }
 
   ::v-deep .vditor-reset {
@@ -248,44 +257,59 @@ export default {
   }
 }
 
-
 .article-content-box {
-  .author{
+  .author {
     width: 100%;
     min-height: 43px;
     margin: 0 13px;
-    .v-image{
-       border-radius: 30px;
+    .v-image {
+      border-radius: 30px;
     }
 
-    .author-img-box{
-      padding: 5px 0 5px 5px;
+    .author-img {
+      padding: 5px 0;
+      width: 40px;
+      margin: 0 5px 0 0;
+    }
+
+    .author-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #515767;
+    }
+
+    .publish-time,
+    .page-views {
+      font-size: 14px;
+      color: #8a919f;
+      margin-top: 2px;
+      line-height: 22px;
     }
   }
 }
 
-input{
-    outline: none;// 使用outline属性去掉淡蓝色边框
-    margin:0 13px; //默认带有margin
-    width: 100%;
-    height: 60px;
-    line-height: 60px !important;
-    font-size: 2vw !important;
-    text-align: left;
-    border: 0;
-    //background:rgba(235,82,134,1);
-    border-radius:0;
-    // font-size:***;字体大小最好不要设置 ios上有兼容性问题
-    font-family:Source Han Sans CN !important;
-    font-weight:500 !important;
-    color:#1f2329 !important;//字体颜色
-    caret-color:#1f2329 !important;//光标颜色
+input {
+  outline: none; // 使用outline属性去掉淡蓝色边框
+  margin: 0 13px; //默认带有margin
+  width: 100%;
+  height: 60px;
+  line-height: 60px !important;
+  font-size: 2vw !important;
+  text-align: left;
+  border: 0;
+  //background:rgba(235,82,134,1);
+  border-radius: 0;
+  // font-size:***;字体大小最好不要设置 ios上有兼容性问题
+  font-family: Source Han Sans CN !important;
+  font-weight: 500 !important;
+  color: #1f2329 !important; //字体颜色
+  caret-color: #1f2329 !important; //光标颜色
 }
 
 input::placeholder {
-    line-height: 60px !important;
-    font-size: 2vw !important;
-    color: #bbbfc4;
-    text-align: left;
+  line-height: 60px !important;
+  font-size: 2vw !important;
+  color: #bbbfc4;
+  text-align: left;
 }
 </style>
