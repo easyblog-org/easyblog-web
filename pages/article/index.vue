@@ -5,7 +5,7 @@
 
     <v-main class="article-container">
       <v-container>
-        <div class="artcle-likes-bar">
+        <div class="article-likes-bar">
           <div>
             <v-col>
               <v-badge
@@ -16,7 +16,8 @@
               >
                 <v-btn elevation="2" fab rounded middle icon @click="this.handleLikeIconClick">
                   <v-icon :color="likesFlag.thumbUp ? '#1e80ff' : '#8a919f'"
-                    >mdi-thumb-up</v-icon
+                  >mdi-thumb-up
+                  </v-icon
                   >
                 </v-btn>
               </v-badge>
@@ -30,7 +31,8 @@
               >
                 <v-btn elevation="2" fab rounded middle>
                   <v-icon :color="likesFlag.comment ? '#1e80ff' : '#8a919f'"
-                    >mdi-comment</v-icon
+                  >mdi-comment
+                  </v-icon
                   >
                 </v-btn>
               </v-badge>
@@ -44,7 +46,8 @@
               >
                 <v-btn elevation="2" fab rounded middle>
                   <v-icon :color="likesFlag.star ? '#1e80ff' : '#8a919f'"
-                    >mdi-star</v-icon
+                  >mdi-star
+                  </v-icon
                   >
                 </v-btn>
               </v-badge>
@@ -68,7 +71,7 @@
               <div class="article-content-box">
                 <!--文章标题-->
                 <v-row>
-                  <input v-model="title" placeholder="请输入标题" />
+                  <input v-model="title" placeholder="请输入标题"/>
                 </v-row>
                 <!--作者信息-->
                 <v-row>
@@ -79,8 +82,8 @@
                       style="display: inline-block"
                     >
                       <v-img
-                        :src="`https://picsum.photos/500/300?image=15`"
-                        :lazy-src="`https://picsum.photos/10/6?image=15`"
+                        :src="authorImgUrl"
+                        :lazy-src="authorImgUrl"
                         :min-width="43"
                         :max-width="43"
                         :max-height="43"
@@ -120,19 +123,78 @@
                 </v-row>
                 <!--文章详情主体-->
                 <v-row>
-                  <app-common-markdown-previewer :content="content" />
+                  <app-common-markdown-previewer :content="content"/>
                 </v-row>
               </div>
             </v-card>
           </v-col>
-          <v-col cols="2">
-            <v-card> 右侧栏 </v-card>
+          <v-col cols="3">
+            <v-card tile elevation="1">
+              <v-row class="author-info-card">
+                <v-col
+                  class="author-img"
+                  cols="3"
+                  style="display: inline-block"
+                >
+                  <v-img
+                    :src="authorImgUrl"
+                    :lazy-src="authorImgUrl"
+                    :min-width="48"
+                    :max-width="48"
+                    :max-height="48"
+                    :min-height="48"
+                    aspect-ratio="1"
+                    class="grey lighten-2"
+                  >
+                    <template v-slot:placeholder>
+                      <v-row
+                        class="fill-height ma-0"
+                        align="center"
+                        justify="center"
+                      >
+                        <v-progress-circular
+                          indeterminate
+                          color="grey lighten-5"
+                        ></v-progress-circular>
+                      </v-row>
+                    </template>
+                  </v-img>
+                </v-col>
+                <v-col cols="9" class="author-name-card" style="display: inline-block">
+                  <div class="author-name">
+                    {{ authorName }}
+                  </div>
+                  <div class="author-home-page-link">
+                    <NuxtLink to="/user-home-page">TA的个人主页&gt;</NuxtLink>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row class="author-info-moments">
+                <div class="text-center">
+                  <v-btn
+                    class="ma-2 attention"
+                    :color="'#1e80ff'"
+                  >
+                    关注
+                  </v-btn>
+                  <v-btn
+                    class="ma-2 private-letter"
+                    :color="'#1e80ff'"
+                    outlined
+                  >
+                   私信
+                  </v-btn>
+                </div>
+              </v-row>
+
+              <v-divider></v-divider>
+            </v-card>
           </v-col>
         </v-row>
 
         <!--评论-->
         <v-row>
-           <app-simple-comment-box></app-simple-comment-box>
+          <app-simple-comment-box></app-simple-comment-box>
         </v-row>
       </v-container>
     </v-main>
@@ -152,6 +214,7 @@ export default {
   data: () => ({
     pageViews: 0,
     authorName: '',
+    authorImgUrl: '',
     publishTime: '',
     title: '',
     content: '',
@@ -165,8 +228,8 @@ export default {
     },
   }),
   methods: {
-    handleLikeIconClick(){
-       this.likesFlag.thumbUp = !this.likesFlag.thumbUp
+    handleLikeIconClick() {
+      this.likesFlag.thumbUp = !this.likesFlag.thumbUp
     },
 
   },
@@ -610,8 +673,9 @@ export default {
     // 记载之前做的事情
     this.pageViews = 59040
     this.publishTime = 1680080938000
-    this.title = 'Java 流式编程（Stream API）'
+    this.title = '🐕Java 流式编程（Stream API）'
     this.authorName = '我是小胖'
+    this.authorImgUrl = 'https://p3-passport.byteimg.com/img/user-avatar/240af8d420db0bb748224fab461ee36a~100x100.awebp'
   },
 }
 </script>
@@ -620,8 +684,7 @@ export default {
   padding: 0 !important;
   margin-top: 1.767rem !important;
 
-  .artcle-likes-bar {
-    //margin-top: 100px;
+  .article-likes-bar {
     position: fixed;
     margin-left: -1.5rem;
     top: 15rem;
@@ -642,6 +705,52 @@ export default {
     }
   }
 
+  .author-info-card {
+    padding: 20px;
+
+    .v-image {
+      border-radius: 30px;
+    }
+
+    .author-img {
+      padding: 5px 0 5px 5px;
+    }
+
+    .author-name-card {
+      padding: 10px 5px 10px 5px !important;
+
+      .author-name {
+        font-size: 14px;
+        font-weight: 500;
+        color: #252933;
+        line-height: 14px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .author-home-page-link {
+      margin-top: 5px;
+
+      a {
+        text-decoration: none;
+        color: #3399ea;
+        font-size: 12px !important;
+      }
+    }
+  }
+
+  .author-info-moments{
+    margin-top: 10px;
+    .attention{
+      color: #ffffff !important;
+    }
+
+    .private-letter{
+      color: #3399ea !important;
+    }
+  }
+
   .article-row {
     margin-left: 4.5rem;
 
@@ -650,6 +759,7 @@ export default {
         width: 100%;
         min-height: 43px;
         margin: 0 13px;
+
         .v-image {
           border-radius: 30px;
         }

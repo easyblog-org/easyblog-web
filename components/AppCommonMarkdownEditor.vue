@@ -89,10 +89,6 @@ export default {
       },
       mode: this.mode,
       theme: 'ant-design',
-      preview: {
-        mode: 'both',
-        actions: [],
-      },
       focus: (val) => {
         //获得聚焦之后
       },
