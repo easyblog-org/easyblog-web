@@ -22,15 +22,20 @@
                     <v-row v-for="item in swiper_side_show_list" :key="item.id">
                       <v-col cols="12">
                         <v-hover v-slot="{ hover }">
-                          <v-card :elevation="hover ? 12 : 0"
-                                  :class="{ 'on-hover': hover }" class="head-line">
+                          <v-card
+                            :elevation="hover ? 12 : 0"
+                            :class="{ 'on-hover': hover }"
+                            class="head-line"
+                          >
                             <v-img
                               :src="item.img"
                               class="white--text align-end transition-swing"
                               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                               height="158px"
                             >
-                              <v-card-title v-text="item.title" style="font-size: 14px"></v-card-title>
+                              <v-card-title style="font-size: 14px">{{
+                                item.title
+                              }}</v-card-title>
                             </v-img>
                           </v-card>
                         </v-hover>
@@ -39,19 +44,25 @@
                   </v-col>
                 </v-row>
                 <!--内容-->
-                <app-common-article-list :list="newest_article_list"></app-common-article-list>
+                <app-common-article-list
+                  :list="newest_article_list"
+                ></app-common-article-list>
               </v-sheet>
             </v-col>
             <!--right side-->
             <v-col cols="3" class="rbox" ref="rightSideRef">
               <!--热搜-->
-              <app-common-hot-search-list title="7x24小时头条"></app-common-hot-search-list>
+              <app-common-hot-search-list
+                title="7x24小时头条"
+              ></app-common-hot-search-list>
               <div class="pa-3"></div>
               <!--广告区-->
               <app-side-bar-ad></app-side-bar-ad>
               <div class="pa-3"></div>
               <!--热搜-->
-              <app-common-hot-search-list title="文章热榜"></app-common-hot-search-list>
+              <app-common-hot-search-list
+                title="文章热榜"
+              ></app-common-hot-search-list>
               <div class="pa-3"></div>
               <!--友情链接-->
               <app-common-friend-linker></app-common-friend-linker>
@@ -312,7 +323,6 @@ export default {
 }
 </script>
 <style scoped>
-
 .v-main {
   padding: unset !important;
 }
@@ -323,17 +333,14 @@ export default {
 }
 
 .head-line {
-  transition: all .6s;
+  transition: all 0.6s;
   cursor: pointer;
   border-radius: unset;
 }
 
 .lbox {
-
 }
 
 .rbox {
-
 }
-
 </style>
