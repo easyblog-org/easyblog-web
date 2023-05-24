@@ -4,7 +4,7 @@
       <h2 class="h_title">最新文章</h2>
     </div>
     <div class="common-article-content rounded-0">
-      <v-card-text v-for="(item,index) in list" :key="item.id"
+      <v-card-text v-for="(item) in list" :key="item.id"
                    class="article-list">
         <v-row>
           <v-col cols="3" class="">

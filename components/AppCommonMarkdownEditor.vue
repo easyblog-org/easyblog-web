@@ -1,56 +1,7 @@
 <template>
-  <div class="article-content-box">
-    <!--文章标题-->
-    <v-row>
-      <input v-model="title" placeholder="请输入标题" />
-    </v-row>
-    <!--作者信息-->
-    <v-row>
-      <div class="author">
-        <v-col class="author-img" cols="1" style="display: inline-block">
-          <v-img
-            :src="`https://picsum.photos/500/300?image=15`"
-            :lazy-src="`https://picsum.photos/10/6?image=15`"
-            :min-width="43"
-            :max-width="43"
-            :max-height="43"
-            :min-height="43"
-            aspect-ratio="1"
-            class="grey lighten-2"
-          >
-            <template v-slot:placeholder>
-              <v-row class="fill-height ma-0" align="center" justify="center">
-                <v-progress-circular
-                  indeterminate
-                  color="grey lighten-5"
-                ></v-progress-circular>
-              </v-row>
-            </template>
-          </v-img>
-        </v-col>
-        <v-col cols="10" style="display: inline-block">
-          <v-row>
-            <span class="author-name">{{ authorName }}</span>
-          </v-row>
-          <v-row>
-            <span class="publish-time">
-              {{ publishTime | formatDates('YYYY-MM-dd HH:mm') }}
-            </span>
-            <span class="page-views">
-              &nbsp;&nbsp;·&nbsp;&nbsp;阅读
-              <span>{{ pageViews }}</span>
-            </span>
-          </v-row>
-        </v-col>
-      </div>
-    </v-row>
-    <!--文章详情主体-->
-    <v-row>
-      <div class="vditor-container">
+   <div class="vditor-container">
         <div id="vditor"></div>
-      </div>
-    </v-row>
-  </div>
+    </div>
 </template>
 
 <script>
@@ -60,27 +11,7 @@ import 'vditor/dist/index.css'
 export default {
   name: 'app-common-article-editor',
   props: {
-    pageViews: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    authorName: {
-      type: String,
-      required: false,
-      default: 'EasyBlog用户',
-    },
-    publishTime: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     value: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    title: {
       type: String,
       required: false,
       default: '',
@@ -106,15 +37,15 @@ export default {
       required: false,
       default: true,
     },
-    height: {
-      type: String,
-      required: false,
-      default: '300px',
-    },
     width: {
       type: String,
       required: false,
       default: '100%',
+    },
+    height:{
+       type:String,
+       required:false,
+       default: '600px'
     },
     mode: {
       type: String,
@@ -162,10 +93,30 @@ export default {
         mode: 'both',
         actions: [],
       },
-      // outline:{
-      //   enable:true,
-      //   position: "left"
-      // },
+      focus: (val) => {
+        //获得聚焦之后
+      },
+      image: {
+        /** 是否预览图片。默认值: true */
+        isPreview: true,
+        /** 图片预览处理 */
+        preview: (val) => {
+          console.log('preview image+' + val)
+        },
+      },
+      preview: {
+        mode: 'both',
+        hljs: {
+          /** 代码块没有指定语言时，使用此值。默认值: "" */
+          defaultLang: 'text',
+          /** 是否启用行号。默认值: false */
+          lineNumber: true,
+          /** 代码风格，可选值参见 [Chroma](https://xyproto.github.io/splash/docs/longer/all.html)。 默认值: 'github' */
+          style: 'github',
+          /** 是否启用代码高亮。默认值: true */
+          enable: true,
+        },
+      },
       upload: {
         accept: 'image/*', // 规定上传的图片格式
         url: '/api/uploadFile', // 请求的接口
@@ -252,57 +203,4 @@ export default {
   }
 }
 
-.article-content-box {
-  .author {
-    width: 100%;
-    min-height: 43px;
-    margin: 0 13px;
-    .v-image {
-      border-radius: 30px;
-    }
-
-    .author-img {
-      padding: 5px 0 5px 5px;
-    }
-
-    .author-name {
-      font-size: 16px;
-      font-weight: 700;
-      color: #515767;
-    }
-
-    .publish-time,
-    .page-views {
-      font-size: 15px;
-      color: #8a919f;
-      margin-top: 2px;
-      line-height: 22px;
-    }
-  }
-}
-
-input {
-  outline: none; // 使用outline属性去掉淡蓝色边框
-  margin: 0 13px; //默认带有margin
-  width: 100%;
-  height: 60px;
-  line-height: 60px !important;
-  font-size: 2vw !important;
-  text-align: left;
-  border: 0;
-  //background:rgba(235,82,134,1);
-  border-radius: 0;
-  // font-size:***;字体大小最好不要设置 ios上有兼容性问题
-  font-family: Source Han Sans CN !important;
-  font-weight: 500 !important;
-  color: #1f2329 !important; //字体颜色
-  caret-color: #1f2329 !important; //光标颜色
-}
-
-input::placeholder {
-  line-height: 60px !important;
-  font-size: 2vw !important;
-  color: #bbbfc4;
-  text-align: left;
-}
 </style>
