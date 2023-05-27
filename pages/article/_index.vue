@@ -65,8 +65,8 @@
           </div>
         </div>
         <v-row class="article-row">
-          <v-col cols="9">
-            <v-card elevation="0">
+          <v-col cols="9" class="pt-0">
+            <v-card elevation="1">
               <!--文章详情主体-->
               <div class="article-content-box">
                 <!--文章标题-->
@@ -81,29 +81,31 @@
                       cols="1"
                       style="display: inline-block"
                     >
-                      <v-img
-                        :src="authorImgUrl"
-                        :lazy-src="authorImgUrl"
-                        :min-width="43"
-                        :max-width="43"
-                        :max-height="43"
-                        :min-height="43"
-                        aspect-ratio="1"
-                        class="grey lighten-2"
-                      >
-                        <template v-slot:placeholder>
-                          <v-row
-                            class="fill-height ma-0"
-                            align="center"
-                            justify="center"
-                          >
-                            <v-progress-circular
-                              indeterminate
-                              color="grey lighten-5"
-                            ></v-progress-circular>
-                          </v-row>
-                        </template>
-                      </v-img>
+                      <NuxtLink to="/user-home-page">
+                        <v-img
+                          :src="authorImgUrl"
+                          :lazy-src="authorImgUrl"
+                          :min-width="43"
+                          :max-width="43"
+                          :max-height="43"
+                          :min-height="43"
+                          aspect-ratio="1"
+                          class="grey lighten-2"
+                        >
+                          <template v-slot:placeholder>
+                            <v-row
+                              class="fill-height ma-0"
+                              align="center"
+                              justify="center"
+                            >
+                              <v-progress-circular
+                                indeterminate
+                                color="grey lighten-5"
+                              ></v-progress-circular>
+                            </v-row>
+                          </template>
+                        </v-img>
+                      </NuxtLink>
                     </v-col>
                     <v-col cols="10" style="display: inline-block">
                       <v-row>
@@ -136,29 +138,31 @@
                   cols="3"
                   style="display: inline-block"
                 >
-                  <v-img
-                    :src="authorImgUrl"
-                    :lazy-src="authorImgUrl"
-                    :min-width="48"
-                    :max-width="48"
-                    :max-height="48"
-                    :min-height="48"
-                    aspect-ratio="1"
-                    class="grey lighten-2"
-                  >
-                    <template v-slot:placeholder>
-                      <v-row
-                        class="fill-height ma-0"
-                        align="center"
-                        justify="center"
-                      >
-                        <v-progress-circular
-                          indeterminate
-                          color="grey lighten-5"
-                        ></v-progress-circular>
-                      </v-row>
-                    </template>
-                  </v-img>
+                  <NuxtLink to="/user-home-page">
+                    <v-img
+                      :src="authorImgUrl"
+                      :lazy-src="authorImgUrl"
+                      :min-width="48"
+                      :max-width="48"
+                      :max-height="48"
+                      :min-height="48"
+                      aspect-ratio="1"
+                      class="grey lighten-2"
+                    >
+                      <template v-slot:placeholder>
+                        <v-row
+                          class="fill-height ma-0"
+                          align="center"
+                          justify="center"
+                        >
+                          <v-progress-circular
+                            indeterminate
+                            color="grey lighten-5"
+                          ></v-progress-circular>
+                        </v-row>
+                      </template>
+                    </v-img>
+                  </NuxtLink>
                 </v-col>
                 <v-col cols="9" class="author-name-card" style="display: inline-block">
                   <div class="author-name">
@@ -170,24 +174,82 @@
                 </v-col>
               </v-row>
               <v-row class="author-info-moments">
-                <div class="text-center">
+                <v-col cols="6">
                   <v-btn
-                    class="ma-2 attention"
+                    class="attention"
                     :color="'#1e80ff'"
+                    width="100%"
                   >
                     关注
                   </v-btn>
+                </v-col>
+                <v-col cols="6">
                   <v-btn
-                    class="ma-2 private-letter"
+                    class="private-letter"
                     :color="'#1e80ff'"
+                    width="100%"
                     outlined
                   >
-                   私信
+                    私信
                   </v-btn>
-                </div>
+                </v-col>
               </v-row>
-
-              <v-divider></v-divider>
+              <v-row class="author-info-divider">
+                <v-divider></v-divider>
+              </v-row>
+              <v-row class="author-record">
+                <v-col cols="3">
+                  <v-row>
+                    <v-col cols="12" class="text-center justify-center">
+                      原创
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" class="text-center justify-center mt-0 pt-0">
+                      <NuxtLink to="/categories" class="author-record-num">{{
+                          authorRecords.original_article_num
+                        }}
+                      </NuxtLink>
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="3">
+                  <v-row>
+                    <v-col cols="12" class="text-center justify-center">
+                      访问
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" class="text-center justify-center mt-0 pt-0">
+                      {{ authorRecords.visit_num }}
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="3">
+                  <v-row>
+                    <v-col cols="12" class="text-center justify-center">
+                      点赞
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" class="text-center justify-center mt-0 pt-0">
+                      {{ authorRecords.likes_num }}
+                    </v-col>
+                  </v-row>
+                </v-col>
+                <v-col cols="3">
+                  <v-row>
+                    <v-col cols="12" class="text-center justify-center">
+                      评论
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" class="text-center justify-center mt-0 pt-0">
+                      {{ authorRecords.comment_num }}
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
             </v-card>
           </v-col>
         </v-row>
@@ -226,6 +288,12 @@ export default {
       comment: false,
       star: false,
     },
+    authorRecords: {
+      original_article_num: 0,
+      visit_num: 0,
+      likes_num: 0,
+      comment_num: 0
+    }
   }),
   methods: {
     handleLikeIconClick() {
@@ -706,7 +774,7 @@ export default {
   }
 
   .author-info-card {
-    padding: 20px;
+    padding: 20px 20px 0 20px;
 
     .v-image {
       border-radius: 30px;
@@ -740,21 +808,44 @@ export default {
     }
   }
 
-  .author-info-moments{
-    margin-top: 10px;
-    .attention{
+  .author-info-moments {
+    margin-top: 0;
+    padding: 5px 10px;
+
+    .attention {
       color: #ffffff !important;
     }
 
-    .private-letter{
+    .private-letter {
       color: #3399ea !important;
     }
   }
 
+  .author-info-divider {
+    margin: 5px;
+  }
+
+  .author-record {
+    margin-top: 0;
+    padding: 0 10px;
+    color: #666666;
+    font-weight: 500;
+
+    .col {
+      padding: 10px;
+    }
+
+    .author-record-num {
+      text-decoration: none;
+      color: #666666;
+    }
+  }
+
   .article-row {
-    margin-left: 4.5rem;
+    margin-left: 3.5rem;
 
     .article-content-box {
+      padding: 10px 22px;
       .author {
         width: 100%;
         min-height: 43px;

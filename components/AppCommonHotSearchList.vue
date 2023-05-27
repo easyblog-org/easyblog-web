@@ -50,7 +50,7 @@
       <v-card-text v-for="(item,i) in this.articles_for_show" :key="item.id" class="hot-search-content">
         <v-row tag="a" :href="item.url" :title="item.name">
           <v-col cols="9" class="text">
-            <span class="rank-num" :style="{'color':item.rank_icon}">{{ item.rank }}</span>
+            <span class="rank-num" :style="{'color':item.rank_icon}" @click="handleClick(item.code)">{{ item.rank }}</span>
             {{ item.name }}
           </v-col>
           <v-col cols="3" class="click">{{ item.click_num }}</v-col>
@@ -88,84 +88,84 @@ export default {
   data: () => ({
     original_hot_search_articles: [
       {
-        id: '1',
+        code: '1',
         article_name: '海量数据处理：如何从10亿个数中，找出最大的10000个数？（top K问题',
         click_num: 188000,
         rank: 1,
         url: '/'
       },
       {
-        id: '2',
+        code: '2',
         article_name: 'HashMap是如何工作的',
         click_num: 178000,
         rank: 2,
         url: '/'
       },
       {
-        id: '3',
+        code: '3',
         article_name: 'Redis五种常见数据结构的实现及使用场景',
         click_num: 163001,
         rank: 3,
         url: '/'
       },
       {
-        id: '4',
+        code: '4',
         article_name: 'Redisson 实现分布式锁原理浅析',
         click_num: 100099,
         rank: 4,
         url: '/'
       },
       {
-        id: '5',
+        code: '5',
         article_name: '深入理解JVM—垃圾回收器（Grabage Collector）基础篇',
         click_num: 51000,
         rank: 5,
         url: '/'
       },
       {
-        id: '6',
+        code: '6',
         article_name: 'SpringBoot从入门到精通—SpringBoot快速入门',
         click_num: 60088,
         rank: 6,
         url: '/'
       },
       {
-        id: '7',
+        code: '7',
         article_name: '高并发编程之AQS（AbstractQueuedSynchornizer）—源码剖析',
         click_num: 50002,
         rank: 7,
         url: '/'
       },
       {
-        id: '8',
+        code: '8',
         article_name: 'SpringBoot网站基于OAuth2添加第三方登录之GitHub登录',
         click_num: 49999,
         rank: 8,
         url: '/'
       },
       {
-        id: '9',
+        code: '9',
         article_name: 'SpringBoot从入门到精通—SpringBoot快速入门',
         click_num: 30000,
         rank: 9,
         url: '/'
       },
       {
-        id: '10',
+        code: '10',
         article_name: '作为Java工程师你真的理解synchronized吗',
         click_num: 1444,
         rank: 10,
         url: '/'
       },
       {
-        id: '11',
+        code: '11',
         article_name: 'RocketMQ Linux 安装配置',
         click_num: 1234,
         rank: 11,
         url: '/'
       },
       {
-        id: '12',
+        code: '12',
         article_name: 'Spring教程：事物详解（一）初探事物',
         click_num: 500,
         rank: 12,
@@ -233,6 +233,9 @@ export default {
       } else {
         return (num / 10000).toFixed(1) + '万'
       }
+    },
+    handleClick(code) {
+      this.$router.push(`/article/${code}`)
     }
   },
   created () {

@@ -33,7 +33,7 @@
                               gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                               height="158px"
                             >
-                              <v-card-title style="font-size: 14px">{{
+                              <v-card-title style="font-size: 14px" @click="handleClick(item.code)">{{
                                 item.title
                               }}</v-card-title>
                             </v-img>
@@ -111,9 +111,13 @@ export default {
       }
     },
 
+    handleClick(code) {
+      this.$router.push(`/article/${code}`)
+    },
+
     loadArticles() {
       this.newest_article_list.push({
-        id: '19002',
+        code: '19002',
         title: 'Spring教程：事物详解（三）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['Spring教程', 'Java', '源码系列'],
@@ -123,7 +127,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '19003',
+        code: '19003',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['Spring教程', 'Java', '源码系列'],
@@ -133,7 +137,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '19004',
+        code: '19004',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['Spring教程', '源码系列'],
@@ -143,7 +147,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '19005',
+        code: '19005',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['Spring教程', '源码系列'],
@@ -153,7 +157,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '19006',
+        code: '19006',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['Spring教程', 'Java', '源码系列'],
@@ -163,7 +167,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '19007',
+        code: '19007',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['Spring教程', 'Java', '源码系列'],
@@ -173,7 +177,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '19008',
+        code: '19008',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: [],
@@ -183,7 +187,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '19009',
+        code: '19009',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['Redis教程', '高并发实战'],
@@ -193,7 +197,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '19010',
+        code: '19010',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['Nginx', '高并发实战'],
@@ -203,7 +207,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '19011',
+        code: '19011',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['SpringBoot教程'],
@@ -213,7 +217,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '19011242',
+        code: '19011242',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['SpringBoot教程'],
@@ -223,7 +227,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '190115756746',
+        code: '190115756746',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['SpringBoot教程'],
@@ -233,7 +237,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '19011575',
+        code: '19011575',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['SpringBoot教程'],
@@ -243,7 +247,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '190115885',
+        code: '190115885',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['SpringBoot教程'],
@@ -253,7 +257,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '190113123',
+        code: '190113123',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['SpringBoot教程'],
@@ -263,7 +267,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '1901124274734',
+        code: '1901124274734',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['SpringBoot教程'],
@@ -273,7 +277,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '190113523',
+        code: '190113523',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['SpringBoot教程'],
@@ -283,7 +287,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '19011656',
+        code: '19011656',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['SpringBoot教程'],
@@ -293,7 +297,7 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.newest_article_list.push({
-        id: '19011532',
+        code: '19011532',
         title: 'Spring教程：事物详解（四）声明式事务源码详解',
         first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
         category: ['SpringBoot教程'],
@@ -303,12 +307,12 @@ export default {
         avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
       })
       this.swiper_side_show_list.push({
-        id: '19012',
+        code: '19012',
         title: 'Spring教程：事物详解（三）声明式事务源码详解',
         img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg'
       })
       this.swiper_side_show_list.push({
-        id: '19013',
+        code: '19013',
         title: 'Spring教程：事物详解（一）声明式事务源码详解',
         img: 'http://image.easyblog.top/1635311617387129984c4-7fce-4bda-a339-834746081298.jpeg'
       })

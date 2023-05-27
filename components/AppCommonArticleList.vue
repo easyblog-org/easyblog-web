@@ -18,8 +18,8 @@
           <v-col cols="9">
             <!--标题-->
             <v-row>
-              <v-card-title class="article-list-title">
-                <NuxtLink to="/article">{{ item.title }}</NuxtLink>
+              <v-card-title class="article-list-title" @click="handleClick(item.code)">
+                {{ item.title }}
               </v-card-title>
             </v-row>
             <v-row>
@@ -49,6 +49,11 @@ export default {
     list: {
       type: Array,
       default: []
+    }
+  },
+  methods: {
+    handleClick(code) {
+      this.$router.push(`/article/${code}`)
     }
   }
 }
