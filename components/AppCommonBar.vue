@@ -3,7 +3,7 @@
     <v-app-bar
       app
       color="white"
-      elevation="2"
+      elevation="1"
       flat
     >
       <v-container class="py-0 fill-height" ref="barRef">
@@ -112,7 +112,11 @@ export default {
       setTimeout(function () {
         this.query_placeholder = "Vue+ElementUI后台管理项目实战"
       }, 1000)
-    }
+    },
+    handleScroll() {
+      this.scrollPosition = window.scrollY;
+      this.showAppBar = !this.shouldHideAppBar;
+    },
   },
   created() {
     this.pollingHotQueryKey()
@@ -122,7 +126,7 @@ export default {
     this.searchInputDynamicWidth = document.body.clientWidth * (1 / 6);
     //检查用户是否处于登录状态，处于登录状态返回true,否者放回false
     this.loginStatus=localStorage.getItem(SYSTEM_CONSTANTS.login_token_key) != null;
-  }
+  },
 }
 </script>
 

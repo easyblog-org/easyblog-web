@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <!--顶部标题栏-->
-    <app-common-bar></app-common-bar>
+    <app-common-bar v-if="showAppBar"></app-common-bar>
 
     <v-main class="article-container">
       <v-container>
@@ -306,8 +306,16 @@ export default {
       comment_num: 0
     },
     tableOfContents: [], // 存储生成的目录项
-    tableOfContentMaxHeight: 0
+    tableOfContentMaxHeight: 0,
+    showAppBar: true, // 控制是否显示 AppBar
+    scrollPosition: 0, // 滚动位置
+    scrollThreshold: 200, // 滑动阈值，滚动超过该高度后隐藏 AppBar
   }),
+  computed: {
+    shouldHideAppBar() {
+      return this.scrollPosition > this.scrollThreshold;
+    },
+  },
   methods: {
     handleLikeIconClick() {
       this.likesFlag.thumbUp = !this.likesFlag.thumbUp
@@ -375,7 +383,11 @@ export default {
       const maxHeightPercentage = 0.75; // 最大高度的百分比
 
       this.tableOfContentMaxHeight = `${window.innerHeight * maxHeightPercentage}px`;
-    }
+    },
+    handleScroll() {
+      this.scrollPosition = window.scrollY;
+      this.showAppBar = !this.shouldHideAppBar;
+    },
   },
   beforeMount() {
     this.content =
@@ -819,6 +831,11 @@ export default {
     setTimeout(this.generateTableOfContents, 500)
     this.calculateTableOfContentMaxHeight(); // 初始化最大高度
     window.addEventListener('resize', this.calculateTableOfContentMaxHeight); // 监听窗口大小变化
+    window.addEventListener('scroll', this.handleScroll);
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener('resize', this.calculateTableOfContentMaxHeight);
   },
 }
 </script>
@@ -826,6 +843,8 @@ export default {
 .article-container {
   padding: 0 !important;
   margin-top: 1.767rem !important;
+  overflow-y: auto;
+  height: auto;
 
   .article-content {
     //position: fixed;
