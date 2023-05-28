@@ -131,7 +131,7 @@
             </v-card>
           </v-col>
           <v-col cols="3">
-            <v-card tile elevation="1">
+            <v-card elevation="1" rounded>
               <v-row class="author-info-card">
                 <v-col
                   class="author-img"
@@ -179,6 +179,7 @@
                     class="attention"
                     :color="'#1e80ff'"
                     width="100%"
+                    elevation="0"
                   >
                     关注
                   </v-btn>
@@ -189,6 +190,7 @@
                     :color="'#1e80ff'"
                     width="100%"
                     outlined
+                    elevation="0"
                   >
                     私信
                   </v-btn>
@@ -251,6 +253,15 @@
                 </v-col>
               </v-row>
             </v-card>
+            <v-card elevation="1" rounded class="article-content">
+              <v-card-title>目录</v-card-title>
+
+              <div class="content-item" :style="{ 'max-height': tableOfContentMaxHeight }">
+                <v-card-text v-for="item in tableOfContents" :key="item.id">
+                  <a :href="item.id" :style="{'margin-left': item.indent}">{{ item.title }}</a>
+                </v-card-text>
+              </div>
+            </v-card>
           </v-col>
         </v-row>
 
@@ -293,13 +304,78 @@ export default {
       visit_num: 0,
       likes_num: 0,
       comment_num: 0
-    }
+    },
+    tableOfContents: [], // 存储生成的目录项
+    tableOfContentMaxHeight: 0
   }),
   methods: {
     handleLikeIconClick() {
       this.likesFlag.thumbUp = !this.likesFlag.thumbUp
     },
+    queryArticleByPrimaryKey(code) {
+      console.log("加载文章...code=" + code)
+      this.pageViews = 59040
+      this.publishTime = 1680080938000
+      this.title = '🐕Java 流式编程（Stream API）'
+      this.authorName = '我是小胖'
+      this.authorImgUrl = 'https://p3-passport.byteimg.com/img/user-avatar/240af8d420db0bb748224fab461ee36a~100x100.awebp'
+    },
+    generateTableOfContents() {
+      // 生成目录
+      this.$nextTick(() => {
+        const articleContent = document.getElementById('vditor');
+        if (!articleContent) return;
+        const nodes = articleContent.childNodes;
+        const titleTag = ["H1", "H2", "H3", "H4", "H5", "H6"];
+        let maxLevel = 6;
+        let minLevel = 0;
 
+        for (let i = 0; i < nodes.length; i++) {
+          const node = articleContent.childNodes[i];
+          let level = Number(node.nodeName.substring(1, 2));
+          if (titleTag.includes(node.nodeName)) {
+
+            if (level > minLevel) {
+              minLevel = level;
+            }
+
+            if (maxLevel > level) {
+              maxLevel = level;
+            }
+
+            const id = "header-" + i;
+            node.setAttribute("id", id);
+            this.tableOfContents.push({
+              id: '#' + id, // 目录项的链接
+              title: node.innerHTML,
+              nodeName: node.nodeName,
+              level: level
+            });
+          }
+        }
+
+        // 根据最大级别设置缩进
+        for (let i = 0; i < this.tableOfContents.length; i++) {
+          const item = this.tableOfContents[i];
+          const indentLevel = item.level;
+          if (indentLevel - minLevel > 3) {
+            // 目录只保存三级最大目录
+            this.tableOfContents.splice(i, 1)
+            return;
+          }
+          console.log("max_level==", maxLevel, "minLevel:", minLevel, "current_level==", item.level, "indent_level==", indentLevel)
+          item.indent = indentLevel === maxLevel ? '0' : (indentLevel - maxLevel) * 8 + 'px'; // 最大级别的目录项设置为零缩进，其他级别增加8px的缩进
+        }
+
+
+        console.log("content===>" + JSON.stringify(this.tableOfContents))
+      })
+    },
+    calculateTableOfContentMaxHeight() {
+      const maxHeightPercentage = 0.75; // 最大高度的百分比
+
+      this.tableOfContentMaxHeight = `${window.innerHeight * maxHeightPercentage}px`;
+    }
   },
   beforeMount() {
     this.content =
@@ -307,7 +383,7 @@ export default {
       '\n' +
       '\n' +
       '\n' +
-      '### 1. 什么是流式编程\n' +
+      '### 1. 什么是流式编程什么是流式编程什么是流式编程\n' +
       '\n' +
       '对于java来说，我们最常用的面向对象编程属于命令式编程（Imperative Programming）这种编程范式。常见的编程范式还有`逻辑式编程（Logic Programming）`，`函数式编程（Functional Programming）`。java8也引入了函数式编程，结合 **Lambda 表达式**，对于函数式接口的实现和使用变得灵活和简洁了。关于函数式接口以及Lambda表达式，今天不做详细的分享和学习，今天的重点是`流式编程`。流式编程是一个受到 函数式编程 和 多核时代影响而产生的东西。其实，**流式编程就是基于JDK8 的Stream对于集合一系列的操作的流程定义**。\n' +
       '\n' +
@@ -738,12 +814,11 @@ export default {
       '\n'
   },
   mounted() {
-    // 记载之前做的事情
-    this.pageViews = 59040
-    this.publishTime = 1680080938000
-    this.title = '🐕Java 流式编程（Stream API）'
-    this.authorName = '我是小胖'
-    this.authorImgUrl = 'https://p3-passport.byteimg.com/img/user-avatar/240af8d420db0bb748224fab461ee36a~100x100.awebp'
+    // 挂载之前做的事情
+    this.queryArticleByPrimaryKey(this.$route.params.index)
+    setTimeout(this.generateTableOfContents, 500)
+    this.calculateTableOfContentMaxHeight(); // 初始化最大高度
+    window.addEventListener('resize', this.calculateTableOfContentMaxHeight); // 监听窗口大小变化
   },
 }
 </script>
@@ -751,6 +826,68 @@ export default {
 .article-container {
   padding: 0 !important;
   margin-top: 1.767rem !important;
+
+  .article-content {
+    //position: fixed;
+    //top: 0;
+    //right: 0;
+    //width: 200px;
+    margin-top: 35px;
+    background-color: #ffffff;
+    padding-bottom: 10px;
+    overflow: auto;
+
+    .content-item {
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+    .v-card__title {
+      padding-bottom: 5px;
+      padding-left: 0;
+      border-bottom: solid 1px #e4e6eb;
+      font-weight: 600;
+      font-size: 16px;
+      margin: 10px;
+    }
+
+    .v-card__text {
+      padding: 10px;
+    }
+
+    .v-card__text:hover {
+      background-color: #e4e6eb;
+      border-radius: 5px;
+    }
+
+    a {
+      text-decoration: none;
+      cursor: pointer;
+      color: #252933; //#8A919F
+      line-height: 10px;
+      white-space: inherit;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  /* 自定义滚动条样式 */
+  .article-content::-webkit-scrollbar {
+    width: 5px; /* 设置滚动条宽度 */
+  }
+
+  .article-content::-webkit-scrollbar-track {
+    background-color: #ffffff; /* 设置滚动条轨道背景色 */
+  }
+
+  .article-content::-webkit-scrollbar-thumb {
+    background-color: #e4e6eb; /* 设置滚动条滑块颜色 */
+    border-radius: 4px; /* 设置滚动条滑块圆角 */
+  }
+
+  .article-content::-webkit-scrollbar-thumb:hover {
+    background-color: #e4e6eb; /* 设置滚动条滑块鼠标悬停时的颜色 */
+  }
 
   .article-likes-bar {
     position: fixed;
@@ -846,6 +983,7 @@ export default {
 
     .article-content-box {
       padding: 10px 22px;
+
       .author {
         width: 100%;
         min-height: 43px;
