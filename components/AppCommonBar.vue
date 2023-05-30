@@ -1,9 +1,10 @@
 <template>
-  <div class="top-bar">
+  <div class="top-bar" v-show="show">
     <v-app-bar
       app
       color="white"
       elevation="1"
+      transition="scroll-y-reverse-transition"
       flat
     >
       <v-container class="py-0 fill-height" ref="barRef">
@@ -97,8 +98,15 @@ export default {
       '计算年毕业设计'
     ],
     searchInputDynamicWidth: 20,
-    loginStatus: false
+    loginStatus: false,
   }),
+  props: {
+    show: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
   methods: {
     //搜索
     search() {
@@ -112,10 +120,6 @@ export default {
       setTimeout(function () {
         this.query_placeholder = "Vue+ElementUI后台管理项目实战"
       }, 1000)
-    },
-    handleScroll() {
-      this.scrollPosition = window.scrollY;
-      this.showAppBar = !this.shouldHideAppBar;
     },
   },
   created() {

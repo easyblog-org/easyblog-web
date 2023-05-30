@@ -1,7 +1,7 @@
 <template>
-  <v-app>
+  <v-app ref="articleApp">
     <!--顶部标题栏-->
-    <app-common-bar v-if="showAppBar"></app-common-bar>
+    <app-common-bar :show="showAppBar"></app-common-bar>
 
     <v-main class="article-container">
       <v-container>
@@ -253,7 +253,7 @@
                 </v-col>
               </v-row>
             </v-card>
-            <v-card elevation="1" rounded class="article-content">
+            <v-card elevation="1" rounded class="article-content" ref="articleContentRef">
               <v-card-title>目录</v-card-title>
 
               <div class="content-item" :style="{ 'max-height': tableOfContentMaxHeight }">
@@ -308,14 +308,7 @@ export default {
     tableOfContents: [], // 存储生成的目录项
     tableOfContentMaxHeight: 0,
     showAppBar: true, // 控制是否显示 AppBar
-    scrollPosition: 0, // 滚动位置
-    scrollThreshold: 200, // 滑动阈值，滚动超过该高度后隐藏 AppBar
   }),
-  computed: {
-    shouldHideAppBar() {
-      return this.scrollPosition > this.scrollThreshold;
-    },
-  },
   methods: {
     handleLikeIconClick() {
       this.likesFlag.thumbUp = !this.likesFlag.thumbUp
@@ -354,7 +347,7 @@ export default {
             const id = "header-" + i;
             node.setAttribute("id", id);
             this.tableOfContents.push({
-              id: '#' + id, // 目录项的链接
+              id: "#" + id, // 目录项的链接
               title: node.innerHTML,
               nodeName: node.nodeName,
               level: level
@@ -384,10 +377,27 @@ export default {
 
       this.tableOfContentMaxHeight = `${window.innerHeight * maxHeightPercentage}px`;
     },
-    handleScroll() {
-      this.scrollPosition = window.scrollY;
-      this.showAppBar = !this.shouldHideAppBar;
+    fixTableOfContentBox(scrollPosition) {
+      const contentRef = this.$refs.articleContentRef
+      if (scrollPosition > window.innerHeight * 0.36) {
+        this.showAppBar = false
+        const rightPos = (window.innerWidth / 48) * 3.95
+        contentRef.$el.style.position = 'fixed'
+        contentRef.$el.style.right = rightPos + 'px'
+        contentRef.$el.style.top = '15px'
+        contentRef.$el.style.width = (window.innerWidth / 48) * 8.45 + 'px'
+      } else {
+        contentRef.$el.style.position = 'static'
+        this.showAppBar=true
+      }
     },
+    scrolls() {
+      window.onscroll = () => {
+        let scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+        this.fixTableOfContentBox(scrollTop)
+        console.log("scrollTop=", scrollTop, "showAppBar", this.showAppBar);
+      }
+    }
   },
   beforeMount() {
     this.content =
@@ -831,10 +841,9 @@ export default {
     setTimeout(this.generateTableOfContents, 500)
     this.calculateTableOfContentMaxHeight(); // 初始化最大高度
     window.addEventListener('resize', this.calculateTableOfContentMaxHeight); // 监听窗口大小变化
-    window.addEventListener('scroll', this.handleScroll);
+    this.scrolls()
   },
   beforeDestroy() {
-    window.removeEventListener('scroll', this.handleScroll);
     window.removeEventListener('resize', this.calculateTableOfContentMaxHeight);
   },
 }
@@ -843,8 +852,7 @@ export default {
 .article-container {
   padding: 0 !important;
   margin-top: 1.767rem !important;
-  overflow-y: auto;
-  height: auto;
+  height: max-content;
 
   .article-content {
     //position: fixed;
