@@ -1,75 +1,76 @@
 <template>
-  <div class="top-bar" v-show="show">
-    <v-app-bar
-      app
-      color="white"
-      elevation="1"
-      transition="scroll-y-reverse-transition"
-      flat
-    >
-      <v-container class="py-0 fill-height" ref="barRef">
+  <transition name="fade">
+    <div class="top-bar" v-show="show">
+      <v-app-bar
+        app
+        color="white"
+        elevation="1"
+        flat
+      >
+        <v-container class="py-0 fill-height" ref="barRef">
 
-        <div>
-          <a href="/" class="bar-title"><h1>EasyBlog</h1></a>
-        </div>
-
-
-        <div class="menu-item-container">
-          <v-btn
-            v-for="link in links"
-            :key="link"
-            text
-            class="menu-item"
-          >
-            {{ link }}
-          </v-btn>
-        </div>
-
-        <v-spacer></v-spacer>
-
-        <v-responsive max-width="400" :width="searchInputDynamicWidth">
-          <v-text-field
-            v-model="query_key"
-            class="search-input"
-            ref="searchInputRef"
-            dense
-            flat
-            solo
-            hide-details
-            :background-color="'#f2f2f2'"
-            clearable
-            :color="'black'"
-            :placeholder="query_placeholder"
-            append-icon="mdi-magnify"
-            @click:append="search"
-            @keypress.enter="search"
-          ></v-text-field>
-        </v-responsive>
-
-        <v-spacer></v-spacer>
-
-        <!--登录/头像按钮-->
-        <div>
-          <div class="bar-avatar" v-if="loginStatus">
-            <v-avatar
-              class="mr-10"
-              color="grey darken-1"
-              size="35"
-            ></v-avatar>
+          <div>
+            <a href="/" class="bar-title"><h1>EasyBlog</h1></a>
           </div>
-          <div class="bar-login-btn" v-else>
+
+
+          <div class="menu-item-container">
             <v-btn
-              class="ma-2"
-              outlined
-              color="indigo"
+              v-for="link in links"
+              :key="link"
+              text
+              class="menu-item"
             >
-              <NuxtLink to="/login" tag="span">登录 | 注册</NuxtLink>
+              {{ link }}
             </v-btn>
           </div>
-        </div>
-      </v-container>
-    </v-app-bar>
-  </div>
+
+          <v-spacer></v-spacer>
+
+          <v-responsive max-width="400" :width="searchInputDynamicWidth">
+            <v-text-field
+              v-model="query_key"
+              class="search-input"
+              ref="searchInputRef"
+              dense
+              flat
+              solo
+              hide-details
+              :background-color="'#f2f2f2'"
+              clearable
+              :color="'black'"
+              :placeholder="query_placeholder"
+              append-icon="mdi-magnify"
+              @click:append="search"
+              @keypress.enter="search"
+            ></v-text-field>
+          </v-responsive>
+
+          <v-spacer></v-spacer>
+
+          <!--登录/头像按钮-->
+          <div>
+            <div class="bar-avatar" v-if="loginStatus">
+              <v-avatar
+                class="mr-10"
+                color="grey darken-1"
+                size="35"
+              ></v-avatar>
+            </div>
+            <div class="bar-login-btn" v-else>
+              <v-btn
+                class="ma-2"
+                outlined
+                color="indigo"
+              >
+                <NuxtLink to="/login" tag="span">登录 | 注册</NuxtLink>
+              </v-btn>
+            </div>
+          </div>
+        </v-container>
+      </v-app-bar>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -129,12 +130,24 @@ export default {
     //搜索框宽度
     this.searchInputDynamicWidth = document.body.clientWidth * (1 / 6);
     //检查用户是否处于登录状态，处于登录状态返回true,否者放回false
-    this.loginStatus=localStorage.getItem(SYSTEM_CONSTANTS.login_token_key) != null;
+    this.loginStatus = localStorage.getItem(SYSTEM_CONSTANTS.login_token_key) != null;
   },
 }
 </script>
 
 <style scoped>
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.4s ease; /* 设置过渡属性和持续时间 */
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0; /* 设置初始状态和结束状态的透明度 */
+  transform: translateY(300px);
+}
+
 .menu-item-container {
   margin-left: 15px;
 }

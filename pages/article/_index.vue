@@ -66,7 +66,7 @@
         </div>
         <v-row class="article-row">
           <v-col cols="9" class="pt-0">
-            <v-card elevation="1">
+            <v-card elevation="1" class="pb-5">
               <!--文章详情主体-->
               <div class="article-content-box">
                 <!--文章标题-->
@@ -128,6 +128,12 @@
                   <app-common-markdown-previewer :content="content"/>
                 </v-row>
               </div>
+            </v-card>
+
+            <!--评论-->
+            <v-card>
+              <app-simple-comment-box :article-id="this.$route.params.index"
+              />
             </v-card>
           </v-col>
           <v-col cols="3">
@@ -264,11 +270,6 @@
             </v-card>
           </v-col>
         </v-row>
-
-        <!--评论-->
-        <v-row>
-          <app-simple-comment-box></app-simple-comment-box>
-        </v-row>
       </v-container>
     </v-main>
   </v-app>
@@ -388,7 +389,7 @@ export default {
         contentRef.$el.style.width = (window.innerWidth / 48) * 8.45 + 'px'
       } else {
         contentRef.$el.style.position = 'static'
-        this.showAppBar=true
+        this.showAppBar = true
       }
     },
     scrolls() {

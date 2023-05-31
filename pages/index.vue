@@ -2,7 +2,7 @@
   <v-app>
     <div class="home light-grey-bg" ref="contentRef">
       <!--顶部标题栏-->
-      <app-common-bar></app-common-bar>
+      <app-common-bar :show="showAppbar"></app-common-bar>
 
       <!--主页面-->
       <v-main>
@@ -34,8 +34,9 @@
                               height="158px"
                             >
                               <v-card-title style="font-size: 14px" @click="handleClick(item.code)">{{
-                                item.title
-                              }}</v-card-title>
+                                  item.title
+                                }}
+                              </v-card-title>
                             </v-img>
                           </v-card>
                         </v-hover>
@@ -90,7 +91,8 @@ export default {
     //热搜文章或教程 给 热搜榜提供数据
     hot_search_list: [],
     //文章热榜 给文章热搜提供数据
-    hot_click_list: []
+    hot_click_list: [],
+    showAppbar: true
   }),
   methods: {
     // 控制滑动到一定高度之后固定右侧侧边栏
@@ -99,6 +101,7 @@ export default {
       const headerTop = 1330
       window.onscroll = () => {
         if (document.documentElement.scrollTop > headerTop) {
+          this.showAppbar = false;
           const contentRef = this.$refs.contentRef
           const rightPos = (contentRef.offsetWidth / 12) * (11 / 12) * 0.954
           rightSide.style.position = 'fixed'
@@ -106,6 +109,7 @@ export default {
           rightSide.style.bottom = '0px'
           rightSide.style.width = '296.25px'
         } else {
+          this.showAppbar = true
           rightSide.style.position = 'static'
         }
       }
