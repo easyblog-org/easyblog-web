@@ -1,22 +1,40 @@
 <template>
   <div class="comment-box">
-    <v-card>
+    <v-card :style="comments.length===0?'padding-bottom: 35px':'padding-bottom: 0px'">
       <v-card-title class="title">
         评论
       </v-card-title>
 
       <v-card-text>
-        <v-avatar size="40" class="mr-2">
-          <img :src="avatar" alt="User Avatar">
-        </v-avatar>
-        <v-text-field v-model="myComment" label="发表评论"></v-text-field>
+        <v-row>
+          <v-col cols="1" style="display: inline-block">
+            <v-avatar size="43" class="mr-2">
+              <img :src="avatar" alt="User Avatar">
+            </v-avatar>
+          </v-col>
+          <v-col cols="11" style="display: inline-block">
+            <v-textarea
+              @focus="switchShowSubmitBtn"
+              @blur="switchShowSubmitBtn"
+              outlined
+              auto-grow
+              dense
+              :rows="3"
+              :light="true"
+              label="请友善评论"
+              v-model="myComment"
+            ></v-textarea>
+          </v-col>
+        </v-row>
       </v-card-text>
-      <v-card-actions>
-        <v-btn color="primary" @click="submitComment">发表</v-btn>
-      </v-card-actions>
+      <transition name="fade">
+        <v-card-actions v-show="showSubmitComment" class="mt-2">
+          <v-btn color="primary" @click="submitComment">发表评论</v-btn>
+        </v-card-actions>
+      </transition>
     </v-card>
 
-    <v-card>
+    <v-card v-if="!comments">
       <v-card-subtitle class="subtitle">
         全部评论 {{ comments.length }}
       </v-card-subtitle>
@@ -49,7 +67,8 @@ export default {
   },
   data: () => ({
     myComment: '',
-    comments: []
+    comments: [],
+    showSubmitComment: false
   }),
   methods: {
     submitComment() {
@@ -60,17 +79,47 @@ export default {
         });
         this.comment = '';
       }
+    },
+    switchShowSubmitBtn() {
+      this.showSubmitComment = !this.showSubmitComment
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.4s ease; /* 设置过渡属性和持续时间 */
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0; /* 设置初始状态和结束状态的透明度 */
+  transform: translateX(-600px);
+}
+
 .comment-box {
-  margin-top: 20px;
+  margin-top: 30px;
+  padding-bottom: 30px;
 
   .v-image {
     border-radius: 30px;
+  }
+
+  .v-card__text {
+    padding: 0 20px 0 20px;
+  }
+
+  .v-textarea{
+    height: 72px !important;
+  }
+
+  .v-card__actions {
+    justify-items: right;
+    justify-content: right;
+    margin-right: 10px;
   }
 
   .title {

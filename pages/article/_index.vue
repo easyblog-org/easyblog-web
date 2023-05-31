@@ -131,10 +131,7 @@
             </v-card>
 
             <!--评论-->
-            <v-card>
-              <app-simple-comment-box :article-id="this.$route.params.index"
-              />
-            </v-card>
+            <app-simple-comment-box :article-id="this.$route.params.index"/>
           </v-col>
           <v-col cols="3">
             <v-card elevation="1" rounded>
