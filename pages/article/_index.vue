@@ -71,7 +71,7 @@
               <div class="article-content-box">
                 <!--文章标题-->
                 <v-row>
-                  <input v-model="title" placeholder="请输入标题"/>
+                  <input v-model="title"/>
                 </v-row>
                 <!--作者信息-->
                 <v-row>
@@ -113,7 +113,7 @@
                       </v-row>
                       <v-row>
                         <span class="publish-time">
-                          {{ publishTime | formatDates('YYYY-MM-dd HH:mm') }}
+                          {{ publishTime | formatDates('YYYY年MM月dd日 HH:mm') }}
                         </span>
                         <span class="page-views">
                           &nbsp;&nbsp;·&nbsp;&nbsp;阅读
@@ -128,10 +128,22 @@
                   <app-common-markdown-previewer :content="content"/>
                 </v-row>
               </div>
+              <div class="content-links">
+                <v-row>
+                  <v-col cols="6" style="text-align: left">
+                    <a @click="jumpToArticleDetails(article.prev.id)">
+                      上一篇：
+                      {{ article.prev.title }}
+                    </a>
+                  </v-col>
+                  <v-col cols="6" style="text-align: right">
+                      <a @click="jumpToArticleDetails(article.next.id)">
+                       下一篇：
+                      {{ article.next.title }}</a>
+                  </v-col>
+                </v-row>
+              </div>
             </v-card>
-
-            <!--评论-->
-            <app-simple-comment-box :article-id="this.$route.params.index"/>
           </v-col>
           <v-col cols="3">
             <v-card elevation="1" rounded>
@@ -283,6 +295,16 @@ export default {
     AppCommonMarkdownPreviewer,
   },
   data: () => ({
+    article: {
+      prev: {
+        id: 1596064,
+        title: 'Java从入门到入土'
+      },
+      next: {
+        id: 8693095,
+        title: '混编模式（策略模式+工厂方法模式+门面模式门面模式门面模式门面模式）'
+      },
+    },
     pageViews: 0,
     authorName: '',
     authorImgUrl: '',
@@ -395,6 +417,10 @@ export default {
         this.fixTableOfContentBox(scrollTop)
         console.log("scrollTop=", scrollTop, "showAppBar", this.showAppBar);
       }
+    },
+    jumpToArticleDetails(code) {
+      console.log("jump article ",code)
+      this.$router.push(`/article/${code}`)
     }
   },
   beforeMount() {
@@ -852,11 +878,30 @@ export default {
   margin-top: 1.767rem !important;
   height: max-content;
 
+  .content-links{
+    padding: 50px 22px 5px 22px;
+
+    .row{
+      display: flex;
+      align-items: center;
+    }
+
+    a{
+      text-decoration: none;
+      color: #666;
+      text-align: center;
+      overflow: hidden;
+      white-space: normal;
+      text-overflow: ellipsis;
+      font-size: 15px;
+    }
+
+    a:hover{
+      color: #1e80ff;
+    }
+  }
+
   .article-content {
-    //position: fixed;
-    //top: 0;
-    //right: 0;
-    //width: 200px;
     margin-top: 35px;
     background-color: #ffffff;
     padding-bottom: 10px;
