@@ -15,11 +15,11 @@
                 <v-row>
                   <v-col cols="8">
                     <!--自定义轮播图-->
-                    <app-common-swiper :height="340"></app-common-swiper>
+                    <app-common-swiper :list="swiper_article_list" :height="340"></app-common-swiper>
                   </v-col>
                   <v-col cols="4">
                     <!--自定义轮播图侧边显示-->
-                    <v-row v-for="item in swiper_side_show_list" :key="item.id">
+                    <v-row v-for="item in swiper_article_side_list" :key="item.code">
                       <v-col cols="12">
                         <v-hover v-slot="{ hover }">
                           <v-card
@@ -27,17 +27,20 @@
                             :class="{ 'on-hover': hover }"
                             class="head-line"
                           >
-                            <v-img
-                              :src="item.img"
-                              class="white--text align-end transition-swing"
-                              gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                              height="158px"
-                            >
-                              <v-card-title style="font-size: 14px" @click="handleClick(item.code)">{{
-                                  item.title
-                                }}
-                              </v-card-title>
-                            </v-img>
+                            <NuxtLink :to="item.url" style="text-decoration: none;color: unset">
+                              <v-img
+                                :src="item.featured_image"
+                                class="white--text align-end transition-swing"
+                                gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                                height="158px"
+                              >
+
+                                <v-card-title style="font-size: 14px">{{
+                                    item.title
+                                  }}
+                                </v-card-title>
+                              </v-img>
+                            </NuxtLink>
                           </v-card>
                         </v-hover>
                       </v-col>
@@ -79,13 +82,16 @@
 </template>
 
 <script lang="js">
+import {queryArticleList, queryIndexPageArticleList} from "@/api/article";
+import {extractKeywordSummary} from "static/util";
+
 export default {
   name: 'HomeView',
   data: () => ({
     //轮播图显示的文章或教程...
-    swiper_show_list: [],
+    swiper_article_list: [],
     //轮播图中间显示的文章或教程
-    swiper_side_show_list: [],
+    swiper_article_side_list: [],
     //最新文章列表
     newest_article_list: [],
     //热搜文章或教程 给 热搜榜提供数据
@@ -114,212 +120,25 @@ export default {
         }
       }
     },
-
-    handleClick(code) {
-      this.$router.push(`/article/${code}`)
+    articleDetailsJumpPath(item) {
+      if (!item) return "/"
+      return `/article/${item.code}`
     },
-
-    loadArticles() {
-      this.newest_article_list.push({
-        code: '19002',
-        title: 'Spring教程：事物详解（三）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['Spring教程', 'Java', '源码系列'],
-        author: 'Frank.HUANG',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '19003',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['Spring教程', 'Java', '源码系列'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '19004',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['Spring教程', '源码系列'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '19005',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['Spring教程', '源码系列'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '19006',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['Spring教程', 'Java', '源码系列'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '19007',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['Spring教程', 'Java', '源码系列'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '19008',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: [],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '19009',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['Redis教程', '高并发实战'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '19010',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['Nginx', '高并发实战'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '19011',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['SpringBoot教程'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '19011242',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['SpringBoot教程'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '190115756746',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['SpringBoot教程'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '19011575',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['SpringBoot教程'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '190115885',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['SpringBoot教程'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '190113123',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['SpringBoot教程'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '1901124274734',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['SpringBoot教程'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '190113523',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['SpringBoot教程'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '19011656',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['SpringBoot教程'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.newest_article_list.push({
-        code: '19011532',
-        title: 'Spring教程：事物详解（四）声明式事务源码详解',
-        first_img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg',
-        category: ['SpringBoot教程'],
-        author: 'Si.Li',
-        content: '使用idea提交代码的时候可能会遇到想要忽略的文件夹出现在提交列表中的情况。以.idea目录举例。假如之前没将.idea目录添加到.gitignore文件中，提交代码的时候又把.idea目录提交上去了',
-        create_time: '2022-04-10 14:24:39',
-        avatar: 'https://image.easyblog.top/FtgWkqU5ESuyt8eDu180qubIopHU'
-      })
-      this.swiper_side_show_list.push({
-        code: '19012',
-        title: 'Spring教程：事物详解（三）声明式事务源码详解',
-        img: 'https://cdn.vuetifyjs.com/images/cards/house.jpg'
-      })
-      this.swiper_side_show_list.push({
-        code: '19013',
-        title: 'Spring教程：事物详解（一）声明式事务源码详解',
-        img: 'http://image.easyblog.top/1635311617387129984c4-7fce-4bda-a339-834746081298.jpeg'
-      })
+    prepareArticleListAppendJumpPath(list) {
+      if (!list) return []
+      return list.map(item => {
+        return {
+          ...item,
+          url: this.articleDetailsJumpPath(item)
+        };
+      });
+    },
+    async loadArticles() {
+      // 1. 查询轮播图文章
+      const res = await queryIndexPageArticleList()
+      this.swiper_article_list = this.prepareArticleListAppendJumpPath(res.data.swiper_article_list)
+      this.swiper_article_side_list = this.prepareArticleListAppendJumpPath(res.data.swiper_article_side_list)
+      this.newest_article_list = this.prepareArticleListAppendJumpPath(res.data.newest_article_list)
     }
   },
   created() {

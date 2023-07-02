@@ -167,3 +167,25 @@ export function getClientHeight() {
   return clientHeight;
 }
 
+/**
+ * 生成指定字数的MarkDowm文章摘要
+ * @param markdown
+ * @param wordCount
+ * @returns {*}
+ */
+export function extractKeywordSummary(markdown, wordCount) {
+  // 去除 Markdown 标记和多余的空格
+  const plainText = markdown.replace(/[\*\#\`\_\[\]\(\)]/g, '').trim();
+
+  // 将字符串按空格拆分为单词数组
+  const words = plainText.split(' ');
+
+  // 计算关键字摘要的结束索引
+  const endIndex = Math.min(wordCount, words.length);
+
+  // 提取指定字数的关键字摘要
+  const summary = words.slice(0, endIndex).join(' ');
+
+  console.log("mardown:==>" + markdown, "summary==>" + summary)
+  return summary;
+}

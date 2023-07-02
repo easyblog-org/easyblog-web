@@ -4,34 +4,38 @@
       <h2 class="h_title">最新文章</h2>
     </div>
     <div class="common-article-content rounded-0">
-      <v-card-text v-for="(item) in list" :key="item.id"
+      <v-card-text v-for="(item) in preparedArticleList" :key="item.code"
                    class="article-list">
         <v-row>
           <v-col cols="3" class="">
-            <v-img
-              :src="item.first_img"
-              class="white--text align-end transition-swing"
-              gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-            >
-            </v-img>
+            <NuxtLink :to="item.url">
+              <v-img
+                :src="item.featured_image"
+                class="white--text align-end transition-swing"
+                gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+              >
+              </v-img>
+            </NuxtLink>
           </v-col>
           <v-col cols="9">
             <!--标题-->
             <v-row>
-              <v-card-title class="article-list-title" @click="handleClick(item.code)">
-                {{ item.title }}
-              </v-card-title>
+              <NuxtLink :to="item.url">
+                <v-card-title class="article-list-title">
+                  {{ item.title }}
+                </v-card-title>
+              </NuxtLink>
             </v-row>
             <v-row>
-              <p v-text="item.content"></p>
+              <p v-text="item.article_summary"></p>
             </v-row>
             <v-row class="article-info" justify="space-between">
               <div>
-                <span v-text="item.author" class="article-list-author"></span>
+                <span v-text="item.author.nick_name" class="article-list-author"></span>
                 <span v-text="item.create_time" class="article-list-time"></span>
               </div>
               <div class="article-list-tags">
-                <a v-for="tag in item.category" :key="tag">{{ tag }}</a>
+                <a v-for="cat in item.categories">{{ cat }}</a>
               </div>
             </v-row>
           </v-col>
@@ -42,6 +46,8 @@
 </template>
 
 <script>
+import {extractKeywordSummary} from "static/util";
+
 export default {
   name: 'app-common-article-list',
   props: {
@@ -49,11 +55,21 @@ export default {
     list: {
       type: Array,
       default: []
+    },
+    summary_word_count: {
+      type: Number,
+      default: 150
     }
   },
-  methods: {
-    handleClick(code) {
-      this.$router.push(`/article/${code}`)
+  computed: {
+    preparedArticleList() {
+      if (!this.list) return []
+      return this.list.map(item => {
+        return {
+          ...item,
+          article_summary: extractKeywordSummary(item.content, this.summary_word_count),
+        };
+      });
     }
   }
 }

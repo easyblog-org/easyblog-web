@@ -48,10 +48,11 @@
     </v-card-title>
     <v-card-text tag="div" class="hot-search-content-box">
       <v-card-text v-for="(item,i) in this.articles_for_show" :key="item.id" class="hot-search-content">
-        <v-row tag="a" :href="item.url" :title="item.name">
+        <v-row tag="a" :href="articleDetailsJumpPath(item)" :title="item.name">
           <v-col cols="9" class="text">
-            <span class="rank-num" :style="{'color':item.rank_icon}" @click="handleClick(item.code)">{{ item.rank }}</span>
-            {{ item.name }}
+            <span class="rank-num" :style="{'color':item.rank_icon}">{{ item.rank }}</span>
+
+            <NuxtLink :to="articleDetailsJumpPath(item)">{{ item.name }}</NuxtLink>
           </v-col>
           <v-col cols="3" class="click">{{ item.click_num }}</v-col>
         </v-row>
@@ -64,7 +65,7 @@
 export default {
   name: 'app-common-hot-search-list',
   props: {
-    title:{
+    title: {
       type: String,
       default: '热搜榜'
     },
@@ -92,84 +93,72 @@ export default {
         article_name: '海量数据处理：如何从10亿个数中，找出最大的10000个数？（top K问题',
         click_num: 188000,
         rank: 1,
-        url: '/'
       },
       {
         code: '2',
         article_name: 'HashMap是如何工作的',
         click_num: 178000,
         rank: 2,
-        url: '/'
       },
       {
         code: '3',
         article_name: 'Redis五种常见数据结构的实现及使用场景',
         click_num: 163001,
         rank: 3,
-        url: '/'
       },
       {
         code: '4',
         article_name: 'Redisson 实现分布式锁原理浅析',
         click_num: 100099,
         rank: 4,
-        url: '/'
       },
       {
         code: '5',
         article_name: '深入理解JVM—垃圾回收器（Grabage Collector）基础篇',
         click_num: 51000,
         rank: 5,
-        url: '/'
       },
       {
         code: '6',
         article_name: 'SpringBoot从入门到精通—SpringBoot快速入门',
         click_num: 60088,
         rank: 6,
-        url: '/'
       },
       {
         code: '7',
         article_name: '高并发编程之AQS（AbstractQueuedSynchornizer）—源码剖析',
         click_num: 50002,
         rank: 7,
-        url: '/'
       },
       {
         code: '8',
         article_name: 'SpringBoot网站基于OAuth2添加第三方登录之GitHub登录',
         click_num: 49999,
         rank: 8,
-        url: '/'
       },
       {
         code: '9',
         article_name: 'SpringBoot从入门到精通—SpringBoot快速入门',
         click_num: 30000,
         rank: 9,
-        url: '/'
       },
       {
         code: '10',
         article_name: '作为Java工程师你真的理解synchronized吗',
         click_num: 1444,
         rank: 10,
-        url: '/'
       },
       {
         code: '11',
         article_name: 'RocketMQ Linux 安装配置',
         click_num: 1234,
         rank: 11,
-        url: '/'
       },
       {
         code: '12',
         article_name: 'Spring教程：事物详解（一）初探事物',
         click_num: 500,
         rank: 12,
-        url: '/'
       }
     ],
     articles_for_show: [], //展示的卡片
@@ -177,7 +166,7 @@ export default {
   }),
   methods: {
     //翻页按钮点击事件处理
-    onHotSearchPageBtnClick (card) {
+    onHotSearchPageBtnClick(card) {
       if (card == null || card === '' || this.card_show === card) {
         return
       }
@@ -185,7 +174,7 @@ export default {
       this.getShowArticles()
     },
     //获取用于展示的文章
-    getShowArticles () {
+    getShowArticles() {
       const original_articles = this.original_hot_search_articles
       if (original_articles === null || original_articles.length === 0) {
         return []
@@ -208,11 +197,11 @@ export default {
 
         const article = {
           id: item.id,
+          code: item.code,
           name: item.article_name,
           click_num: this.formatClickNum(item.click_num),
           rank: item.rank,
-          rank_icon: icon,
-          url: item.url
+          rank_icon: icon
         }
 
         if (card === 1 && item.rank <= this.page_size) {
@@ -227,18 +216,19 @@ export default {
     //格式化热搜文章点击数
     // 1. 10000以下 显示原始数字
     // 2. 10000以上换算成xxx万显示，比如 125000 => 12.5万
-    formatClickNum (num) {
+    formatClickNum(num) {
       if (num < 10000) {
         return num
       } else {
         return (num / 10000).toFixed(1) + '万'
       }
     },
-    handleClick(code) {
-      this.$router.push(`/article/${code}`)
+    articleDetailsJumpPath(item) {
+      if (!item) return "/"
+      return `/article/${item.code}`
     }
   },
-  created () {
+  created() {
     this.getShowArticles()
   }
 }

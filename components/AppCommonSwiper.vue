@@ -6,13 +6,32 @@
     show-arrows-on-hover
     :style="{'height':computeHeight,'width':computeWidth}"
   >
+
     <v-carousel-item
-      v-for="(item,i) in items"
-      :key="i"
-      :src="item.src"
+      v-for="(item) in list"
+      :key="item.code"
+      :src="item.featured_image"
       link
       eager
+      class="my-carousel-item"
     >
+      <NuxtLink :to="item.url" style="text-decoration: none">
+        <v-sheet
+          height="100%"
+          tile
+          style="background: unset"
+        >
+          <v-row
+            class="fill-height"
+            align="center"
+            justify="center"
+          >
+            <div class="my-carousel-item-title">
+              {{ item.title }}
+            </div>
+          </v-row>
+        </v-sheet>
+      </NuxtLink>
     </v-carousel-item>
   </v-carousel>
 </template>
@@ -29,29 +48,16 @@ export default {
     width: {
       type: String | Number,
       default: '100%'
+    },
+    list: {
+      type: Array,
+      default: function () {
+        return []
+      }
     }
   },
-  data: () => ({
-    items: [
-      {
-        src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
-      },
-      {
-        src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-      },
-      {
-        src: 'https://7n.w3cschool.cn/attachments/knowledge/202108/93852.png',
-      },
-      {
-        src: 'https://img10.360buyimg.com/ddimg/jfs/t1/157602/14/5070/254362/60101928Ec4c1b566/19d09acc0c8429fb.jpg',
-      },
-      {
-        src: 'https://img0.baidu.com/it/u=1102563411,3149738677&fm=253&app=120&size=w931&n=0&f=JPEG&fmt=auto?sec=1675098000&t=79983869302123f8d4be47a3ad45ee3e'
-      }
-    ],
-  }),
   computed: {
-    computeWidth () {
+    computeWidth() {
       if (this.width instanceof Number) {
         return this.width + 'px'
       } else if (this.width instanceof String) {
@@ -62,7 +68,7 @@ export default {
         }
       }
     },
-    computeHeight () {
+    computeHeight() {
       return this.height + 'px'
     }
   }
@@ -71,5 +77,23 @@ export default {
 
 
 <style scoped>
+.skeleton-card {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+
+.my-carousel-item-title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, .5);
+  font-size: 1.8rem;
+  letter-spacing: 0.0073529412em !important;
+  font-family: "Roboto", sans-serif !important;
+  padding: 0 25px;
+}
 </style>
