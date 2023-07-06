@@ -83,7 +83,6 @@
 
 <script lang="js">
 import {queryArticleList, queryIndexPageArticleList} from "@/api/article";
-import {extractKeywordSummary} from "static/util";
 
 export default {
   name: 'HomeView',

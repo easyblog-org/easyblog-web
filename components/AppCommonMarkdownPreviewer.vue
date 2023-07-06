@@ -9,13 +9,14 @@
 <script>
 import Vditor from 'vditor'
 import 'vditor/dist/index.css'
+import {queryArticleDetails} from "@/api/article";
 
 export default {
   name: 'app-common-article-previewer',
   props: {
-    content: {
+    id: {
       type: String,
-      required: false,
+      required: true,
       default: '',
     },
     active: {
@@ -27,6 +28,7 @@ export default {
   data() {
     return {
       vditor: '',
+      content: null
     }
   },
   methods: {
@@ -42,11 +44,11 @@ export default {
     disabled() {
       return this.vditor.disabled()
     },
-    preview() {
-      Vditor.preview(document.getElementById('vditor'), this.content, {
-        theme: { current: this.active ? 'dark' : 'light' },
+    preview(content = this.content) {
+      Vditor.preview(document.getElementById('vditor'), content, {
+        theme: {current: this.active ? 'dark' : 'light'},
         mode: 'light',
-        speech: { enable: true },
+        speech: {enable: true},
         icon: 'ant',
         hljs: {
           /** 代码块没有指定语言时，使用此值。默认值: "" */
@@ -70,8 +72,16 @@ export default {
     },
   },
   mounted() {
+    queryArticleDetails(this.id).then((resp) => {
+      if (!resp || !resp.data) {
+        this.$router.push('/404')
+        return;
+      }
+
+      this.content = resp.data.content
+      this.preview(resp.data.content)
+    })
     window.addEventListener('resize', this.preview)
-    this.preview()
     this.unwatch = this.$watch('value', (val) => {
       if (this.vditor && this.getValue() !== val) {
         this.setValue(val)
@@ -85,12 +95,13 @@ export default {
     if (this.vditor) {
       this.vditor.destroy()
     }
-  },
+  }
 }
 </script>
 <style scoped lang="scss">
 .vditor-container {
   width: 100% !important;
+
   ::v-deep .vditor-toolbar--hide {
     display: none !important;
   }
@@ -102,9 +113,9 @@ export default {
     border-radius: 3px;
     box-sizing: border-box;
     font-family: 'Helvetica Neue', 'Luxi Sans', 'DejaVu Sans',
-      'Hiragino Sans GB', 'Microsoft Yahei', sans-serif, 'Apple Color Emoji',
-      'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol', 'Android Emoji',
-      'EmojiSymbols';
+    'Hiragino Sans GB', 'Microsoft Yahei', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Noto Color Emoji', 'Segoe UI Symbol', 'Android Emoji',
+    'EmojiSymbols';
   }
 
   ::v-deep .vditor-reset {

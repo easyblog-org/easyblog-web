@@ -27,3 +27,15 @@ export const queryIndexPageArticleList = () => {
     method: 'GET',
   })
 }
+
+/**
+ * 查询文章详情
+ * @param code
+ * @returns {Promise<any|undefined>|*}
+ */
+export const queryArticleDetails = code => {
+  return request({
+    url: `${prefix}/${code}`,
+    method: 'GET',
+  })
+}

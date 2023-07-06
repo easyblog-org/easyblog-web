@@ -3,16 +3,17 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - easyblog-web',
-    title: 'easyblog-web',
+    titleTemplate: '%s - EasyBlog',
+    title: 'EasyBlog',
     htmlAttrs: {
-      lang: 'en',
+      lang: 'zh',
     },
     meta: [
       {charset: 'utf-8'},
-      {name: 'viewport', content: 'width=device-width, initial-scale=1'},
+      {name: 'viewport', content: 'width=device-width, initial-scale=1,user-scalable=0'},
       {hid: 'description', name: 'description', content: ''},
-      {name: 'format-detection', content: 'telephone=no'},
+      //在此处添加
+      {name: 'referrer', content: 'no-referrer'},
     ],
     link: [{rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}],
   },

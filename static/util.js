@@ -184,8 +184,5 @@ export function extractKeywordSummary(markdown, wordCount) {
   const endIndex = Math.min(wordCount, words.length);
 
   // 提取指定字数的关键字摘要
-  const summary = words.slice(0, endIndex).join(' ');
-
-  console.log("mardown:==>" + markdown, "summary==>" + summary)
-  return summary;
+  return words.slice(0, endIndex).join(' ');
 }
