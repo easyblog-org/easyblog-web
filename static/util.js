@@ -186,3 +186,18 @@ export function extractKeywordSummary(markdown, wordCount) {
   // 提取指定字数的关键字摘要
   return words.slice(0, endIndex).join(' ');
 }
+
+export function prepareArticleListAppendJumpPath(list) {
+  if (!list) return []
+  return list.map(item => {
+    return {
+      ...item,
+      url: articleDetailsJumpPath(item)
+    };
+  });
+}
+
+export function articleDetailsJumpPath(item) {
+  if (!item) return "/"
+  return `/article/${item.code}`
+}

@@ -41,24 +41,53 @@
           </v-col>
         </v-row>
       </v-card-text>
+      <div class="common-article-foot rounded-0" @click="loadMoreArticles">
+        <v-btn v-show="total>params.offset" outlined block color="primary" class="rounded-0">
+          加载更多
+        </v-btn>
+        <v-row class="align-center justify-center baseline" v-show="total<=params.offset">我是有底线的~</v-row>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import {extractKeywordSummary} from "static/util";
+import {extractKeywordSummary, prepareArticleListAppendJumpPath} from "static/util";
+import {queryArticleList} from "@/api/article";
 
 export default {
   name: 'app-common-article-list',
   props: {
-    //文章列表
-    list: {
-      type: Array,
-      default: []
-    },
     summary_word_count: {
       type: Number,
       default: 150
+    }
+  },
+  data() {
+    return {
+      list: [],
+      params: {
+        limit: 20,
+        offset: 0,
+        order_cause: 'create_time',
+        order_dir: 'desc'
+      },
+      total: 0
+    }
+  },
+  methods: {
+    async loadArticles() {
+      // 1. 查询文章列表
+      queryArticleList(this.params).then(resp => {
+        this.list = prepareArticleListAppendJumpPath([...this.list, ...resp.data.data])
+        this.total = resp.data.total
+      })
+    },
+    loadMoreArticles() {
+      this.params.offset += this.params.limit
+      if (this.params.offset >= this.total) return;
+
+      this.loadArticles()
     }
   },
   computed: {
@@ -71,7 +100,10 @@ export default {
         };
       });
     }
-  }
+  },
+  created() {
+    this.loadArticles()
+  },
 }
 </script>
 
@@ -204,5 +236,15 @@ export default {
 .article-list-tags a:hover {
   background: #16499d;
   color: #fff;
+}
+
+.common-article-foot {
+  padding-top: 10px;
+}
+
+.baseline {
+  color: #b3b2b2;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 </style>

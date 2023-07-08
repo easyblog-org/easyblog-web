@@ -15,7 +15,8 @@
                 <v-row>
                   <v-col cols="8">
                     <!--自定义轮播图-->
-                    <app-common-swiper :list="swiper_article_list" :height="340"></app-common-swiper>
+                    <app-common-swiper :list="swiper_article_list"
+                                       :height="340"></app-common-swiper>
                   </v-col>
                   <v-col cols="4">
                     <!--自定义轮播图侧边显示-->
@@ -48,9 +49,7 @@
                   </v-col>
                 </v-row>
                 <!--内容-->
-                <app-common-article-list
-                  :list="newest_article_list"
-                ></app-common-article-list>
+                <app-common-article-list/>
               </v-sheet>
             </v-col>
             <!--right side-->
@@ -82,7 +81,8 @@
 </template>
 
 <script lang="js">
-import {queryArticleList, queryIndexPageArticleList} from "@/api/article";
+import {queryIndexPageArticleList} from "@/api/article";
+import {prepareArticleListAppendJumpPath} from "static/util";
 
 export default {
   name: 'HomeView',
@@ -91,8 +91,6 @@ export default {
     swiper_article_list: [],
     //轮播图中间显示的文章或教程
     swiper_article_side_list: [],
-    //最新文章列表
-    newest_article_list: [],
     //热搜文章或教程 给 热搜榜提供数据
     hot_search_list: [],
     //文章热榜 给文章热搜提供数据
@@ -119,32 +117,17 @@ export default {
         }
       }
     },
-    articleDetailsJumpPath(item) {
-      if (!item) return "/"
-      return `/article/${item.code}`
-    },
-    prepareArticleListAppendJumpPath(list) {
-      if (!list) return []
-      return list.map(item => {
-        return {
-          ...item,
-          url: this.articleDetailsJumpPath(item)
-        };
-      });
-    },
     async loadArticles() {
       // 1. 查询轮播图文章
       const res = await queryIndexPageArticleList()
-      this.swiper_article_list = this.prepareArticleListAppendJumpPath(res.data.swiper_article_list)
-      this.swiper_article_side_list = this.prepareArticleListAppendJumpPath(res.data.swiper_article_side_list)
-      this.newest_article_list = this.prepareArticleListAppendJumpPath(res.data.newest_article_list)
-    }
+      this.swiper_article_list = prepareArticleListAppendJumpPath(res.data.swiper_article_list)
+      this.swiper_article_side_list = prepareArticleListAppendJumpPath(res.data.swiper_article_side_list)
+    },
   },
   created() {
     this.loadArticles()
   },
   mounted() {
-    this.scrolls()
   }
 }
 </script>
