@@ -1,42 +1,47 @@
 <template>
-  <v-carousel
-    cycle
-    :interval="3000"
-    :height="height"
-    show-arrows-on-hover
-    :style="{'height':computeHeight,'width':computeWidth}"
-  >
-
-    <v-carousel-item
-      v-for="(item) in list"
-      :key="item.code"
-      :src="item.featured_image"
-      link
-      eager
-      class="my-carousel-item"
+  <div v-show="list!=null">
+    <v-carousel
+      cycle
+      :interval="3000"
+      :height="height"
+      show-arrows-on-hover
+      :style="{'height':computeHeight,'width':computeWidth}"
     >
-      <NuxtLink :to="item.url" style="text-decoration: none">
-        <v-sheet
-          height="100%"
-          tile
-          style="background: unset"
-        >
-          <v-row
-            class="fill-height"
-            align="center"
-            justify="center"
+
+      <v-carousel-item
+        v-for="(item) in list"
+        :key="item.code"
+        :src="item.featured_image"
+        link
+        eager
+        class="my-carousel-item"
+      >
+        <NuxtLink :to="item.url" style="text-decoration: none">
+          <v-sheet
+            height="100%"
+            tile
+            style="background: unset"
           >
-            <div class="my-carousel-item-title">
-              {{ item.title }}
-            </div>
-          </v-row>
-        </v-sheet>
-      </NuxtLink>
-    </v-carousel-item>
-  </v-carousel>
+            <v-row
+              class="fill-height"
+              align="center"
+              justify="center"
+            >
+              <div class="my-carousel-item-title">
+                {{ item.title }}
+              </div>
+            </v-row>
+          </v-sheet>
+        </NuxtLink>
+      </v-carousel-item>
+    </v-carousel>
+  </div>
 </template>
 
 <script>
+
+import {queryArticleList} from "@/api/article";
+import {prepareArticleListAppendJumpPath} from "static/util";
 
 export default {
   name: 'app-common-swiper',
@@ -49,11 +54,25 @@ export default {
       type: String | Number,
       default: '100%'
     },
-    list: {
-      type: Array,
-      default: function () {
-        return []
-      }
+  },
+  data() {
+    return {
+      list: null,
+      params: {
+        limit: 7,
+        offset: 0,
+        is_top: true,
+        order_cause: 'create_time',
+        order_dir: 'desc'
+      },
+    }
+  },
+  methods: {
+    async loadArticles() {
+      // 1. 查询文章列表
+      queryArticleList(this.params).then(resp => {
+        this.list = prepareArticleListAppendJumpPath(resp.data.data)
+      })
     }
   },
   computed: {
@@ -70,8 +89,11 @@ export default {
     },
     computeHeight() {
       return this.height + 'px'
-    }
-  }
+    },
+  },
+  mounted() {
+    this.loadArticles()
+  },
 }
 </script>
 

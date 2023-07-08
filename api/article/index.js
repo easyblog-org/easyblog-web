@@ -16,17 +16,6 @@ export const queryArticleList = (params) => {
   })
 }
 
-/**
- * 查询文章列表(首页专用)
- * @param params
- * @returns {Promise<any|undefined>|*}
- */
-export const queryIndexPageArticleList = () => {
-  return request({
-    url: `${prefix}/index`,
-    method: 'GET',
-  })
-}
 
 /**
  * 查询文章详情

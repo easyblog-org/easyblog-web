@@ -1,5 +1,5 @@
 <template>
-  <div class="common-article-list-container">
+  <div v-show="total!=null" class="common-article-list-container">
     <div>
       <h2 class="h_title">最新文章</h2>
     </div>
@@ -72,7 +72,7 @@ export default {
         order_cause: 'create_time',
         order_dir: 'desc'
       },
-      total: 0
+      total: null
     }
   },
   methods: {
@@ -101,7 +101,7 @@ export default {
       });
     }
   },
-  created() {
+  mounted() {
     this.loadArticles()
   },
 }

@@ -15,8 +15,7 @@
                 <v-row>
                   <v-col cols="8">
                     <!--自定义轮播图-->
-                    <app-common-swiper :list="swiper_article_list"
-                                       :height="340"></app-common-swiper>
+                    <app-common-swiper :height="340"/>
                   </v-col>
                   <v-col cols="4">
                     <!--自定义轮播图侧边显示-->
@@ -81,14 +80,12 @@
 </template>
 
 <script lang="js">
-import {queryIndexPageArticleList} from "@/api/article";
+import {queryArticleList} from "@/api/article";
 import {prepareArticleListAppendJumpPath} from "static/util";
 
 export default {
   name: 'HomeView',
   data: () => ({
-    //轮播图显示的文章或教程...
-    swiper_article_list: [],
     //轮播图中间显示的文章或教程
     swiper_article_side_list: [],
     //热搜文章或教程 给 热搜榜提供数据
@@ -119,16 +116,20 @@ export default {
     },
     async loadArticles() {
       // 1. 查询轮播图文章
-      const res = await queryIndexPageArticleList()
-      this.swiper_article_list = prepareArticleListAppendJumpPath(res.data.swiper_article_list)
-      this.swiper_article_side_list = prepareArticleListAppendJumpPath(res.data.swiper_article_side_list)
+      queryArticleList({
+        limit: 2,
+        offset: 5,
+        is_top: true,
+        order_cause: 'create_time',
+        order_dir: 'desc'
+      }).then(resp => {
+        this.swiper_article_side_list = prepareArticleListAppendJumpPath(resp.data.data)
+      })
     },
   },
-  created() {
+  mounted() {
     this.loadArticles()
   },
-  mounted() {
-  }
 }
 </script>
 <style scoped>

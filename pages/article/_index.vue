@@ -429,9 +429,6 @@ export default {
       this.$router.push(`/article/${code}`)
     }
   },
-  beforeMount() {
-
-  },
   mounted() {
     // 挂载之前做的事情
     queryArticleDetails(this.$route.params.index).then(resp => {
