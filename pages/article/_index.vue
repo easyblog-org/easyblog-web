@@ -268,7 +268,7 @@
                 </v-col>
               </v-row>
             </v-card>
-            <v-card elevation="1" rounded class="article-content" ref="articleContentRef">
+            <v-card v-if="!tableOfContents" elevation="1" rounded class="article-content" ref="articleContentRef">
               <v-card-title>目录</v-card-title>
 
               <div class="content-item" :style="{ 'max-height': tableOfContentMaxHeight }">
@@ -339,17 +339,21 @@ export default {
      * @param code
      * @returns any
      */
-    async queryArticleByPrimaryKey(code) {
-      const res = await queryArticleDetails(code)
-      if (!res || !res.data) {
-        // 返回404
-        return;
-      }
-      this.pageViews = 59040
-      this.publishTime = res.data.create_time
-      this.title = res.data.title
-      this.authorName = res.data.author.nick_name
-      this.authorImgUrl = res.data.author.header_img_url
+    queryArticleByPrimaryKey(code) {
+      queryArticleDetails(code).then(resp => {
+        if (!resp || !resp.data) {
+          this.$router.push('/404')
+          return;
+        }
+
+        this.pageViews = 59040
+        this.publishTime = resp.data.create_time
+        this.title = resp.data.title
+        this.authorName = resp.data.author.nick_name
+        this.authorImgUrl = resp.data.author.header_img_url
+
+        setTimeout(this.generateTableOfContents, 500)
+      })
     },
     /**
      *  生成目录
@@ -419,7 +423,7 @@ export default {
         this.showAppBar = true
       }
     },
-    scrolls() {
+    addScrollsListener() {
       window.onscroll = () => {
         let scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
         this.fixTableOfContentBox(scrollTop)
@@ -430,24 +434,13 @@ export default {
     }
   },
   mounted() {
-    // 挂载之前做的事情
-    queryArticleDetails(this.$route.params.index).then(resp => {
-      if (!resp || !resp.data) {
-        this.$router.push('/404')
-        return;
-      }
-
-      this.pageViews = 59040
-      this.publishTime = resp.data.create_time
-      this.title = resp.data.title
-      this.authorName = resp.data.author.nick_name
-      this.authorImgUrl = resp.data.author.header_img_url
-
-      setTimeout(this.generateTableOfContents, 500)
-      this.calculateTableOfContentMaxHeight(); // 初始化最大高度
-      window.addEventListener('resize', this.calculateTableOfContentMaxHeight); // 监听窗口大小变化
-      this.scrolls()
-    })
+    // 1. 根据code查询文章，没有查到文章跳转404页面
+    this.queryArticleByPrimaryKey(this.$route.params.index)
+    // 2. 初始化文章主体Box最大高度
+    this.calculateTableOfContentMaxHeight();
+    // 3. 监听窗口大小变化,动态变更文章主体Box高度
+    window.addEventListener('resize', this.calculateTableOfContentMaxHeight);
+    this.addScrollsListener()
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.calculateTableOfContentMaxHeight);

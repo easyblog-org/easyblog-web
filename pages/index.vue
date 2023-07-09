@@ -96,7 +96,7 @@ export default {
   }),
   methods: {
     // 控制滑动到一定高度之后固定右侧侧边栏
-    scrolls() {
+    addScrollsListener() {
       const rightSide = this.$refs.rightSideRef
       const headerTop = 1330
       window.onscroll = () => {
@@ -129,6 +129,7 @@ export default {
   },
   mounted() {
     this.loadArticles()
+    this.addScrollsListener()
   },
 }
 </script>
