@@ -41,9 +41,9 @@
           </v-col>
         </v-row>
       </v-card-text>
-      <div class="common-article-foot rounded-0" @click="loadMoreArticles">
-        <v-btn v-show="total>params.offset" outlined block color="primary" class="rounded-0">
-          加载更多
+      <div class="common-article-read-more rounded-0" @click="loadMoreArticles">
+        <v-btn v-show="total>params.offset" block class="rounded-0">
+          阅读更多
         </v-btn>
         <v-row class="align-center justify-center baseline" v-show="total<=params.offset">我是有底线的~</v-row>
       </div>
@@ -238,8 +238,21 @@ export default {
   color: #fff;
 }
 
-.common-article-foot {
-  padding-top: 10px;
+.common-article-read-more {
+  padding: 15px 0 15px 0;
+}
+
+.common-article-read-more button {
+  background-color: #f1f1f1;
+  box-shadow: unset !important;
+  color: #000000;
+  font-weight: 400;
+}
+
+.common-article-read-more button:hover {
+  background-color: #16499d;
+  color: #ffffff;
+  font-weight: 400;
 }
 
 .baseline {
