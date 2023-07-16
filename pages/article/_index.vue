@@ -1,5 +1,6 @@
 <template>
   <v-app ref="articleApp">
+    <app-page-view-counter @pageView="sendPageView"/>
     <!--顶部标题栏-->
     <app-common-bar :show="showAppBar"></app-common-bar>
 
@@ -287,7 +288,7 @@
 <script>
 import AppCommonBar from '~/components/AppCommonBar'
 import AppCommonMarkdownPreviewer from '~/components/AppCommonMarkdownPreviewer.vue'
-import {queryArticleDetails} from "@/api/article";
+import {queryArticleDetails, statistics, updateArticle} from "@/api/article";
 
 export default {
   name: 'ArticleDetailsView',
@@ -351,6 +352,7 @@ export default {
         this.title = resp.data.title
         this.authorName = resp.data.author.nick_name
         this.authorImgUrl = resp.data.author.header_img_url
+        this.pageViews=resp.data.page_views
 
         setTimeout(this.generateTableOfContents, 500)
       })
@@ -413,14 +415,16 @@ export default {
       const contentRef = this.$refs.articleContentRef
       if (scrollPosition > window.innerHeight * 0.36) {
         this.showAppBar = false
+        if (!contentRef) return
         const rightPos = (window.innerWidth / 48) * 3.95
         contentRef.$el.style.position = 'fixed'
         contentRef.$el.style.right = rightPos + 'px'
         contentRef.$el.style.top = '15px'
         contentRef.$el.style.width = (window.innerWidth / 48) * 8.45 + 'px'
       } else {
-        contentRef.$el.style.position = 'static'
         this.showAppBar = true
+        if (!contentRef) return
+        contentRef.$el.style.position = 'static'
       }
     },
     addScrollsListener() {
@@ -431,6 +435,14 @@ export default {
     },
     jumpToArticleDetails(code) {
       this.$router.push(`/article/${code}`)
+    },
+    sendPageView(code) {
+      if (!code) return
+      statistics({
+        'code': code,
+        'statistic_index_name': 'page_views',
+        'increment': 1
+      })
     }
   },
   mounted() {
@@ -441,6 +453,8 @@ export default {
     // 3. 监听窗口大小变化,动态变更文章主体Box高度
     window.addEventListener('resize', this.calculateTableOfContentMaxHeight);
     this.addScrollsListener()
+
+    this.sendPageView(this.$route.params.index)
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.calculateTableOfContentMaxHeight);

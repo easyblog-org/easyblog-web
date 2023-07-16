@@ -27,3 +27,8 @@ export const PAGE_SIZE = {
   FIFTY_ITEMS: 50,
   ONE_HUNDRED_ITEMS: 100
 }
+
+export const COMMON_HOT_SEARCH_ARTICLE_LIST_CARD_OPT = {
+  NEXT_PAGE: 1,
+  PREV_PAGE: 2
+}

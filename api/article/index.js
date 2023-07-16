@@ -28,3 +28,29 @@ export const queryArticleDetails = code => {
     method: 'GET',
   })
 }
+
+/**
+ * 更新文章
+ * @param code
+ * @param params
+ */
+export const updateArticle = (code, params) => {
+  return request({
+    url: `${prefix}/${code}`,
+    method: 'PUT',
+    data: params,
+  })
+}
+
+/**
+ * 更新统计指标
+ * @param code
+ * @param params
+ */
+export const statistics = (params) => {
+  return request({
+    url: `${prefix}/statistics`,
+    method: 'PUT',
+    data: params,
+  })
+}

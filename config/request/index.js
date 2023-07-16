@@ -8,7 +8,7 @@ const server = axios.create({
   // 设置接口访问超时时间
   timeout: 50000, // request timeout，
   // 跨域时候允许携带凭证
-  withCredentials: true,
+  withCredentials: true
 })
 
 
@@ -60,26 +60,30 @@ export default async (options = {method: 'GET'}) => {
   ) {
     isdata = false;
   }
+
+  const headers = {
+    'ContentType': 'application/json'
+  }
+
   const res = await server({
     method: options.method,
     url: options.url,
     data: isdata ? options.data : null,
     params: !isdata ? options.data : null,
+    headers: !isdata ? headers : null
   });
   if (res.status >= 200 && res.status < 300) {
-    if (!process.env.NODE_ENV) {
-      console.log(
-        `${new Date().toLocaleString()}【接口响应：】`,
-        res.data,
-      );
-    }
+    console.log(
+      `${new Date().toLocaleString()}【接口响应：】`,
+      res.data,
+    );
     // 浏览器环境弹出报错信息
-    if (typeof window !== "undefined" && res.data.code !== 0) {
-      console.log(res.data.msg);
+    if (typeof window !== "undefined" && res.data.code !== 'success') {
+      console.log(res.data);
     }
     return res.data;
   } else {
-    if (typeof window !== "undefined" && res.data.code !== 0) {
+    if (typeof window !== "undefined" && res.data.code !== 'success') {
       console.log('请求错误');
     }
   }

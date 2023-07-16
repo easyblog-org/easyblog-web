@@ -55,7 +55,13 @@
             <v-col cols="3" class="rbox" ref="rightSideRef">
               <!--热搜-->
               <app-common-hot-search-list
-                title="7x24小时头条"
+                title="文章热榜"
+                :params="{
+                  limit: 20,
+                  offset: 0,
+                  order_cause: 'page_views',
+                  order_dir: 'desc'
+                }"
               ></app-common-hot-search-list>
               <div class="pa-3"></div>
               <!--广告区-->
@@ -63,7 +69,14 @@
               <div class="pa-3"></div>
               <!--热搜-->
               <app-common-hot-search-list
-                title="文章热榜"
+                title="7x24小时头条"
+                :params="{
+                  limit: 20,
+                  offset: 0,
+                  create_time_begin:new Date().getTime()-7 * 24 * 3600 * 1000,
+                  order_cause: 'page_views',
+                  order_dir: 'desc'
+                }"
               ></app-common-hot-search-list>
               <div class="pa-3"></div>
               <!--友情链接-->
@@ -88,10 +101,6 @@ export default {
   data: () => ({
     //轮播图中间显示的文章或教程
     swiper_article_side_list: [],
-    //热搜文章或教程 给 热搜榜提供数据
-    hot_search_list: [],
-    //文章热榜 给文章热搜提供数据
-    hot_click_list: [],
     showAppbar: true
   }),
   methods: {

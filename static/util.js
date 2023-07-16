@@ -201,3 +201,21 @@ export function articleDetailsJumpPath(item) {
   if (!item) return "/"
   return `/article/${item.code}`
 }
+
+export function splitArrayBySize(arr, partition_size) {
+  const result = [];
+  for (let i = 0; i < arr.length; i += partition_size) {
+    result.push(arr.slice(i, i + partition_size));
+  }
+  return result;
+}
+
+export function getNthPartitionOf(arr, partition_size, partition_no) {
+  const blocks = splitArrayBySize(arr, partition_size);
+  if (partition_no > 0 && partition_no <= blocks.length) {
+    return blocks[partition_no - 1];
+  } else {
+    return null;
+  }
+}
+
