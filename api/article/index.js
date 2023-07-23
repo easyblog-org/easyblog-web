@@ -47,10 +47,37 @@ export const updateArticle = (code, params) => {
  * @param code
  * @param params
  */
-export const statistics = (params) => {
+export const updateStatistics = (params) => {
   return request({
     url: `${prefix}/statistics`,
     method: 'PUT',
+    data: params,
+  })
+}
+
+/**
+ * 查询统计指标
+ * @param code
+ * @param params
+ */
+export const statistics = (params) => {
+  return request({
+    url: `${prefix}/statistics`,
+    method: 'GET',
+    data: params,
+  })
+}
+
+
+/**
+ * 查询统计文章数量
+ * @param code
+ * @param params
+ */
+export const countArticles = (params) => {
+  return request({
+    url: `${prefix}/count`,
+    method: 'GET',
     data: params,
   })
 }

@@ -88,7 +88,7 @@
                     </v-btn>
                     <div class="email-forget-password-box">
                     <span><NuxtLink tag="span" style="color: #1976d2;text-underline: none;cursor: pointer"
-                                       to="/forget-password" class="content">忘记密码</NuxtLink></span>
+                                    to="/forget-password" class="content">忘记密码</NuxtLink></span>
                     </div>
                     <div class="email-go-register-box">
                       <span>没有账号？<NuxtLink to="/register" class="content">立即注册</NuxtLink></span>
@@ -106,7 +106,7 @@
         <!--隐私协议-->
         <div class="privacy_box">
         <span>登录注册即代表同意 EasyBlog <NuxtLink class="content" to="/service-protocol" tag="span"
-                                              style="color: #1976d2;text-underline: none;cursor: pointer">《服务协议》</NuxtLink> 和 <NuxtLink
+                                           style="color: #1976d2;text-underline: none;cursor: pointer">《服务协议》</NuxtLink> 和 <NuxtLink
           class="content" to="/privacy" tag="span"
           style="color: #1976d2;text-underline: none;cursor: pointer">《用户隐私政策》</NuxtLink></span>
         </div>
@@ -133,6 +133,7 @@ import PointsVerifier from '@/components/verify/PointsVerifier'
 import AppThirdPartyLoginBox from '@/components/AppThirdPartyLoginBox'
 import isSuccess from "@/static/util";
 import {SYSTEM_CONSTANTS} from "@/static/global";
+const cookie = process.client ? require('js-cookie') : undefined
 
 export default {
   name: 'LoginView',
@@ -252,18 +253,19 @@ export default {
     },
     //手机登录
     phoneLogin() {
-      //TODO 请求后端使用手机验证码登录
-      this.saveLocalSession('')
+
     },
     //邮箱登录
     emailLogin() {
-      //TODO 请求后端使用邮箱密码登录
+      setTimeout(() => { // 定时器模拟api请求
+        const user = {
+          code: 'LSzeyP',
+          username: 'Tom',
+          token: '86974888'
+        }
 
-      this.saveLocalSession('')
-    },
-    // 登录成功之后保存localSession
-    saveLocalSession(token) {
-      localStorage.setItem(SYSTEM_CONSTANTS.LOGIN_TOKEN, token)
+        this.$store.commit('setUser', user)
+      })
     },
     //关闭文字验证框
     closePointVerifyWindow(state) {

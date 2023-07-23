@@ -12,10 +12,10 @@
               <v-badge
                 overlap
                 :color="likesFlag.thumbUp ? '#1e80ff' : '#c2c8d1'"
-                :content="likesNum"
-                :value="likesNum"
+                :content="authorRecords.likes_num"
+                :value="authorRecords.likes_num"
               >
-                <v-btn elevation="2" fab rounded middle icon @click="this.handleLikeIconClick">
+                <v-btn elevation="2" fab rounded middle icon @click="this.handleLikeArticle">
                   <v-icon :color="likesFlag.thumbUp ? '#1e80ff' : '#8a919f'"
                   >mdi-thumb-up
                   </v-icon
@@ -23,30 +23,30 @@
                 </v-btn>
               </v-badge>
             </v-col>
+            <!--            <v-col>-->
+            <!--              <v-badge-->
+            <!--                overlap-->
+            <!--                :color="likesFlag.comment ? '#1e80ff' : '#c2c8d1'"-->
+            <!--                :content="commentNum"-->
+            <!--                :value="commentNum"-->
+            <!--              >-->
+            <!--                <v-btn elevation="2" fab rounded middle>-->
+            <!--                  <v-icon :color="likesFlag.comment ? '#1e80ff' : '#8a919f'"-->
+            <!--                  >mdi-comment-->
+            <!--                  </v-icon-->
+            <!--                  >-->
+            <!--                </v-btn>-->
+            <!--              </v-badge>-->
+            <!--            </v-col>-->
             <v-col>
               <v-badge
                 overlap
-                :color="likesFlag.comment ? '#1e80ff' : '#c2c8d1'"
-                :content="commentNum"
-                :value="commentNum"
+                :color="likesFlag.favorites ? '#1e80ff' : '#c2c8d1'"
+                :content="authorRecords.favorites_num"
+                :value="authorRecords.favorites_num"
               >
-                <v-btn elevation="2" fab rounded middle>
-                  <v-icon :color="likesFlag.comment ? '#1e80ff' : '#8a919f'"
-                  >mdi-comment
-                  </v-icon
-                  >
-                </v-btn>
-              </v-badge>
-            </v-col>
-            <v-col>
-              <v-badge
-                overlap
-                :color="likesFlag.star ? '#1e80ff' : '#c2c8d1'"
-                :content="starNum"
-                :value="starNum"
-              >
-                <v-btn elevation="2" fab rounded middle>
-                  <v-icon :color="likesFlag.star ? '#1e80ff' : '#8a919f'"
+                <v-btn elevation="2" fab rounded middle @click="this.handleFavoriteArticle">
+                  <v-icon :color="likesFlag.favorites ? '#1e80ff' : '#8a919f'"
                   >mdi-star
                   </v-icon
                   >
@@ -54,12 +54,12 @@
               </v-badge>
             </v-col>
             <v-col>
-              <v-btn elevation="2" fab rounded middle>
+              <v-btn elevation="2" fab rounded middle @click="this.handleShareArticle">
                 <v-icon color="#8a919f">mdi-share</v-icon>
               </v-btn>
             </v-col>
             <v-col>
-              <v-btn elevation="2" fab rounded middle>
+              <v-btn elevation="2" fab rounded middle @click="this.handleReportArticle">
                 <v-icon color="#8a919f">mdi-alert</v-icon>
               </v-btn>
             </v-col>
@@ -118,7 +118,7 @@
                         </span>
                         <span class="page-views">
                           &nbsp;&nbsp;·&nbsp;&nbsp;阅读
-                          <span>{{ pageViews }}</span>
+                          <span>{{ authorRecords.visit_num }}</span>
                         </span>
                       </v-row>
                     </v-col>
@@ -132,15 +132,15 @@
               <div class="content-links">
                 <v-row>
                   <v-col cols="6" style="text-align: left">
-                    <a @click="jumpToArticleDetails(article.prev.id)">
+                    <a @click="jumpToArticleDetails(article_guide.prev.code)">
                       上一篇：
-                      {{ article.prev.title }}
+                      {{ article_guide.prev.title }}
                     </a>
                   </v-col>
                   <v-col cols="6" style="text-align: right">
-                    <a @click="jumpToArticleDetails(article.next.id)">
+                    <a @click="jumpToArticleDetails(article_guide.next.code)">
                       下一篇：
-                      {{ article.next.title }}</a>
+                      {{ article_guide.next.title }}</a>
                   </v-col>
                 </v-row>
               </div>
@@ -258,12 +258,12 @@
                 <v-col cols="3">
                   <v-row>
                     <v-col cols="12" class="text-center justify-center">
-                      评论
+                      收藏
                     </v-col>
                   </v-row>
                   <v-row>
                     <v-col cols="12" class="text-center justify-center mt-0 pt-0">
-                      {{ authorRecords.comment_num }}
+                      {{ authorRecords.favorites_num }}
                     </v-col>
                   </v-row>
                 </v-col>
@@ -288,7 +288,7 @@
 <script>
 import AppCommonBar from '~/components/AppCommonBar'
 import AppCommonMarkdownPreviewer from '~/components/AppCommonMarkdownPreviewer.vue'
-import {queryArticleDetails, statistics, updateArticle} from "@/api/article";
+import {queryArticleDetails, updateStatistics, statistics, countArticles} from "@/api/article";
 
 export default {
   name: 'ArticleDetailsView',
@@ -297,43 +297,75 @@ export default {
     AppCommonMarkdownPreviewer,
   },
   data: () => ({
-    article: {
+    article_guide: {
       prev: {
-        id: 1596064,
+        code: 1596064,
         title: 'Java从入门到入土'
       },
       next: {
-        id: 8693095,
+        code: 8693095,
         title: '混编模式（策略模式+工厂方法模式+门面模式门面模式门面模式门面模式）'
       },
     },
-    pageViews: 0,
     authorName: '',
     authorImgUrl: '',
     publishTime: '',
     title: '',
     content: '',
-    likesNum: 1,
-    starNum: 0,
-    commentNum: 0,
     likesFlag: {
       thumbUp: false,
       comment: false,
-      star: false,
+      favorites: false,
     },
     authorRecords: {
       original_article_num: 0,
       visit_num: 0,
       likes_num: 0,
-      comment_num: 0
+      favorites_num: 0
     },
     tableOfContents: [], // 存储生成的目录项
     tableOfContentMaxHeight: 0,
     showAppBar: true, // 控制是否显示 AppBar
   }),
   methods: {
-    handleLikeIconClick() {
-      this.likesFlag.thumbUp = !this.likesFlag.thumbUp
+    handleArticleEvent(code, event) {
+      if (!code || !event) return
+      updateStatistics({
+        'code': code,
+        'statistic_index_name': event,
+        'increment': 1,
+        'operator': this.$store.state.user ? this.$store.state.user.code : null
+      }).then(() => {
+        if (event === 'likes') {
+          this.likesFlag.thumbUp = !this.likesFlag.thumbUp
+        } else if (event === 'favorites') {
+          this.likesFlag.favorites = !this.likesFlag.favorites
+        }
+      })
+    },
+    /**
+     * 处理点赞
+     */
+    handleLikeArticle() {
+      this.handleArticleEvent(this.$route.params.index, 'likes')
+    },
+    /**
+     * 处理收藏
+     */
+    handleFavoriteArticle() {
+      this.handleArticleEvent(this.$route.params.index, 'favorites')
+    },
+    /**
+     * 处理分享
+     */
+    handleShareArticle() {
+      this.handleArticleEvent(this.$route.params.index, 'share')
+    },
+    /**
+     * 处理举报
+     */
+    handleReportArticle() {
+      this.handleArticleEvent(this.$route.params.index, 'report')
     },
     /**
      * 查询文章详情
@@ -347,12 +379,10 @@ export default {
           return;
         }
 
-        this.pageViews = 59040
         this.publishTime = resp.data.create_time
         this.title = resp.data.title
         this.authorName = resp.data.author.nick_name
         this.authorImgUrl = resp.data.author.header_img_url
-        this.pageViews=resp.data.page_views
 
         setTimeout(this.generateTableOfContents, 500)
       })
@@ -438,23 +468,94 @@ export default {
     },
     sendPageView(code) {
       if (!code) return
-      statistics({
-        'code': code,
-        'statistic_index_name': 'page_views',
-        'increment': 1
+      this.handleArticleEvent(code, 'page_views')
+    },
+    getStatistics(code) {
+      if (!code) return
+
+      console.log("$store.state.user:" + JSON.stringify(this.$store.state.user))
+      countArticles({
+        'author_id': this.$store.state.user.code
+      }).then(resp => {
+        this.authorRecords.original_article_num = !resp.data ? 0 : resp.data
       })
-    }
+
+      statistics({
+        'article_codes': code,
+        'user_codes': '',
+        'events': 'page_views',
+      }).then(resp => {
+        this.authorRecords.visit_num = !resp.data ? 0 : resp.data
+      })
+
+      statistics({
+        'article_codes': code,
+        'user_codes': '',
+        'events': 'likes',
+      }).then(resp => {
+        this.authorRecords.likes_num = !resp.data ? 0 : resp.data
+      })
+
+      statistics({
+        'article_codes': code,
+        'user_codes': '',
+        'events': 'favorites'
+      }).then(resp => {
+        this.authorRecords.favorites_num = !resp.data ? 0 : resp.data
+      })
+    },
+    getStatisticsState(code) {
+      if (!code) return
+
+      statistics({
+        'events': 'favorites',
+        'operators': this.$store.state.user ? this.$store.state.user.code : null
+      }).then(resp => {
+        if (!resp) {
+          return;
+        }
+
+        this.likesFlag.thumbUp = resp.data.length > 0
+      })
+
+      statistics({
+        'events': 'likes',
+        'operators': this.$store.state.user ? this.$store.state.user.code : null
+      }).then(resp => {
+        if (!resp) {
+          return;
+        }
+
+        this.likesFlag.favorites = resp.data.length > 0
+      })
+
+
+      statistics({
+        'events': 'share',
+        'operators': this.$store.state.user ? this.$store.state.user.code : null
+      }).then(resp => {
+        if (!resp) {
+          return;
+        }
+
+        this.likesFlag.thumbUp = resp.data.length > 0
+      })
+
+    },
   },
   mounted() {
+    const articleCode = this.$route.params.index
     // 1. 根据code查询文章，没有查到文章跳转404页面
-    this.queryArticleByPrimaryKey(this.$route.params.index)
+    this.queryArticleByPrimaryKey(articleCode)
     // 2. 初始化文章主体Box最大高度
     this.calculateTableOfContentMaxHeight();
     // 3. 监听窗口大小变化,动态变更文章主体Box高度
     window.addEventListener('resize', this.calculateTableOfContentMaxHeight);
     this.addScrollsListener()
+    this.getStatistics(articleCode)
+    this.getStatisticsState(articleCode)
 
-    this.sendPageView(this.$route.params.index)
+    this.sendPageView(articleCode)
   },
   beforeDestroy() {
     window.removeEventListener('resize', this.calculateTableOfContentMaxHeight);
