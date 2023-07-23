@@ -19,25 +19,43 @@ export default {
         id: '1',
         color: 'black',
         name: 'GitHub',
-        url: 'https://www.github.com'
+        url: 'https://github.com/easyblog-org/easyblog-web'
       },
       {
         id: '2',
         color: 'Blue',
-        name: 'EasyBlog',
-        url: 'https://www.easyblog.top'
+        name: 'LeetCode',
+        url: 'https://leetcode.cn/'
       },
       {
         id: '3',
         color: 'light-blue',
-        name: 'Vuetify官网Vuetify官网',
+        name: 'Vuetify中文官网',
         url: 'https://vuetifyjs.com/zh-Hans/'
       },
       {
         id: '4',
         color: 'cyan',
-        name: 'Vuetify官网',
-        url: 'https://vuetifyjs.com/zh-Hans/'
+        name: 'ChatGPT',
+        url: 'https://chat.openai.com/'
+      },
+      {
+        id: '5',
+        color: 'red',
+        name: 'Vditor',
+        url: 'https://b3log.org/vditor/'
+      },
+      {
+        id: '6',
+        color: 'cyan',
+        name: 'Vue2',
+        url: 'https://cn.vuejs.org/'
+      },
+      {
+        id: '7',
+        color: '#00DC82',
+        name: 'Nuxt2',
+        url: 'https://v2.nuxt.com/'
       }
     ]
   })

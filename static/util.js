@@ -148,3 +148,74 @@ export function isNumber(obj) {
   }
   return true;
 }
+
+/**
+ * 获取窗口高度
+ * @returns {number}
+ */
+export function getClientHeight() {
+  let clientHeight = 0;
+  // 获取窗口高度
+  if (window.innerHeight) {
+    clientHeight = window.innerHeight;
+  } else if ((document.body) && (document.body.clientHeight)) {
+    clientHeight = document.body.clientHeight;
+  } else if (document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth) {
+    // 通过深入 Document 内部对 body 进行检测，获取窗口大小
+    clientHeight = document.documentElement.clientHeight;
+  }
+  return clientHeight;
+}
+
+/**
+ * 生成指定字数的MarkDowm文章摘要
+ * @param markdown
+ * @param wordCount
+ * @returns {*}
+ */
+export function extractKeywordSummary(markdown, wordCount) {
+  // 去除 Markdown 标记和多余的空格
+  const plainText = markdown.replace(/[\*\#\`\_\[\]\(\)]/g, '').trim();
+
+  // 将字符串按空格拆分为单词数组
+  const words = plainText.split(' ');
+
+  // 计算关键字摘要的结束索引
+  const endIndex = Math.min(wordCount, words.length);
+
+  // 提取指定字数的关键字摘要
+  return words.slice(0, endIndex).join(' ');
+}
+
+export function prepareArticleListAppendJumpPath(list) {
+  if (!list) return []
+  return list.map(item => {
+    return {
+      ...item,
+      url: articleDetailsJumpPath(item)
+    };
+  });
+}
+
+export function articleDetailsJumpPath(item) {
+  if (!item) return "/"
+  return `/article/${item.code}`
+}
+
+export function splitArrayBySize(arr, partition_size) {
+  const result = [];
+  for (let i = 0; i < arr.length; i += partition_size) {
+    result.push(arr.slice(i, i + partition_size));
+  }
+  return result;
+}
+
+export function getNthPartitionOf(arr, partition_size, partition_no) {
+  const blocks = splitArrayBySize(arr, partition_size);
+  if (partition_no > 0 && partition_no <= blocks.length) {
+    return blocks[partition_no - 1];
+  } else {
+    return null;
+  }
+}
+

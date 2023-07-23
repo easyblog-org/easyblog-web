@@ -1,5 +1,6 @@
 <template>
-  <v-card class="hot-search-box sidebar-box-border align-center rounded-sm" elevation="0">
+  <v-card v-show="show_cards!=null&&show_cards.length>0"
+          class="hot-search-box sidebar-box-border align-center rounded-sm" elevation="0">
     <v-card-title class="hot-search-title-box">
       <v-row justify="space-between">
         <v-col cols="8">
@@ -16,42 +17,35 @@
         <v-col cols="4" class="page">
           <span>
              <span>
-               <svg @click="onHotSearchPageBtnClick(1)" v-show="card_show === 2" t="1648308912652" class="icon"
+               <svg @click="onHotSearchPageBtnClick(2)"
+                    t="1648308912652" class="icon"
                     viewBox="0 0 1024 1024" version="1.1"
                     xmlns="http://www.w3.org/2000/svg"
                     p-id="8198" width="22" height="22"><path
                  d="M503.466667 490.666667l174.933333 174.933333-59.733333 59.733333L384 490.666667 618.666667 256l59.733333 59.733333-174.933333 174.933334z"
                  fill="#515151" p-id="8199"></path></svg>
-               <svg @click="onHotSearchPageBtnClick(1)" v-show="card_show === 1" t="1648309106345" class="icon"
-                    viewBox="0 0 1024 1024" version="1.1"
-                    xmlns="http://www.w3.org/2000/svg" p-id="8867" width="22" height="22"><path
-                 d="M503.466667 490.666667l174.933333 174.933333-59.733333 59.733333L384 490.666667 618.666667 256l59.733333 59.733333-174.933333 174.933334z"
-                 fill="#cdcdcd" p-id="8868"></path></svg>
              </span>
         <span>
-          <svg @click="onHotSearchPageBtnClick(2)" v-show="card_show === 1" t="1648308957781" class="icon"
+          <svg @click="onHotSearchPageBtnClick(1)"
+               t="1648308957781" class="icon"
                viewBox="0 0 1024 1024"
                version="1.1"
                xmlns="http://www.w3.org/2000/svg"
                p-id="8579" width="22" height="22"><path
             d="M558.933333 490.666667L384 665.6l59.733333 59.733333 234.666667-234.666666L443.733333 256 384 315.733333l174.933333 174.933334z"
             fill="#515151" p-id="8580"></path></svg>
-           <svg @click="onHotSearchPageBtnClick(2)" v-show="card_show === 2" t="1648308957781" class="icon"
-                viewBox="0 0 1024 1024" version="1.1"
-                xmlns="http://www.w3.org/2000/svg" p-id="8579" width="22" height="22"><path
-             d="M558.933333 490.666667L384 665.6l59.733333 59.733333 234.666667-234.666666L443.733333 256 384 315.733333l174.933333 174.933334z"
-             fill="#cdcdcd" p-id="8580"></path></svg>
         </span>
       </span>
         </v-col>
       </v-row>
     </v-card-title>
     <v-card-text tag="div" class="hot-search-content-box">
-      <v-card-text v-for="(item,i) in this.articles_for_show" :key="item.id" class="hot-search-content">
-        <v-row tag="a" :href="item.url" :title="item.name">
+      <v-card-text v-for="(item,i) in this.show_cards" :key="item.code" class="hot-search-content">
+        <v-row tag="a" :href="articleDetailsJumpPath(item)" :title="item.title">
           <v-col cols="9" class="text">
             <span class="rank-num" :style="{'color':item.rank_icon}">{{ item.rank }}</span>
-            {{ item.name }}
+
+            <NuxtLink :to="articleDetailsJumpPath(item)">{{ item.title }}</NuxtLink>
           </v-col>
           <v-col cols="3" class="click">{{ item.click_num }}</v-col>
         </v-row>
@@ -61,10 +55,14 @@
 </template>
 
 <script>
+import {queryArticleList} from "@/api/article";
+import {getNthPartitionOf} from "static/util";
+import {COMMON_HOT_SEARCH_ARTICLE_LIST_CARD_OPT} from "static/global";
+
 export default {
   name: 'app-common-hot-search-list',
   props: {
-    title:{
+    title: {
       type: String,
       default: '热搜榜'
     },
@@ -72,13 +70,20 @@ export default {
       type: String | Number,
       default: '340px'
     },
-    page_size: {
+    params: {
+      type: Object,
+      default: function () {
+        return {
+          limit: this.list_size,
+          offset: 0,
+          order_cause: 'page_views',
+          order_dir: 'desc'
+        }
+      }
+    },
+    card_size: {
       type: Number,
       default: 10
-    },
-    page_no: {
-      type: Number,
-      default: 1
     },
     list_size: {
       type: Number,
@@ -86,156 +91,99 @@ export default {
     }
   },
   data: () => ({
-    original_hot_search_articles: [
-      {
-        id: '1',
-        article_name: '海量数据处理：如何从10亿个数中，找出最大的10000个数？（top K问题',
-        click_num: 188000,
-        rank: 1,
-        url: '/'
-      },
-      {
-        id: '2',
-        article_name: 'HashMap是如何工作的',
-        click_num: 178000,
-        rank: 2,
-        url: '/'
-      },
-      {
-        id: '3',
-        article_name: 'Redis五种常见数据结构的实现及使用场景',
-        click_num: 163001,
-        rank: 3,
-        url: '/'
-      },
-      {
-        id: '4',
-        article_name: 'Redisson 实现分布式锁原理浅析',
-        click_num: 100099,
-        rank: 4,
-        url: '/'
-      },
-      {
-        id: '5',
-        article_name: '深入理解JVM—垃圾回收器（Grabage Collector）基础篇',
-        click_num: 51000,
-        rank: 5,
-        url: '/'
-      },
-      {
-        id: '6',
-        article_name: 'SpringBoot从入门到精通—SpringBoot快速入门',
-        click_num: 60088,
-        rank: 6,
-        url: '/'
-      },
-      {
-        id: '7',
-        article_name: '高并发编程之AQS（AbstractQueuedSynchornizer）—源码剖析',
-        click_num: 50002,
-        rank: 7,
-        url: '/'
-      },
-      {
-        id: '8',
-        article_name: 'SpringBoot网站基于OAuth2添加第三方登录之GitHub登录',
-        click_num: 49999,
-        rank: 8,
-        url: '/'
-      },
-      {
-        id: '9',
-        article_name: 'SpringBoot从入门到精通—SpringBoot快速入门',
-        click_num: 30000,
-        rank: 9,
-        url: '/'
-      },
-      {
-        id: '10',
-        article_name: '作为Java工程师你真的理解synchronized吗',
-        click_num: 1444,
-        rank: 10,
-        url: '/'
-      },
-      {
-        id: '11',
-        article_name: 'RocketMQ Linux 安装配置',
-        click_num: 1234,
-        rank: 11,
-        url: '/'
-      },
-      {
-        id: '12',
-        article_name: 'Spring教程：事物详解（一）初探事物',
-        click_num: 500,
-        rank: 12,
-        url: '/'
-      }
-    ],
-    articles_for_show: [], //展示的卡片
-    card_show: 1,  //控制显示哪个热搜卡片
+    // 卡片页数
+    card_no: 1,
+    // 全部数据
+    list: [],
+    //当前展示的数据
+    show_cards: [],
+    card_opt: null
   }),
   methods: {
-    //翻页按钮点击事件处理
-    onHotSearchPageBtnClick (card) {
-      if (card == null || card === '' || this.card_show === card) {
+    /**
+     * 翻页按钮点击事件处理
+     * @param card_opt @see global.js/COMMON_HOT_SEARCH_ARTICLE_LIST_CARD_OPT
+     */
+    onHotSearchPageBtnClick(card_opt) {
+      console.log(card_opt)
+      if (!card_opt ||
+        card_opt !== COMMON_HOT_SEARCH_ARTICLE_LIST_CARD_OPT.NEXT_PAGE ||
+        card_opt !== COMMON_HOT_SEARCH_ARTICLE_LIST_CARD_OPT.PREV_PAGE) {
         return
       }
-      this.card_show = card
-      this.getShowArticles()
+
+      console.log("next_page?" + card_opt === COMMON_HOT_SEARCH_ARTICLE_LIST_CARD_OPT.NEXT_PAGE)
+      console.log("pre_page?" + card_opt === COMMON_HOT_SEARCH_ARTICLE_LIST_CARD_OPT.PREV_PAGE)
+      if (card_opt === COMMON_HOT_SEARCH_ARTICLE_LIST_CARD_OPT.NEXT_PAGE) {
+        if (this.card_no * this.card_size < this.list.length) {
+          this.card_no += 1
+        } else {
+          //实现循环翻页效果
+          this.card_no = 1
+        }
+      } else if (card_opt === COMMON_HOT_SEARCH_ARTICLE_LIST_CARD_OPT.PREV_PAGE) {
+        if (this.card_no > 1) {
+          this.card_no -= 1
+        }
+      }
+      this.switchShowCard()
     },
     //获取用于展示的文章
-    getShowArticles () {
-      const original_articles = this.original_hot_search_articles
+    getShowArticles() {
+      queryArticleList(this.params).then(resp => {
+        this.list = this.renderArticles(resp.data.data)
+        console.log(this.list)
+        this.switchShowCard()
+      })
+    },
+    renderArticles(original_articles = []) {
       if (original_articles === null || original_articles.length === 0) {
         return []
       }
-      const articles = []
-      const card = this.card_show
-      for (const item of original_articles) {
+
+      let rank = 0;
+      return original_articles.map(item => {
+        rank++
         let icon = ''
-        if (item.rank === 1) {
+        if (rank === 1) {
           icon = '#d81e06'
-        } else if (item.rank === 2) {
+        } else if (rank === 2) {
           icon = '#ff9406'
-        } else if (item.rank === 3) {
+        } else if (rank === 3) {
           icon = '#fec42d'
-        } else if (item.rank <= 10) {
+        } else if (rank <= 10) {
           icon = '#52afff'
         } else {
           icon = '#999aaa'
         }
-
-        const article = {
-          id: item.id,
-          name: item.article_name,
-          click_num: this.formatClickNum(item.click_num),
-          rank: item.rank,
-          rank_icon: icon,
-          url: item.url
-        }
-
-        if (card === 1 && item.rank <= this.page_size) {
-          articles.push(article)
-        } else if (card === 2 && item.rank > this.page_size && item.rank <= this.list_size) {
-          articles.push(article)
-        }
-      }
-
-      this.articles_for_show = articles
+        return {
+          ...item,
+          click_num: this.formatClickNum(item.page_views),
+          rank: rank,
+          rank_icon: icon
+        };
+      });
+    },
+    // 切换展示卡片
+    switchShowCard() {
+      this.show_cards = getNthPartitionOf(this.list, this.card_size, this.card_no)
     },
     //格式化热搜文章点击数
     // 1. 10000以下 显示原始数字
     // 2. 10000以上换算成xxx万显示，比如 125000 => 12.5万
-    formatClickNum (num) {
+    formatClickNum(num) {
       if (num < 10000) {
         return num
       } else {
         return (num / 10000).toFixed(1) + '万'
       }
+    },
+    articleDetailsJumpPath(item) {
+      if (!item) return "/"
+      return `/article/${item.code}`
     }
   },
-  created () {
+  mounted() {
     this.getShowArticles()
   }
 }

@@ -1,54 +1,109 @@
 <template>
-  <div class="common-article-list-container">
+  <div v-show="total!=null" class="common-article-list-container">
     <div>
       <h2 class="h_title">最新文章</h2>
     </div>
     <div class="common-article-content rounded-0">
-      <v-card-text v-for="(item,index) in list" :key="item.id"
+      <v-card-text v-for="(item) in preparedArticleList" :key="item.code"
                    class="article-list">
         <v-row>
           <v-col cols="3" class="">
-            <v-img
-              :src="item.first_img"
-              class="white--text align-end transition-swing"
-              gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-            >
-            </v-img>
+            <NuxtLink :to="item.url">
+              <v-img
+                :src="item.featured_image"
+                class="white--text align-end transition-swing"
+                gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+              >
+              </v-img>
+            </NuxtLink>
           </v-col>
           <v-col cols="9">
             <!--标题-->
             <v-row>
-              <v-card-title class="article-list-title" v-text="item.title"></v-card-title>
+              <NuxtLink :to="item.url">
+                <v-card-title class="article-list-title">
+                  {{ item.title }}
+                </v-card-title>
+              </NuxtLink>
             </v-row>
             <v-row>
-              <p v-text="item.content"></p>
+              <p v-text="item.article_summary"></p>
             </v-row>
             <v-row class="article-info" justify="space-between">
               <div>
-                <span v-text="item.author" class="article-list-author"></span>
+                <span v-text="item.author.nick_name" class="article-list-author"></span>
                 <span v-text="item.create_time" class="article-list-time"></span>
               </div>
               <div class="article-list-tags">
-                <a v-for="tag in item.category" :key="tag">{{ tag }}</a>
+                <a v-for="cat in item.categories">{{ cat }}</a>
               </div>
             </v-row>
           </v-col>
         </v-row>
       </v-card-text>
+      <div class="common-article-read-more rounded-0" @click="loadMoreArticles">
+        <v-btn v-show="total>params.offset" block class="rounded-0">
+          阅读更多
+        </v-btn>
+        <v-row class="align-center justify-center baseline" v-show="total<=params.offset">我是有底线的~</v-row>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import {extractKeywordSummary, prepareArticleListAppendJumpPath} from "static/util";
+import {queryArticleList} from "@/api/article";
+
 export default {
   name: 'app-common-article-list',
   props: {
-    //文章列表
-    list: {
-      type: Array,
-      default: []
+    summary_word_count: {
+      type: Number,
+      default: 150
     }
-  }
+  },
+  data() {
+    return {
+      list: [],
+      params: {
+        limit: 20,
+        offset: 0,
+        order_cause: 'create_time',
+        order_dir: 'desc'
+      },
+      total: null
+    }
+  },
+  methods: {
+    async loadArticles() {
+      // 1. 查询文章列表
+      queryArticleList(this.params).then(resp => {
+        this.list = prepareArticleListAppendJumpPath([...this.list, ...resp.data.data])
+        this.total = resp.data.total
+      })
+    },
+    loadMoreArticles() {
+      this.params.offset += this.params.limit
+      if (this.params.offset >= this.total) return;
+
+      this.loadArticles()
+    }
+  },
+  computed: {
+    preparedArticleList() {
+      if (!this.list) return []
+      return this.list.map(item => {
+        return {
+          ...item,
+          article_summary: extractKeywordSummary(item.content, this.summary_word_count),
+        };
+      });
+    }
+  },
+  mounted() {
+    this.loadArticles()
+  },
 }
 </script>
 
@@ -114,8 +169,16 @@ export default {
   cursor: pointer;
 }
 
-.article-list-title:hover {
+.article-list-title:hover,
+.article-list-title a:hover {
   color: #16499d;
+}
+
+
+.article-list a,
+.article-list-title a {
+  color: #333333;
+  text-decoration: none;
 }
 
 .article-list p {
@@ -173,5 +236,28 @@ export default {
 .article-list-tags a:hover {
   background: #16499d;
   color: #fff;
+}
+
+.common-article-read-more {
+  padding: 15px 0 15px 0;
+}
+
+.common-article-read-more button {
+  background-color: #f1f1f1;
+  box-shadow: unset !important;
+  color: #000000;
+  font-weight: 400;
+}
+
+.common-article-read-more button:hover {
+  background-color: #16499d;
+  color: #ffffff;
+  font-weight: 400;
+}
+
+.baseline {
+  color: #b3b2b2;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 </style>

@@ -15,7 +15,7 @@
                 <div class="bullshit__oops">页面不存在！</div>
                 <div class="bullshit__headline">{{ error.message }}</div>
                 <div class="bullshit__info">请检查URL地址是否正确, 或点击回到首页。</div>
-                <NuxtLink to="/" class="bullshit__return-home">回到首页</NuxtLink>
+                <a href="/" class="bullshit__return-home">回到首页</a>
               </div>
             </div>
           </div>
