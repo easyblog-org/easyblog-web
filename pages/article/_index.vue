@@ -330,6 +330,10 @@ export default {
   methods: {
     handleArticleEvent(code, event) {
       if (!code || !event) return
+      if (event === 'favorites' && this.likesFlag.favorites) {
+        console.log("already favorites this start!")
+        return;
+      }
       updateStatistics({
         'code': code,
         'statistic_index_name': event,
@@ -337,9 +341,11 @@ export default {
         'operator': this.$store.state.user ? this.$store.state.user.code : null
       }).then(() => {
         if (event === 'likes') {
+          this.likesFlag.thumbUp ? this.authorRecords.likes_num-- : this.authorRecords.likes_num++
           this.likesFlag.thumbUp = !this.likesFlag.thumbUp
         } else if (event === 'favorites') {
           this.likesFlag.favorites = !this.likesFlag.favorites
+          this.authorRecords.favorites_num++
         }
       })
     },
@@ -473,7 +479,6 @@ export default {
     getStatistics(code) {
       if (!code) return
 
-      console.log("$store.state.user:" + JSON.stringify(this.$store.state.user))
       countArticles({
         'author_id': this.$store.state.user.code
       }).then(resp => {
@@ -482,7 +487,6 @@ export default {
 
       statistics({
         'article_codes': code,
-        'user_codes': '',
         'events': 'page_views',
       }).then(resp => {
         this.authorRecords.visit_num = !resp.data ? 0 : resp.data
@@ -490,7 +494,6 @@ export default {
 
       statistics({
         'article_codes': code,
-        'user_codes': '',
         'events': 'likes',
       }).then(resp => {
         this.authorRecords.likes_num = !resp.data ? 0 : resp.data
@@ -498,7 +501,6 @@ export default {
 
       statistics({
         'article_codes': code,
-        'user_codes': '',
         'events': 'favorites'
       }).then(resp => {
         this.authorRecords.favorites_num = !resp.data ? 0 : resp.data
@@ -508,17 +510,21 @@ export default {
       if (!code) return
 
       statistics({
+        'article_codes': code,
         'events': 'favorites',
         'operators': this.$store.state.user ? this.$store.state.user.code : null
       }).then(resp => {
+        console.log("getStatisticsState favorites of  " + this.$store.state.user.code + "=" + JSON.stringify(resp))
+
         if (!resp) {
           return;
         }
 
-        this.likesFlag.thumbUp = resp.data.length > 0
+        this.likesFlag.favorites = resp.data > 0
       })
 
       statistics({
+        'article_codes': code,
         'events': 'likes',
         'operators': this.$store.state.user ? this.$store.state.user.code : null
       }).then(resp => {
@@ -526,19 +532,7 @@ export default {
           return;
         }
 
-        this.likesFlag.favorites = resp.data.length > 0
-      })
-
-
-      statistics({
-        'events': 'share',
-        'operators': this.$store.state.user ? this.$store.state.user.code : null
-      }).then(resp => {
-        if (!resp) {
-          return;
-        }
-
-        this.likesFlag.thumbUp = resp.data.length > 0
+        this.likesFlag.thumbUp = resp.data > 0
       })
 
     },
