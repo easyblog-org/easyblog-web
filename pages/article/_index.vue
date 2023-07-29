@@ -59,7 +59,7 @@
               </v-btn>
             </v-col>
             <v-col>
-              <v-btn elevation="2" fab rounded middle @click="this.handleReportArticle">
+              <v-btn elevation="2" fab rounded middle @click="this.handleReportDialogOpen">
                 <v-icon color="#8a919f">mdi-alert</v-icon>
               </v-btn>
             </v-col>
@@ -72,7 +72,7 @@
               <div class="article-content-box">
                 <!--文章标题-->
                 <v-row>
-                  <input v-model="title"/>
+                  <input v-model="title" disabled/>
                 </v-row>
                 <!--作者信息-->
                 <v-row>
@@ -282,6 +282,9 @@
         </v-row>
       </v-container>
     </v-main>
+
+    <app-common-reporter :showDialog="showReporterDialog"
+                         @close="handleReportDialogClose"></app-common-reporter>
   </v-app>
 </template>
 
@@ -326,6 +329,7 @@ export default {
     tableOfContents: [], // 存储生成的目录项
     tableOfContentMaxHeight: 0,
     showAppBar: true, // 控制是否显示 AppBar
+    showReporterDialog: false  //控制显示举报弹窗
   }),
   methods: {
     handleArticleEvent(code, event) {
@@ -370,8 +374,12 @@ export default {
     /**
      * 处理举报
      */
-    handleReportArticle() {
+    handleReportDialogOpen() {
       this.handleArticleEvent(this.$route.params.index, 'report')
+      this.showReporterDialog = true
+    },
+    handleReportDialogClose(val) {
+      this.showReporterDialog = val
     },
     /**
      * 查询文章详情
