@@ -81,3 +81,15 @@ export const countArticles = (params) => {
     data: params,
   })
 }
+
+/**
+ * 查询
+ * @param params
+ * @returns {Promise<any|undefined>|*}
+ */
+export const queryArticleReportEvent = () => {
+  return request({
+    url: `${prefix}/count`,
+    method: 'GET',
+  })
+}

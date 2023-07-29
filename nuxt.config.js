@@ -53,7 +53,7 @@ export default {
   },
   proxy: {
     '/api': {
-      target: process.env.production ? 'https://api.easyblog.top' : 'http://117.50.189.250:8001', // 目标接口域名
+      target: process.env.production ? 'https://api.easyblog.top' : 'http://127.0.0.1:8001', // 目标接口域名
       changeOrigin: true, // 表示是否跨域
       pathRewrite: {
         '^/api': '/', // 把 /api 替换成 /

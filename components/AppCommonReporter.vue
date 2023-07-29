@@ -23,7 +23,7 @@
                   :class="{ 'reporter-item-selected': selectedReportEvents.includes(index) }"
                   @click="handleReportItemClick(event.name)"
                 >
-                  {{ event.name }}
+                  {{ event.value }}
                 </v-chip>
               </v-col>
             </v-row>
@@ -77,7 +77,7 @@
 
 <script>
 import {updateStatistics} from "@/api/article";
-import {removeElementAtIndex} from "static/util";
+import {queryArticleReportEvent} from "@/api/static";
 
 export default {
   name: 'app-common-reporter',
@@ -90,40 +90,7 @@ export default {
   data() {
     return {
       showDialogLocal: this.showDialog,
-      reportEvents: [
-        {
-          key: "E0001",
-          name: "低俗色情"
-        },
-        {
-          key: "E0002",
-          name: "内容抄袭"
-        },
-        {
-          key: "E0003",
-          name: "涉嫌违法"
-        },
-        {
-          key: "E0004",
-          name: "低俗色情"
-        },
-        {
-          key: "E0005",
-          name: "恶意营销"
-        },
-        {
-          key: "E0006",
-          name: "内容质量太差"
-        },
-        {
-          key: "E0007",
-          name: "侵犯名誉/隐私/著作/肖像权等"
-        },
-        {
-          key: "E0008",
-          name: "其他原因"
-        }
-      ],
+      reportEvents: [],
       reportDesc: null,  //举报补充说明
       selectedReportEvents: [],
       showWarningMessageEnable: false,
@@ -183,6 +150,11 @@ export default {
       this.showDialogLocal = newVal;
     },
   },
+  mounted() {
+    queryArticleReportEvent().then(resp => {
+      this.reportEvents = resp.data
+    })
+  }
 };
 </script>
 
