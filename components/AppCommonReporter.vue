@@ -18,7 +18,9 @@
                 <v-chip
                   class="ma-2 reporter-item"
                   label
-                  v-for="event in reportEvents" :key="event.key"
+                  v-for="(event, index) in reportEvents"
+                  :key="event.key"
+                  :class="{ 'reporter-item-selected': selectedReportEvents.includes(index) }"
                   @click="handleReportItemClick(event.name)"
                 >
                   {{ event.name }}
@@ -31,12 +33,10 @@
             <v-row>
               <v-col cols="12">
                 <v-textarea
-                  filled
                   color="#f2f3f5"
                   background-color="#f2f3f5"
-                  name="input-7-4"
                   placeholder="请输入举报相关的补充说明"
-                  :value="reportDesc"
+                  v-model="reportDesc"
                   counter="300"
                 ></v-textarea>
               </v-col>
@@ -49,7 +49,7 @@
             class="reporter-action-cancel"
             text
             outlined
-            @click="cancel"
+            @click="close"
           >
             取消
           </v-btn>
@@ -57,27 +57,35 @@
             class="reporter-action-commit"
             text
             outlined
+            @click="summit"
           >
             确定举报
           </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-snackbar
+      top
+      v-model="showWarningMessageEnable"
+      timeout="2000"
+    >
+      {{ showWarningMessageText }}
+    </v-snackbar>
   </v-row>
 </template>
 
 <script>
+import {updateStatistics} from "@/api/article";
+import {removeElementAtIndex} from "static/util";
+
 export default {
   name: 'app-common-reporter',
   props: {
     showDialog: {
       type: Boolean,
       default: false
-    },
-    commitReportEnable: {
-      type: Boolean,
-      default: true
-    },
+    }
   },
   data() {
     return {
@@ -117,28 +125,65 @@ export default {
         }
       ],
       reportDesc: null,  //举报补充说明
-      selectedReportEvents:[]
-    }
-  }
-  ,
+      selectedReportEvents: [],
+      showWarningMessageEnable: false,
+      showWarningMessageText: null
+    };
+  },
   methods: {
-    cancel() {
-      this.showDialogLocal = false
-      this.$emit('close', false)
-      this.reportDesc = null
+    close() {
+      this.showDialogLocal = false;
+      this.$emit('close', false);
+      this.reportDesc = null;
+      this.selectedReportEvents = []
     },
-    handleReportItemClick(){
+    handleReportItemClick(name) {
+      const index = this.reportEvents.findIndex(event => event.name === name);
 
-    }
-  }
-  ,
+      if (index !== -1 && !this.selectedReportEvents.includes(index)) {
+        this.selectedReportEvents.push(index);
+      } else {
+        this.selectedReportEvents = this.selectedReportEvents.filter(item => item !== index);
+      }
+    },
+    // 提交举报信息
+    summit() {
+      if (this.selectedReportEvents === null || this.selectedReportEvents.length === 0) {
+        this.showWarningMessageEnable = true
+        this.showWarningMessageText = '请选择投诉文章的原因!'
+        return;
+      }
+
+      const containsOtherReason = this.selectedReportEvents.some(
+        index => this.reportEvents[index].name === '其他原因'
+      );
+
+      if (containsOtherReason && !this.reportDesc) {
+        this.showWarningMessageEnable = true
+        this.showWarningMessageText = '请填写具体举报原因!'
+        return;
+      }
+
+      this.handleArticleEvent(this.$route.params.index, 'report')
+    },
+    handleArticleEvent(code, event) {
+      if (!code || !event) return
+      updateStatistics({
+        'code': code,
+        'statistic_index_name': event,
+        'increment': 1,
+        'operator': this.$store.state.user ? this.$store.state.user.code : null
+      }).then(() => {
+        this.close()
+      })
+    },
+  },
   watch: {
     showDialog(newVal) {
       this.showDialogLocal = newVal;
-    }
-    ,
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped lang="scss">
@@ -150,7 +195,6 @@ export default {
 }
 
 .reporter-wrapper {
-
 }
 
 .reporter-action-cancel {
@@ -164,7 +208,6 @@ export default {
   line-height: 22px;
   color: #1e80ff;
 }
-
 
 .reporter-action-commit {
   background: #007fff;
@@ -214,7 +257,12 @@ export default {
   white-space: normal; /* 自动换行 */
 }
 
-.reporter-item:hover{
+.reporter-item-selected {
+  background: #eaf2ff !important;
+  color: #1e80ff;
+}
+
+.reporter-item:hover {
   cursor: pointer;
   background: #eaf2ff;
   color: #1e80ff;

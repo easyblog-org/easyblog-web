@@ -219,3 +219,11 @@ export function getNthPartitionOf(arr, partition_size, partition_no) {
   }
 }
 
+export function removeElementAtIndex (array,index){
+  return (array, index) => {
+    if (index >= 0 && index < array.length) {
+      array.splice(index, 1);
+    }
+  };
+}
+

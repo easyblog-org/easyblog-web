@@ -335,7 +335,6 @@ export default {
     handleArticleEvent(code, event) {
       if (!code || !event) return
       if (event === 'favorites' && this.likesFlag.favorites) {
-        console.log("already favorites this start!")
         return;
       }
       updateStatistics({
@@ -375,7 +374,6 @@ export default {
      * 处理举报
      */
     handleReportDialogOpen() {
-      this.handleArticleEvent(this.$route.params.index, 'report')
       this.showReporterDialog = true
     },
     handleReportDialogClose(val) {
