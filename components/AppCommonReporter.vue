@@ -20,8 +20,8 @@
                   label
                   v-for="(event, index) in reportEvents"
                   :key="event.key"
-                  :class="{ 'reporter-item-selected': selectedReportEvents.includes(index) }"
-                  @click="handleReportItemClick(event.name)"
+                  :class="{ 'reporter-item-selected': selectedReportEvents.includes(event) }"
+                  @click="handleReportItemClick(event)"
                 >
                   {{ event.value }}
                 </v-chip>
@@ -104,13 +104,15 @@ export default {
       this.reportDesc = null;
       this.selectedReportEvents = []
     },
-    handleReportItemClick(name) {
-      const index = this.reportEvents.findIndex(event => event.name === name);
+    handleReportItemClick(e) {
+      const containsReason = this.selectedReportEvents.some(
+        item => item.key === e.key
+      );
 
-      if (index !== -1 && !this.selectedReportEvents.includes(index)) {
-        this.selectedReportEvents.push(index);
+      if (!containsReason) {
+        this.selectedReportEvents.push(e);
       } else {
-        this.selectedReportEvents = this.selectedReportEvents.filter(item => item !== index);
+        this.selectedReportEvents = this.selectedReportEvents.filter(item => item.key !== e.key);
       }
     },
     // 提交举报信息
@@ -122,7 +124,7 @@ export default {
       }
 
       const containsOtherReason = this.selectedReportEvents.some(
-        index => this.reportEvents[index].name === '其他原因'
+        item => item.value === '其他原因'
       );
 
       if (containsOtherReason && !this.reportDesc) {
@@ -139,7 +141,11 @@ export default {
         'code': code,
         'statistic_index_name': event,
         'increment': 1,
-        'operator': this.$store.state.user ? this.$store.state.user.code : null
+        'operator': this.$store.state.user ? this.$store.state.user.code : null,
+        'remark': JSON.stringify({
+          'report_reason': JSON.stringify(this.selectedReportEvents),
+          'report_desc': this.reportDesc
+        })
       }).then(() => {
         this.close()
       })
