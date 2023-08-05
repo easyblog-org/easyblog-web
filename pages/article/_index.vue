@@ -285,6 +285,10 @@
 
     <app-common-reporter :showDialog="showReporterDialog"
                          @close="handleReportDialogClose"></app-common-reporter>
+
+    <app-common-message-box :showDialog="message.isShow"
+                            :message="message.context"
+                            @close="handleMessageDialogClose"></app-common-message-box>
   </v-app>
 </template>
 
@@ -309,6 +313,10 @@ export default {
         code: 8693095,
         title: '混编模式（策略模式+工厂方法模式+门面模式门面模式门面模式门面模式）'
       },
+    },
+    message: {
+      isShow: false,
+      context: '',
     },
     authorName: '',
     authorImgUrl: '',
@@ -369,6 +377,7 @@ export default {
      */
     handleShareArticle() {
       this.handleArticleEvent(this.$route.params.index, 'share')
+      this.copyLink()
     },
     /**
      * 处理举报
@@ -378,6 +387,38 @@ export default {
     },
     handleReportDialogClose(val) {
       this.showReporterDialog = val
+    },
+    handleMessageDialogClose(val) {
+      this.message.isShow = val
+    },
+    copyLink() {
+      // 获取当前页面链接
+      const link = window.location.href;
+
+      // 创建一个临时文本输入框，用于复制链接
+      const tempInput = document.createElement('input');
+      tempInput.style.position = 'absolute';
+      tempInput.style.left = '-9999px';
+      tempInput.value = link;
+      document.body.appendChild(tempInput);
+
+      // 选中临时文本输入框中的文本
+      tempInput.select();
+
+      // 执行复制命令
+      const success = document.execCommand('copy');
+
+      // 移除临时文本输入框
+      document.body.removeChild(tempInput);
+
+      // 复制成功提示
+      if (success) {
+        this.message.context = '分享链接已复制到粘贴板！'
+        this.message.isShow = true
+      } else {
+        this.message.context = '复制分享链接失败，请手动复制！'
+        this.message.isShow = true
+      }
     },
     /**
      * 查询文章详情

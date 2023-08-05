@@ -12,24 +12,13 @@ body {
     background-color: hsla(0, 0%, 98%, .8);
 }
 
-/**登录注册页面**/
-.login-container,
-.register-container {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    overflow: hidden;
-    background: #f4f5f5 no-repeat center;
-    background-size: cover;
-}
-
 .login-card,
 .register-card {
     max-width: 444px !important;
 }
 
 .login-title {
-    padding: 30px 30px !important;
+    color: #252933;
 }
 
 

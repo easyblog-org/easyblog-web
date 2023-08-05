@@ -1,76 +1,82 @@
 <template>
-  <transition name="fade">
-    <div class="top-bar" v-show="show">
-      <v-app-bar
-        app
-        color="white"
-        elevation="1"
-        flat
-      >
-        <v-container class="py-0 fill-height" ref="barRef">
+  <div>
+    <transition name="fade">
+      <div class="top-bar" v-show="show">
+        <v-app-bar
+          app
+          color="white"
+          elevation="1"
+          flat
+        >
+          <v-container class="py-0 fill-height" ref="barRef">
 
-          <div>
-            <a href="/" class="bar-title"><h1>EasyBlog</h1></a>
-          </div>
-
-
-          <div class="menu-item-container">
-            <v-btn
-              v-for="link in links"
-              :key="link"
-              text
-              class="menu-item"
-            >
-              {{ link }}
-            </v-btn>
-          </div>
-
-          <v-spacer></v-spacer>
-
-          <v-responsive max-width="400" :width="searchInputDynamicWidth">
-            <v-text-field
-              v-model="query_key"
-              class="search-input"
-              ref="searchInputRef"
-              dense
-              flat
-              solo
-              hide-details
-              :background-color="'#f2f2f2'"
-              clearable
-              :color="'black'"
-              :placeholder="query_placeholder"
-              append-icon="mdi-magnify"
-              @click:append="search"
-              @keypress.enter="search"
-            ></v-text-field>
-          </v-responsive>
-
-          <v-spacer></v-spacer>
-
-          <!--登录/头像按钮-->
-          <div>
-            <div class="bar-avatar" v-if="loginStatus">
-              <v-avatar
-                class="mr-10"
-                color="grey darken-1"
-                size="35"
-              ></v-avatar>
+            <div>
+              <a href="/" class="bar-title"><h1>EasyBlog</h1></a>
             </div>
-            <div class="bar-login-btn" v-else>
+
+
+            <div class="menu-item-container">
               <v-btn
-                class="ma-2"
-                outlined
-                color="indigo"
+                v-for="link in links"
+                :key="link"
+                text
+                class="menu-item"
               >
-                <NuxtLink to="/login" tag="span">登录 | 注册</NuxtLink>
+                {{ link }}
               </v-btn>
             </div>
-          </div>
-        </v-container>
-      </v-app-bar>
-    </div>
-  </transition>
+
+            <v-spacer></v-spacer>
+
+            <v-responsive max-width="400" :width="searchInputDynamicWidth">
+              <v-text-field
+                v-model="query_key"
+                class="search-input"
+                ref="searchInputRef"
+                dense
+                flat
+                solo
+                hide-details
+                :background-color="'#f2f2f2'"
+                clearable
+                :color="'black'"
+                :placeholder="query_placeholder"
+                append-icon="mdi-magnify"
+                @click:append="search"
+                @keypress.enter="search"
+              ></v-text-field>
+            </v-responsive>
+
+            <v-spacer></v-spacer>
+
+            <!--登录/头像按钮-->
+            <div>
+              <div class="bar-avatar" v-if="loginStatus">
+                <v-avatar
+                  class="mr-10"
+                  color="grey darken-1"
+                  size="35"
+                ></v-avatar>
+              </div>
+              <div class="bar-login-btn" v-else>
+                <v-btn
+                  class="ma-2"
+                  outlined
+                  color="indigo"
+                  @click="handleLoginOpen"
+                >
+                  登录 | 注册
+                </v-btn>
+              </div>
+            </div>
+          </v-container>
+        </v-app-bar>
+      </div>
+    </transition>
+
+    <app-common-login-box :showDialog="showLoginDialog"
+                          @close="handleLoginDialogClose"></app-common-login-box>
+  </div>
 </template>
 
 <script>
@@ -100,6 +106,7 @@ export default {
     ],
     searchInputDynamicWidth: 20,
     loginStatus: false,
+    showLoginDialog: false,
   }),
   props: {
     show: {
@@ -121,6 +128,12 @@ export default {
       setTimeout(function () {
         this.query_placeholder = "Vue+ElementUI后台管理项目实战"
       }, 1000)
+    },
+    handleLoginOpen() {
+      this.showLoginDialog = true
+    },
+    handleLoginDialogClose(val) {
+      this.showLoginDialog = val
     },
   },
   created() {

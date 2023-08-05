@@ -65,13 +65,9 @@
       </v-card>
     </v-dialog>
 
-    <v-snackbar
-      top
-      v-model="showWarningMessageEnable"
-      timeout="2000"
-    >
-      {{ showWarningMessageText }}
-    </v-snackbar>
+    <app-common-message-box :showDialog="showWarningMessageEnable"
+                            :message="showWarningMessageText"
+                            @close="handleMessageDialogClose"></app-common-message-box>
   </v-row>
 </template>
 
@@ -115,6 +111,10 @@ export default {
         this.selectedReportEvents = this.selectedReportEvents.filter(item => item.key !== e.key);
       }
     },
+    handleMessageDialogClose(newVal) {
+      this.showWarningMessageEnable = newVal
+      this.showWarningMessageText = null
+    },
     // 提交举报信息
     summit() {
       if (this.selectedReportEvents === null || this.selectedReportEvents.length === 0) {
@@ -147,6 +147,8 @@ export default {
           'report_desc': this.reportDesc
         })
       }).then(() => {
+        this.showWarningMessageEnable = true
+        this.showWarningMessageText = '投诉成功，请耐心等待处理结果！'
         this.close()
       })
     },
