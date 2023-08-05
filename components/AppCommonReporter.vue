@@ -65,19 +65,16 @@
       </v-card>
     </v-dialog>
 
-    <v-snackbar
-      top
-      v-model="showWarningMessageEnable"
-      timeout="2000"
-    >
-      {{ showWarningMessageText }}
-    </v-snackbar>
+    <app-common-message-box :showDialog="showWarningMessageEnable"
+                            :message="showWarningMessageText"
+                            @close="handleMessageDialogClose"></app-common-message-box>
   </v-row>
 </template>
 
 <script>
 import {updateStatistics} from "@/api/article";
 import {queryArticleReportEvent} from "@/api/static";
+import {LOCAL_STORAGE_KEY} from "static/global";
 
 export default {
   name: 'app-common-reporter',
@@ -115,6 +112,10 @@ export default {
         this.selectedReportEvents = this.selectedReportEvents.filter(item => item.key !== e.key);
       }
     },
+    handleMessageDialogClose(newVal) {
+      this.showWarningMessageEnable = newVal
+      this.showWarningMessageText = null
+    },
     // 提交举报信息
     summit() {
       if (this.selectedReportEvents === null || this.selectedReportEvents.length === 0) {
@@ -137,16 +138,21 @@ export default {
     },
     handleArticleEvent(code, event) {
       if (!code || !event) return
+
+      const userInfo = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY.LOGIN_USER));
+      const operator = userInfo ? userInfo.code : null;
       updateStatistics({
         'code': code,
         'statistic_index_name': event,
         'increment': 1,
-        'operator': this.$store.state.user ? this.$store.state.user.code : null,
+        'operator': operator,
         'remark': JSON.stringify({
           'report_reason': JSON.stringify(this.selectedReportEvents),
           'report_desc': this.reportDesc
         })
       }).then(() => {
+        this.showWarningMessageEnable = true
+        this.showWarningMessageText = '投诉成功，请耐心等待处理结果！'
         this.close()
       })
     },

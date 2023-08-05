@@ -4,7 +4,7 @@ import axios from 'axios';
 // 创建axios自定义实例
 const server = axios.create({
   // 默认请求地址，根据环境的不同可在.env 文件中进行修改
-  baseURL: '/api',
+  baseURL: '/open-api',
   // 设置接口访问超时时间
   timeout: 50000, // request timeout，
   // 跨域时候允许携带凭证
@@ -31,19 +31,6 @@ server.interceptors.response.use(
   (response) => {
     // 直接返回res，当然你也可以只返回res.data
     // 系统如果有自定义code也可以在这里处理
-    if (!response.data.success) {
-      /* if (response.data.code === 'auth_token_not_found' ||
-        response.data.code === 'auth_expired') {
-        //可能是token过期，清除它
-        const userStore = useUserStore()
-        userStore.token = null;
-        //跳转到登录页面
-        routers.replace({
-          path: '/user'
-        });
-      } */
-      return Promise.reject(response)
-    }
     return Promise.resolve(response)
   },
   (error) => {

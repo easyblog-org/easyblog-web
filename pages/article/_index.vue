@@ -154,7 +154,7 @@
                   cols="3"
                   style="display: inline-block"
                 >
-                  <NuxtLink to="/user-home-page">
+                  <NuxtLink to="/user-home">
                     <v-img
                       :src="authorImgUrl"
                       :lazy-src="authorImgUrl"
@@ -285,6 +285,10 @@
 
     <app-common-reporter :showDialog="showReporterDialog"
                          @close="handleReportDialogClose"></app-common-reporter>
+
+    <app-common-message-box :showDialog="message.isShow"
+                            :message="message.context"
+                            @close="handleMessageDialogClose"></app-common-message-box>
   </v-app>
 </template>
 
@@ -292,6 +296,7 @@
 import AppCommonBar from '~/components/AppCommonBar'
 import AppCommonMarkdownPreviewer from '~/components/AppCommonMarkdownPreviewer.vue'
 import {queryArticleDetails, updateStatistics, statistics, countArticles} from "@/api/article";
+import {LOCAL_STORAGE_KEY} from "static/global";
 
 export default {
   name: 'ArticleDetailsView',
@@ -309,6 +314,10 @@ export default {
         code: 8693095,
         title: '混编模式（策略模式+工厂方法模式+门面模式门面模式门面模式门面模式）'
       },
+    },
+    message: {
+      isShow: false,
+      context: '',
     },
     authorName: '',
     authorImgUrl: '',
@@ -337,11 +346,14 @@ export default {
       if (event === 'favorites' && this.likesFlag.favorites) {
         return;
       }
+
+      const userInfo = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY.LOGIN_USER));
+      const operator = userInfo ? userInfo.code : null;
       updateStatistics({
         'code': code,
         'statistic_index_name': event,
         'increment': 1,
-        'operator': this.$store.state.user ? this.$store.state.user.code : null
+        'operator': operator
       }).then(() => {
         if (event === 'likes') {
           this.likesFlag.thumbUp ? this.authorRecords.likes_num-- : this.authorRecords.likes_num++
@@ -369,6 +381,7 @@ export default {
      */
     handleShareArticle() {
       this.handleArticleEvent(this.$route.params.index, 'share')
+      this.copyLink()
     },
     /**
      * 处理举报
@@ -378,6 +391,38 @@ export default {
     },
     handleReportDialogClose(val) {
       this.showReporterDialog = val
+    },
+    handleMessageDialogClose(val) {
+      this.message.isShow = val
+    },
+    copyLink() {
+      // 获取当前页面链接
+      const link = window.location.href;
+
+      // 创建一个临时文本输入框，用于复制链接
+      const tempInput = document.createElement('input');
+      tempInput.style.position = 'absolute';
+      tempInput.style.left = '-9999px';
+      tempInput.value = link;
+      document.body.appendChild(tempInput);
+
+      // 选中临时文本输入框中的文本
+      tempInput.select();
+
+      // 执行复制命令
+      const success = document.execCommand('copy');
+
+      // 移除临时文本输入框
+      document.body.removeChild(tempInput);
+
+      // 复制成功提示
+      if (success) {
+        this.message.context = '分享链接已复制到粘贴板！'
+        this.message.isShow = true
+      } else {
+        this.message.context = '复制分享链接失败，请手动复制！'
+        this.message.isShow = true
+      }
     },
     /**
      * 查询文章详情
@@ -485,8 +530,10 @@ export default {
     getStatistics(code) {
       if (!code) return
 
+      const userInfo = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY.LOGIN_USER));
+      const operator = userInfo ? userInfo.code : null;
       countArticles({
-        'author_id': this.$store.state.user.code
+        'author_id': operator
       }).then(resp => {
         this.authorRecords.original_article_num = !resp.data ? 0 : resp.data
       })
@@ -515,13 +562,13 @@ export default {
     getStatisticsState(code) {
       if (!code) return
 
+      const userInfo = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY.LOGIN_USER));
+      const operator = userInfo ? userInfo.code : null;
       statistics({
         'article_codes': code,
         'events': 'favorites',
-        'operators': this.$store.state.user ? this.$store.state.user.code : null
+        'operators': operator
       }).then(resp => {
-        console.log("getStatisticsState favorites of  " + this.$store.state.user.code + "=" + JSON.stringify(resp))
-
         if (!resp) {
           return;
         }
@@ -532,7 +579,7 @@ export default {
       statistics({
         'article_codes': code,
         'events': 'likes',
-        'operators': this.$store.state.user ? this.$store.state.user.code : null
+        'operators': operator
       }).then(resp => {
         if (!resp) {
           return;

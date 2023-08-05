@@ -44,6 +44,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    'nuxt-user-agent'
   ],
 
   axios: {
@@ -57,6 +58,20 @@ export default {
       changeOrigin: true, // 表示是否跨域
       pathRewrite: {
         '^/api': '/', // 把 /api 替换成 /
+      }
+    },
+    '/mxnzp-api': {
+      target: 'https://www.mxnzp.com', // 目标接口域名
+      changeOrigin: true, // 表示是否跨域
+      pathRewrite: {
+        '^/mxnzp-api': '/',
+      },
+    },
+    '/open-api': {
+      target: 'http://apis.juhe.cn', // 目标接口域名
+      changeOrigin: true, // 表示是否跨域
+      pathRewrite: {
+        '^/open-api': '/',
       }
     }
   },
