@@ -5,7 +5,7 @@
       <app-common-bar :show="showAppbar"></app-common-bar>
 
       <!--主页面-->
-      <v-main>
+      <v-main style="padding: 30px 0 0 !important;">
         <v-container>
           <!--轮播图-->
           <v-row>
