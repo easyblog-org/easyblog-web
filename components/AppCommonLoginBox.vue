@@ -4,7 +4,7 @@
       <div v-show="showLoginContainer" class="login-container">
         <v-card class="mx-auto my-12 rounded-lg login-card">
           <v-card-actions>
-            <v-card-title class="login-title"><h2>欢迎使用EasyBlog</h2></v-card-title>
+            <v-card-title class="login-title"><h2>登录EasyBlog</h2></v-card-title>
             <v-spacer></v-spacer>
             <v-btn icon @click="handleLoginDialogClose">
               <v-icon>mdi-close</v-icon>
@@ -12,7 +12,7 @@
           </v-card-actions>
           <v-card-text>
             <div class="login-body">
-              <v-tabs class="login-tab-title" v-model="login_tab"
+              <v-tabs class="login-tab-title" v-model="loginTab"
                       background-color="transparent"
                       color="basil"
                       @change="onLoginTabsChange"
@@ -25,44 +25,44 @@
                 </v-tab>
               </v-tabs>
 
-              <v-tabs-items v-model="login_tab">
+              <v-tabs-items v-model="loginTab">
                 <!--手机号登录-->
                 <v-tab-item>
                   <v-card color="basil" flat>
                     <v-card-text>
-                      <v-form ref="phoneFormRef" v-model="phone_valid" lazy-validation>
+                      <v-form ref="phoneLoginFormRef" lazy-validation>
                         <v-row>
-                          <v-col cols="4">
-                            <v-select
-                              v-model="selected_location"
-                              return-object
-                              :item-text="item=>`${item.code}  ${item.name}`"
-                              :item-value="item=>`${item.code}`"
-                              :items="locations"
-                              @change="onLocationSelection"
-                              menu-props="auto"
-                              label="Select"
-                              hide-details
-                              single-line
-                            ></v-select>
-                          </v-col>
-                          <v-col cols="8">
-                            <v-text-field v-model="login_phone_account.phone" :counter="11" label="手机号" autofocus
-                                          required
-                                          @input="onPhoneInputUpdate"
+<!--                          <v-col cols="5">-->
+<!--                            <v-select-->
+<!--                              v-model="selected_location"-->
+<!--                              return-object-->
+<!--                              :item-text="item=>`${item.code}  ${item.name}`"-->
+<!--                              :item-value="item=>`${item.code}`"-->
+<!--                              :items="locations"-->
+<!--                              @change="onLocationSelection"-->
+<!--                              menu-props="auto"-->
+<!--                              label="Select"-->
+<!--                              hide-details-->
+<!--                              single-line-->
+<!--                            ></v-select>-->
+<!--                          </v-col>-->
+                          <v-col>
+                            <v-text-field v-model="loginPhoneAccount.phone" :counter="11" label="手机号" autofocus
+                                          required :rules="phoneVerifier"
                             ></v-text-field>
                           </v-col>
                         </v-row>
 
                         <v-row>
                           <v-col cols="7">
-                            <v-text-field v-model="login_phone_account.captcha" :counter="6" label="验证码"
+                            <v-text-field v-model="loginPhoneAccount.captcha" :counter="6" label="验证码"
+                                          :rules="captchaCodeVerifier"
                                           required></v-text-field>
                           </v-col>
                           <v-col cols="5">
-                            <v-btn :color="'#3370FF'" :disabled="phone_login_captcha_btn_disable"
+                            <v-btn :color="'#3370FF'" :disabled="phoneLoginCaptchaBtnDisable"
                                    style="color: aliceblue" width="100%"
-                                   @click="onPhoneLoginGetCaptchaBtnClick" v-text="phone_login_captcha_btn_text"
+                                   @click="onPhoneLoginGetCaptchaBtnClick" v-text="phoneLoginCaptchaBtnText"
                                    ref="captchaBtnRef">
 
                             </v-btn>
@@ -71,8 +71,9 @@
 
                         <!--登录按钮-->
                         <v-btn :color="'#3370FF'" style="color: aliceblue;margin-top: 20px" width="100%"
-                               @click="phoneLogin">
-                          注册/登录
+                               @click="phoneLogin"
+                               :disabled="phoneLoginBtnCtl.disabled">
+                          {{ phoneLoginBtnCtl.text }}
                         </v-btn>
                       </v-form>
                     </v-card-text>
@@ -83,20 +84,21 @@
                   <v-card color="basil" flat>
                     <v-card-text>
                       <v-form ref="emailLoginFormRef" lazy-validation>
-                        <v-text-field v-model="login_email_account.email" :rules="emailVerifier" label="邮箱" autofocus
+                        <v-text-field v-model="loginEmailAccount.email" :rules="emailVerifier" label="邮箱" autofocus
                                       required></v-text-field>
                         <v-text-field
                           :rules="emailPasswordVerifier"
-                          v-model="login_email_account.password"
-                          :append-icon="login_email_password_show ? 'mdi-eye' : 'mdi-eye-off'"
-                          :type="login_email_password_show ? 'text' : 'password'"
-                          @click:append="login_email_password_show = !login_email_password_show"
+                          v-model="loginEmailAccount.password"
+                          :append-icon="loginEmailPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
+                          :type="loginEmailPasswordShow ? 'text' : 'password'"
+                          @click:append="loginEmailPasswordShow = !loginEmailPasswordShow"
                           label="密码"
                           required
                         ></v-text-field>
                         <v-btn :color="'#3370FF'" style="color: aliceblue;" width="100%"
+                               :disabled="emailLoginBtnCtl.disabled"
                                @click="emailLogin">
-                          登录
+                          {{ emailLoginBtnCtl.text }}
                         </v-btn>
                         <div class="email-forget-password-box">
                     <span><NuxtLink tag="span" style="color: #1976d2;text-underline: none;cursor: pointer"
@@ -137,19 +139,19 @@
             <div class="register-body">
               <v-form ref="emailRegisterFormRef" lazy-validation>
                 <!--邮箱号-->
-                <v-text-field v-model="register_email_account.email" label="邮箱" :rules="emailVerifier" autofocus
+                <v-text-field v-model="registerEmailAccount.email" label="邮箱" :rules="emailVerifier" autofocus
                               required></v-text-field>
                 <!--邮箱注册验证码-->
                 <v-row>
                   <v-col cols="7">
-                    <v-text-field v-model="register_email_account.captcha" :counter="6" label="验证码"
+                    <v-text-field v-model="registerEmailAccount.captcha" :counter="6" label="验证码"
                                   :rules="captchaCodeVerifier"
                                   required></v-text-field>
                   </v-col>
                   <v-col cols="5">
-                    <v-btn :color="'#3370FF'" :disabled="email_register_captcha_btn_disable"
+                    <v-btn :color="'#3370FF'" :disabled="emailRegisterCaptchaBtnDisable"
                            style="color: aliceblue" width="100%"
-                           @click="onEmailRegisterGetCaptchaBtnClick" v-text="email_register_captcha_btn_text"
+                           @click="onEmailRegisterGetCaptchaBtnClick" v-text="emailRegisterCaptchaBtnText"
                            ref="emailRegisterCaptchaBtnRef">
 
                     </v-btn>
@@ -157,10 +159,10 @@
                 </v-row>
                 <!--密码-->
                 <v-text-field
-                  v-model="register_email_account.password"
-                  :append-icon="email_register_password_show ? 'mdi-eye' : 'mdi-eye-off'"
-                  :type="email_register_password_show ? 'text' : 'password'"
-                  @click:append="email_register_password_show = !email_register_password_show"
+                  v-model="registerEmailAccount.password"
+                  :append-icon="emailRegisterPasswordShow ? 'mdi-eye' : 'mdi-eye-off'"
+                  :type="emailRegisterPasswordShow ? 'text' : 'password'"
+                  @click:append="emailRegisterPasswordShow = !emailRegisterPasswordShow"
                   label="密码"
                   :rules="emailPasswordVerifier"
                   required>
@@ -197,7 +199,6 @@
 <script>
 import PointsVerifier from '@/components/verify/PointsVerifier'
 import AppThirdPartyLoginBox from '@/components/AppThirdPartyLoginBox'
-import isSuccess from "@/static/util";
 import {LOCAL_STORAGE_KEY, SESSION_STORAGE_KEY, SYSTEM_CONSTANTS} from "@/static/global";
 import {logged, login, logout, register, sendCaptchaCode} from "@/api/user";
 import {decrypt, encrypt} from "static/crypto";
@@ -221,22 +222,30 @@ export default {
       showDialogLocal: this.showDialog,
       showLoginContainer: true,
       //登录Tab
-      login_tab: null,
+      loginTab: null,
       //邮箱登录密码隐藏与显示控制
-      login_email_password_show: false,
+      loginEmailPasswordShow: false,
       //发送短信验证码验证图案通过
-      login_dialog_verifier_show: false,
+      loginDialogVerifierShow: false,
       //邮箱账号登录
-      login_email_account: {
+      loginEmailAccount: {
         email: '',
         password: ''
       },
+      emailLoginBtnCtl: {
+        disabled: false,
+        text: '登录'
+      },
+      phoneLoginBtnCtl: {
+        disabled: false,
+        text: '登录/注册'
+      },
       // 验证码获取按钮是否可以点击
-      phone_login_captcha_btn_disable: false,
+      phoneLoginCaptchaBtnDisable: false,
       // 验证码按钮文本
-      phone_login_captcha_btn_text: "获取验证码",
+      phoneLoginCaptchaBtnText: "获取验证码",
       // 验证码倒计时
-      phone_login_captcha_total_time: SYSTEM_CONSTANTS.COUNTDOWN_BTN_DEFAULT_TIME,
+      phoneLoginCaptchaTotalTime: SYSTEM_CONSTANTS.COUNTDOWN_BTN_DEFAULT_TIME,
       selected_location: {
         code: '+86',
         name: '中国'
@@ -260,12 +269,10 @@ export default {
         },
       ],
       //手机验证码登录
-      login_phone_account: {
+      loginPhoneAccount: {
         phone: '',
         captcha: ''
       },
-      //表单是否通过检验
-      phone_valid: false,
       //手机号验证器
       phoneVerifier: [
         v => !!v || '手机号不能为空',
@@ -291,20 +298,20 @@ export default {
       emailPasswordVerifier: [
         v => !!v || '密码不能为空'
       ],
-      email_register_password_show: false,
-      register_dialog_verifier_show: false,
+      emailRegisterPasswordShow: false,
+      registerDialogVerifierShow: false,
       //邮箱账号登录
-      register_email_account: {
+      registerEmailAccount: {
         email: '',
         password: '',
         captcha: ''
       },
       // 验证码获取按钮是否可以点击
-      email_register_captcha_btn_disable: false,
+      emailRegisterCaptchaBtnDisable: false,
       // 验证码按钮文本
-      email_register_captcha_btn_text: "获取验证码",
+      emailRegisterCaptchaBtnText: "获取验证码",
       // 验证码倒计时
-      email_register_captcha_total_time: SYSTEM_CONSTANTS.COUNTDOWN_BTN_DEFAULT_TIME,
+      emailRegisterCaptchaTotalTime: SYSTEM_CONSTANTS.COUNTDOWN_BTN_DEFAULT_TIME,
       message: {
         isShow: false,
         context: '',
@@ -312,11 +319,6 @@ export default {
     }
   },
   methods: {
-    //区号下拉框数据变更
-    onLocationSelection(any) {
-      console.log(any)
-      console.log(this.selected_location)
-    },
     //手机号输入框发生变更
     onPhoneInputUpdate(any) {
       console.log(any)
@@ -333,61 +335,80 @@ export default {
     },
     //获取验证码
     onPhoneLoginGetCaptchaBtnClick() {
-      //this.login_dialog_verifier_show = true
       this.handlePhoneLoginCaptcha()
     },
     //获取邮箱验证码
     onEmailRegisterGetCaptchaBtnClick() {
       this.handleEmailRegisterCaptcha()
     },
+    /**
+     * Message提示框回调
+     * @param val
+     */
     handleMessageDialogClose(val) {
       this.message.isShow = val
     },
-    //文字验证成功==>发送验证码
-    handlePhoneLoginCaptcha(data) {
-      if (!data) return
-      this.phone_login_captcha_btn_disable = true
-      if (isSuccess("ok")) {
-        this.phone_login_captcha_btn_text = this.phone_login_captcha_total_time + 's后重新发送'
-        const clock = window.setInterval(() => {
-          this.phone_login_captcha_total_time--
-          this.phone_login_captcha_btn_text = this.phone_login_captcha_total_time + 's后重新发送'
-          this.$refs.captchaBtnRef.innerText = this.phone_login_captcha_btn_text
-          if (this.phone_login_captcha_total_time < 0) {
-            window.clearInterval(clock)
-            this.phone_login_captcha_total_time = SYSTEM_CONSTANTS.COUNTDOWN_BTN_DEFAULT_TIME
-            this.phone_login_captcha_btn_text = '重新发送验证码'
-            this.$refs.captchaBtnRef.innerText = "重新发送验证码"
-            this.phone_login_captcha_btn_disable = false
-          }
-        }, 1000)
-      }
-    },
-    //文字验证成功==>发送验证码
-    handleEmailRegisterCaptcha() {
-      if (!this.register_email_account.email || this.email_register_captcha_btn_disable) {
+    /**
+     * 发送手机登录验证码
+     * @param data
+     */
+    handlePhoneLoginCaptcha() {
+      if (!this.loginPhoneAccount.phone || this.phoneLoginCaptchaBtnDisable) {
         return;
       }
 
-      this.email_register_captcha_btn_disable = true
+      this.phoneLoginCaptchaBtnDisable = true
+      sendCaptchaCode({
+        "captcha_code_type": "login",
+        "identifier_type": 2,
+        "identifier": this.loginPhoneAccount.phone
+      }).then((resp) => {
+        this.message.context = '验证码已发送，请注意查收！'
+        this.message.isShow = true
+
+        this.phoneLoginCaptchaBtnText = this.phoneLoginCaptchaTotalTime + 's后重新发送'
+        const clock = window.setInterval(() => {
+          this.phoneLoginCaptchaTotalTime--
+          this.phoneLoginCaptchaBtnText = this.phoneLoginCaptchaTotalTime + 's后重新发送'
+          if (this.phoneLoginCaptchaTotalTime < 0) {
+            window.clearInterval(clock)
+            this.phoneLoginCaptchaTotalTime = SYSTEM_CONSTANTS.COUNTDOWN_BTN_DEFAULT_TIME
+            this.phoneLoginCaptchaBtnText = '重新发送验证码'
+            this.phoneLoginCaptchaBtnDisable = false
+          }
+        }, 1000)
+      }).catch((err) => {
+        this.message.context = err.message
+        this.message.isShow = true
+      })
+    },
+    /**
+     * 发送邮箱注册验证码
+     */
+    handleEmailRegisterCaptcha() {
+      if (!this.registerEmailAccount.email || this.emailRegisterCaptchaBtnDisable) {
+        return;
+      }
+
+      this.emailRegisterCaptchaBtnDisable = true
       //请求接口发送验证码
       sendCaptchaCode({
         "captcha_code_type": "register",
         "identifier_type": 1,
-        "identifier": this.register_email_account.email
+        "identifier": this.registerEmailAccount.email
       }).then((resp) => {
-        this.message.context = '验证码发送成功！'
+        this.message.context = '验证码已发送，请注意查收！'
         this.message.isShow = true
 
-        this.email_register_captcha_btn_text = this.email_register_captcha_total_time + 's后重新发送'
+        this.emailRegisterCaptchaBtnText = this.emailRegisterCaptchaTotalTime + 's后重新发送'
         const clock = window.setInterval(() => {
-          this.email_register_captcha_total_time--
-          this.email_register_captcha_btn_text = this.email_register_captcha_total_time + 's后重新发送'
-          if (this.email_register_captcha_total_time < 0) {
+          this.emailRegisterCaptchaTotalTime--
+          this.emailRegisterCaptchaBtnText = this.emailRegisterCaptchaTotalTime + 's后重新发送'
+          if (this.emailRegisterCaptchaTotalTime < 0) {
             window.clearInterval(clock)
-            this.email_register_captcha_total_time = SYSTEM_CONSTANTS.COUNTDOWN_BTN_DEFAULT_TIME
-            this.email_register_captcha_btn_text = '重新发送验证码'
-            this.email_register_captcha_btn_disable = false
+            this.emailRegisterCaptchaTotalTime = SYSTEM_CONSTANTS.COUNTDOWN_BTN_DEFAULT_TIME
+            this.emailRegisterCaptchaBtnText = '重新发送验证码'
+            this.emailRegisterCaptchaBtnDisable = false
           }
         }, 1000)
       }).catch((resp) => {
@@ -395,10 +416,7 @@ export default {
         this.message.isShow = true
       })
     },
-    //手机登录
-    phoneLogin() {
-
-    },
+    // 退出登录
     logout() {
       logout({
         "token": decrypt(localStorage.getItem(LOCAL_STORAGE_KEY.LOGIN_TOKEN))
@@ -409,16 +427,30 @@ export default {
         this.message.isShow = true
       })
     },
+    //手机登录
+    phoneLogin() {
+      if (!this.$refs.phoneLoginFormRef.validate()) {
+        console.log("表单校验未通过....")
+        return
+      }
+
+      this.phoneLoginBtnCtl.disabled = true
+      this.phoneLoginBtnCtl.text = '登录中...'
+
+    },
     //邮箱登录
     emailLogin() {
       if (!this.$refs.emailLoginFormRef.validate()) {
         console.log("表单校验未通过....")
         return
       }
+
+      this.emailLoginBtnCtl.disabled = true
+      this.emailLoginBtnCtl.text = '登录中...'
       login({
         "identifier_type": 10,
-        "identifier": this.login_email_account.email,
-        "credential": encrypt(this.login_email_account.password),
+        "identifier": this.loginEmailAccount.email,
+        "credential": encrypt(this.loginEmailAccount.password),
         ip: sessionStorage.getItem(SESSION_STORAGE_KEY.CLIENT_IP_ADDRESS),
         location: sessionStorage.getItem(SESSION_STORAGE_KEY.CLIENT_IP_ADDRESS_LOCATION),
         device: this.$ua.deviceType(),
@@ -429,6 +461,9 @@ export default {
       }).catch((resp) => {
         this.message.context = '发生错误，请稍后重试！'
         this.message.isShow = true
+      }).finally(() => {
+        this.emailLoginBtnCtl.disabled = false
+        this.emailLoginBtnCtl.text = '登录'
       })
     },
     /**
@@ -471,7 +506,7 @@ export default {
     },
     //关闭文字验证框
     closePointVerifyWindow(state) {
-      this.login_dialog_verifier_show = false
+      this.loginDialogVerifierShow = false
     },
     //关闭文字验证框
     closeEmailRegisterPointVerifyWindow(state) {
@@ -481,6 +516,15 @@ export default {
       this.showDialogLocal = false
       this.$emit('close', false)
       this.showLoginContainer = true
+      if (this.$refs.emailLoginFormRef) {
+        this.$refs.emailLoginFormRef.reset()
+      }
+      if (this.$refs.emailRegisterFormRef) {
+        this.$refs.emailRegisterFormRef.reset()
+      }
+      if (this.$refs.phoneLoginFormRef) {
+        this.$refs.phoneLoginFormRef.reset()
+      }
     },
     handleRegisterDialogOpen() {
       this.showLoginContainer = false
@@ -492,13 +536,13 @@ export default {
       if (this.$refs.emailRegisterFormRef.validate()) {
         register({
           "identifier_type": 10,
-          "identifier": this.register_email_account.email,
-          "credential": encrypt(this.register_email_account.password),
-          "credential_again": this.register_email_account.captcha
+          "identifier": this.registerEmailAccount.email,
+          "credential": encrypt(this.registerEmailAccount.password),
+          "credential_again": this.registerEmailAccount.captcha
         }).then((resp) => {
           this.message.context = '注册成功！'
           this.message.isShow = true
-          this.register_dialog_verifier_show = false
+          this.registerDialogVerifierShow = false
           this.$refs.emailRegisterFormRef.reset()
           this.handleLoginDialogClose()
         }).catch((resp) => {

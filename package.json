@@ -11,7 +11,6 @@
     "lint:prettier": "prettier --check .",
     "lint": "npm run lint:js && npm run lint:prettier",
     "lintfix": "prettier --write --list-different . && npm run lint:js -- --fix",
-    "prepare": "husky install"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
@@ -41,7 +40,6 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-nuxt": "^4.0.0",
     "eslint-plugin-vue": "^9.5.1",
-    "husky": "^8.0.1",
     "prettier": "^2.7.1",
     "typescript": "^5.0.4",
     "unplugin-vue2-script-setup": "^0.11.3"
