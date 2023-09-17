@@ -1,8 +1,6 @@
 #使用官方 Node 镜像作为基础镜像，指定版本
 FROM node:current-bullseye
 MAINTAINER frank.huang
-#参数，node的环境为生产环境
-ENV NODE_ENV=production
 #任意ip
 ENV HOST 0.0.0.0
 #容器内创建目录/app
