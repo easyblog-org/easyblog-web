@@ -1829,7 +1829,7 @@
 
 "@nuxt/typescript-build@^2.1.0":
   version "2.1.0"
-  resolved "https://registry.npmmirror.com/@nuxt/typescript-build/-/typescript-build-2.1.0.tgz"
+  resolved "https://registry.npmjs.org/@nuxt/typescript-build/-/typescript-build-2.1.0.tgz"
   integrity sha512-7TLMpfzgOckf3cBkzoPFns6Xl8FzY6MoFfm/5HUE47QeTWAdOG9ZFxMrVhHWieZHYUuV+k6byRtaRv4S/3R8zA==
   dependencies:
     consola "^2.15.3"

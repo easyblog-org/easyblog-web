@@ -80,5 +80,5 @@ export default {
   },
   build: {
     vendor: ['axios'] //为防止重复打包
-  },
+  }
 }
