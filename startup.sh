@@ -5,7 +5,7 @@ IMAGE_NAME="easyblog-web"
 IMAGE_TAG="latest"
 
 # 构建 Docker 镜像
-docker build -t "$IMAGE_NAME:$IMAGE_TAG" . >/dev/null
+docker build -t "$IMAGE_NAME:$IMAGE_TAG" .
 
 if [ "$?" -ne 0 ]; then
     echo "Build ${IMAGE_NAME} image failed"
@@ -21,6 +21,3 @@ for ins in $instances; do
 done
 
 docker run --name "${IMAGE_NAME}" -d -p 3000:3000 "$IMAGE_NAME:$IMAGE_TAG"
-
-# 清理不再使用的 Docker 镜像和容器
-docker system prune -f
