@@ -19,7 +19,7 @@ RUN npm cache verify
 #设置淘宝镜像
 RUN npm config set registry https://registry.npm.taobao.org
 #安装依赖
-RUN npm install --force --legacy-peer-deps --no-package-lock
+RUN npm install --legacy-peer-deps --no-package-lock
 #构建，生成dist文件
 RUN npm run build
 #start
