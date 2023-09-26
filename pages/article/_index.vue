@@ -126,7 +126,8 @@
                 </v-row>
                 <!--文章详情主体-->
                 <v-row>
-                  <app-common-markdown-previewer :id="this.$route.params.index"/>
+                  <app-common-markdown-previewer :id="this.$route.params.index"
+                                                 @done="generateTableOfContents"/>
                 </v-row>
               </div>
               <div class="content-links">
@@ -269,7 +270,7 @@
                 </v-col>
               </v-row>
             </v-card>
-            <v-card v-if="!tableOfContents" elevation="1" rounded class="article-content" ref="articleContentRef">
+            <v-card v-if="tableOfContents" elevation="1" rounded class="article-content" ref="articleContentRef">
               <v-card-title>目录</v-card-title>
 
               <div class="content-item" :style="{ 'max-height': tableOfContentMaxHeight }">
@@ -430,7 +431,9 @@ export default {
      * @returns any
      */
     queryArticleByPrimaryKey(code) {
-      queryArticleDetails(code).then(resp => {
+      queryArticleDetails(code, {
+        "sections": "article_author_avatar,article_category"
+      }).then(resp => {
         if (!resp || !resp.data) {
           this.$router.push('/404')
           return;
@@ -449,18 +452,22 @@ export default {
      */
     generateTableOfContents() {
       this.$nextTick(() => {
+        console.log("Start gen content.....")
         const articleContent = document.getElementById('vditor');
-        if (!articleContent) return;
-        const nodes = articleContent.childNodes;
+        if (!articleContent) {
+          console.log("Not found element 'vditor' by id");
+          return;
+        }
+
+        const nodes = articleContent.children;
         const titleTag = ["H1", "H2", "H3", "H4", "H5", "H6"];
         let maxLevel = 6;
         let minLevel = 0;
 
         for (let i = 0; i < nodes.length; i++) {
-          const node = articleContent.childNodes[i];
-          let level = Number(node.nodeName.substring(1, 2));
+          const node = nodes[i];
           if (titleTag.includes(node.nodeName)) {
-
+            let level = Number(node.nodeName.substring(1, 2));
             if (level > minLevel) {
               minLevel = level;
             }
@@ -491,6 +498,8 @@ export default {
           }
           item.indent = indentLevel === maxLevel ? '0' : (indentLevel - maxLevel) * 8 + 'px'; // 最大级别的目录项设置为零缩进，其他级别增加8px的缩进
         }
+
+        console.log(JSON.stringify(this.tableOfContents))
       })
     },
     calculateTableOfContentMaxHeight() {

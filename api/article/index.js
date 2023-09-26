@@ -22,10 +22,11 @@ export const queryArticleList = (params) => {
  * @param code
  * @returns {Promise<any|undefined>|*}
  */
-export const queryArticleDetails = code => {
+export const queryArticleDetails = (code,params) => {
   return request({
     url: `${prefix}/${code}`,
     method: 'GET',
+    data: params,
   })
 }
 
