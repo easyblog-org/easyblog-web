@@ -54,7 +54,7 @@ export default {
   },
   proxy: {
     '/api': {
-      target: 'http://localhost:8001', // 目标接口域名
+      target: 'http://api.easyblog.top', // 目标接口域名
       changeOrigin: true, // 表示是否跨域
       pathRewrite: {
         '^/api': '/', // 把 /api 替换成 /
