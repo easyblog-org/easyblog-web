@@ -174,6 +174,9 @@ export function getClientHeight() {
  * @returns {*}
  */
 export function extractKeywordSummary(markdown, wordCount) {
+  if(!markdown){
+    return '';
+  }
   // 去除 Markdown 标记和多余的空格
   const plainText = markdown.replace(/[\*\#\`\_\[\]\(\)]/g, '').trim();
 

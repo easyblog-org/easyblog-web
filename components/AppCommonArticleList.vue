@@ -32,7 +32,7 @@
             <v-row class="article-info" justify="space-between">
               <div>
                 <span v-text="item.author.nick_name" class="article-list-author"></span>
-                <span v-text="item.create_time" class="article-list-time"></span>
+                <span class="article-list-time"> {{ item.create_time  | formatDates('YYYY-MM-dd HH:mm') }}</span>
               </div>
               <div class="article-list-tags">
                 <a v-for="cat in item.categories">{{ cat }}</a>
@@ -70,7 +70,8 @@ export default {
         limit: 20,
         offset: 0,
         order_cause: 'create_time',
-        order_dir: 'desc'
+        order_dir: 'desc',
+        sections: 'article_content,article_author_avatar,article_category'
       },
       total: null
     }
