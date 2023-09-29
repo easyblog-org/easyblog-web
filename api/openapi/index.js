@@ -1,4 +1,4 @@
-import request from "~/config/openapi_request";
+import request from "~/config/request/openapi";
 
 
 /**

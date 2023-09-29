@@ -74,7 +74,7 @@ export default {
   props: {
     width: {
       type: String | Number,
-      default: 270.25
+      default: '100%'
     }
   },
   data: () => ({

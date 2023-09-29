@@ -1,5 +1,3 @@
-import colors from 'vuetify/es5/util/colors'
-
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -20,8 +18,13 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    '@/assets/global.css',
-    '@/assets/verifier.css',
+    '@/assets/css/flexible_lg.css',
+    '@/assets/css/flexible_md.css',
+    '@/assets/css/flexible_sm.css',
+    '@/assets/css/flexible_xl.css',
+    '@/assets/css/flexible_xs.css',
+    '@/assets/css/global.css',
+    '@/assets/css/verifier.css',
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -76,7 +79,7 @@ export default {
     }
   },
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
+    customVariables: ['~/assets/scss/variables.scss'],
   },
   build: {
     vendor: ['axios'] //为防止重复打包

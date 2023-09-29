@@ -1,189 +1,205 @@
 <template>
   <div>
     <transition name="fade">
-      <div class="top-bar" v-show="show">
-        <v-app-bar
-          app
-          color="white"
-          elevation="1"
-          flat
-        >
-          <v-container class="py-0 fill-height" ref="barRef">
+      <div>
+        <div  class="top-bar" v-show="show">
+          <v-app-bar
+            app
+            color="white"
+            :elevation="elevation"
+            flat
+          >
+            <v-container class="py-0 fill-height" ref="barRef">
 
-            <div>
-              <a href="/" class="bar-title"><h1>EasyBlog</h1></a>
-            </div>
-
-
-            <div class="menu-item-container">
-              <v-btn
-                v-for="link in links"
-                :key="link"
-                text
-                class="menu-item"
-              >
-                {{ link }}
-              </v-btn>
-            </div>
-
-            <v-spacer></v-spacer>
-
-            <v-responsive max-width="400" :width="searchInputDynamicWidth">
-              <v-text-field
-                v-model="query_key"
-                class="search-input"
-                ref="searchInputRef"
-                dense
-                flat
-                solo
-                hide-details
-                :background-color="'#f2f2f2'"
-                clearable
-                :color="'black'"
-                :placeholder="query_placeholder"
-                append-icon="mdi-magnify"
-                @click:append="search"
-                @keypress.enter="search"
-              ></v-text-field>
-            </v-responsive>
-
-            <v-spacer></v-spacer>
-
-            <!--登录/头像按钮-->
-            <div class="bar-login-box">
-              <div class="bar-avatar" v-if="loginStatus">
-                <v-menu
-                  class="bar-avatar-menu"
-                  rounded="lg"
-                  offset-y
-                  :allow-overflow="true"
-                  :min-width="280"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-avatar
-                      color="grey darken-1"
-                      size="40"
-                      v-on="on"
-                      v-bind="attrs"
-                    >
-                      <img
-                        :src="loggedUserInfo.user_current_images.header_img_url"
-                        alt="avatar"/>
-                    </v-avatar>
-                  </template>
-
-                  <v-list class="bar-avatar-menu-box">
-                    <v-list-item class="pb-0 pt-3 pr-0 pl-2">
-                      <v-row>
-                        <NuxtLink to="/user-home">
-                          <v-col cols="3" class="pr-0">
-                            <v-avatar
-                              color="grey darken-1"
-                              size="48"
-                            >
-                              <img
-                                :src="loggedUserInfo.user_current_images.header_img_url"
-                                alt="avatar"/>
-                            </v-avatar>
-                          </v-col>
-                        </NuxtLink>
-                        <v-col class="pl-1" col="9">
-                          <NuxtLink to="/user-home" style="text-decoration: unset !important;">
-                            <div class="bar-avatar-user-info">{{ loggedUserInfo.nick_name }}</div>
-                          </NuxtLink>
-                          <div class="bar-avatar-level-info">
-                            <span>等级:</span>
-                            <span>{{ loggedUserInfo.level }}</span>
-                          </div>
-                        </v-col>
-                      </v-row>
-                    </v-list-item>
-                    <v-list-item class="pb-2 pt-3 pr-0 pl-2">
-                      <v-row>
-                        <v-col cols="4" class="bar-avatar-menu-article-info pb-0 pt-0 pr-0 pl-0">
-                          <v-row class="justify-center align-center font-weight-bold">
-                            999
-                          </v-row>
-                          <v-row class="justify-center align-center">
-                            关注
-                          </v-row>
-                        </v-col>
-                        <v-col cols="4" class="bar-avatar-menu-article-info pb-0 pt-0 pr-0 pl-0">
-                          <v-row class="justify-center align-center font-weight-bold">
-                            10
-                          </v-row>
-                          <v-row class="justify-center align-center">
-                            点赞
-                          </v-row>
-                        </v-col>
-                        <v-col cols="4" class="bar-avatar-menu-article-info pb-0 pt-0 pr-0 pl-0">
-                          <v-row class="justify-center align-center font-weight-bold">
-                            100
-                          </v-row>
-                          <v-row class="justify-center align-center">
-                            收藏
-                          </v-row>
-                        </v-col>
-                      </v-row>
-                    </v-list-item>
-                    <v-divider></v-divider>
-                    <v-list-item class="bar-avatar-menu-item pb-0 pt-1 pr-0 pl-2">
-                      <NuxtLink to="/user-home" tag="div" style="width: 100%">
-                        <v-list-item-title>
-                          <v-icon
-                            left
-                            small
-                          >
-                            mdi-account
-                          </v-icon>
-                          我的主页
-                        </v-list-item-title>
-                      </NuxtLink>
-                      <v-icon right small>mdi-chevron-right</v-icon>
-                    </v-list-item>
-                    <v-list-item class="bar-avatar-menu-item pb-1 pt-0 pr-0 pl-2">
-                      <NuxtLink to="/user-home" tag="div" style="width: 100%">
-                        <v-list-item-title>
-                          <v-icon
-                            left
-                            small
-                          >
-                            mdi-cog
-                          </v-icon>
-                          账号设置
-                        </v-list-item-title>
-                      </NuxtLink>
-                      <v-icon right small>mdi-chevron-right</v-icon>
-                    </v-list-item>
-                    <v-divider></v-divider>
-                    <v-list-item class="bar-avatar-menu-item pb-0 pt-1 pr-0 pl-2"
-                                 @click="logout">
-                      <v-list-item-title>
-                        <v-icon
-                          left
-                          small
-                        >
-                          mdi-logout
-                        </v-icon>
-                        退出登录
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-menu>
+              <div>
+                <a href="/" class="bar-title"><h1>EasyBlog</h1></a>
               </div>
-              <div class="bar-login-btn" v-else>
+
+
+              <div class="menu-item-container">
                 <v-btn
-                  class="ma-2"
-                  outlined
-                  color="indigo"
-                  @click="handleLoginOpen"
+                  v-for="link in links"
+                  :key="link"
+                  text
+                  class="menu-item"
                 >
-                  登录 | 注册
+                  {{ link }}
                 </v-btn>
               </div>
-            </div>
-          </v-container>
-        </v-app-bar>
+
+              <v-spacer></v-spacer>
+
+              <v-responsive max-width="400" :width="searchInputDynamicWidth">
+                <v-text-field
+                  v-model="query_key"
+                  class="search-input"
+                  ref="searchInputRef"
+                  dense
+                  flat
+                  solo
+                  hide-details
+                  :background-color="'#f2f2f2'"
+                  clearable
+                  :color="'black'"
+                  :placeholder="query_placeholder"
+                  append-icon="mdi-magnify"
+                  @click:append="search"
+                  @keypress.enter="search"
+                ></v-text-field>
+              </v-responsive>
+
+              <v-spacer></v-spacer>
+
+              <!--登录/头像按钮-->
+              <div class="bar-login-box">
+                <div class="bar-avatar" v-if="loginStatus">
+                  <v-menu
+                    class="bar-avatar-menu"
+                    rounded="lg"
+                    offset-y
+                    :allow-overflow="true"
+                    :min-width="280"
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-avatar
+                        color="grey darken-1"
+                        size="40"
+                        v-on="on"
+                        v-bind="attrs"
+                      >
+                        <img
+                          :src="loggedUserInfo.user_current_images.header_img_url"
+                          alt="avatar"/>
+                      </v-avatar>
+                    </template>
+
+                    <v-list class="bar-avatar-menu-box">
+                      <v-list-item class="pb-0 pt-3 pr-0 pl-2">
+                        <v-row>
+                          <NuxtLink to="/user-home">
+                            <v-col cols="3" class="pr-0">
+                              <v-avatar
+                                color="grey darken-1"
+                                size="48"
+                              >
+                                <img
+                                  :src="loggedUserInfo.user_current_images.header_img_url"
+                                  alt="avatar"/>
+                              </v-avatar>
+                            </v-col>
+                          </NuxtLink>
+                          <v-col class="pl-1" col="9">
+                            <NuxtLink to="/user-home" style="text-decoration: unset !important;">
+                              <div class="bar-avatar-user-info">{{ loggedUserInfo.nick_name }}</div>
+                            </NuxtLink>
+                            <div class="bar-avatar-level-info">
+                              <span>等级:</span>
+                              <span>{{ loggedUserInfo.level }}</span>
+                            </div>
+                          </v-col>
+                        </v-row>
+                      </v-list-item>
+                      <v-list-item class="pb-2 pt-3 pr-0 pl-2">
+                        <v-row>
+                          <v-col cols="4" class="bar-avatar-menu-article-info pb-0 pt-0 pr-0 pl-0">
+                            <v-row class="justify-center align-center font-weight-bold">
+                              999
+                            </v-row>
+                            <v-row class="justify-center align-center">
+                              关注
+                            </v-row>
+                          </v-col>
+                          <v-col cols="4" class="bar-avatar-menu-article-info pb-0 pt-0 pr-0 pl-0">
+                            <v-row class="justify-center align-center font-weight-bold">
+                              10
+                            </v-row>
+                            <v-row class="justify-center align-center">
+                              点赞
+                            </v-row>
+                          </v-col>
+                          <v-col cols="4" class="bar-avatar-menu-article-info pb-0 pt-0 pr-0 pl-0">
+                            <v-row class="justify-center align-center font-weight-bold">
+                              100
+                            </v-row>
+                            <v-row class="justify-center align-center">
+                              收藏
+                            </v-row>
+                          </v-col>
+                        </v-row>
+                      </v-list-item>
+                      <v-divider></v-divider>
+                      <v-list-item class="bar-avatar-menu-item pb-0 pt-1 pr-0 pl-2">
+                        <NuxtLink to="/user-home" tag="div" style="width: 100%">
+                          <v-list-item-title>
+                            <v-icon
+                              left
+                              small
+                            >
+                              mdi-account
+                            </v-icon>
+                            我的主页
+                          </v-list-item-title>
+                        </NuxtLink>
+                        <v-icon right small>mdi-chevron-right</v-icon>
+                      </v-list-item>
+                      <v-list-item class="bar-avatar-menu-item pb-1 pt-0 pr-0 pl-2">
+                        <NuxtLink to="/user-home" tag="div" style="width: 100%">
+                          <v-list-item-title>
+                            <v-icon
+                              left
+                              small
+                            >
+                              mdi-cog
+                            </v-icon>
+                            账号设置
+                          </v-list-item-title>
+                        </NuxtLink>
+                        <v-icon right small>mdi-chevron-right</v-icon>
+                      </v-list-item>
+                      <v-divider></v-divider>
+                      <v-list-item class="bar-avatar-menu-item pb-0 pt-1 pr-0 pl-2"
+                                   @click="logout">
+                        <v-list-item-title>
+                          <v-icon
+                            left
+                            small
+                          >
+                            mdi-logout
+                          </v-icon>
+                          退出登录
+                        </v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                </div>
+                <div class="bar-login-btn" v-else>
+                  <v-btn
+                    class="ma-2"
+                    outlined
+                    color="indigo"
+                    @click="handleLoginOpen"
+                  >
+                    登录 | 注册
+                  </v-btn>
+                </div>
+              </div>
+            </v-container>
+          </v-app-bar>
+        </div>
+        <!--小屏菜单-->
+        <v-tabs class="m-menu-item-container"
+                center-active
+                optional
+                height="35px"
+        >
+          <v-tab
+            v-for="link in links"
+            :key="link"
+            class="m-menu-item"
+          >
+            {{ link }}
+          </v-tab>
+        </v-tabs>
       </div>
     </transition>
 
@@ -199,9 +215,25 @@ import {LOCAL_STORAGE_KEY} from "static/global";
 
 export default {
   name: 'app-common-bar',
+  computed: {
+    elevation() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return 0
+        case 'sm':
+          return 0
+        case 'md':
+          return 1
+        case 'lg':
+          return 1
+        case 'xl':
+          return 1
+      }
+    },
+  },
   data: () => ({
     links: [
-      '编程入门教程',
+      '入门教程',
       '编程实战',
       '编程题库',
       '开源项目',

@@ -1,4 +1,4 @@
-import request from "~/config/mxnzp_request";
+import request from "~/config/request/mxnzp";
 
 
 /**

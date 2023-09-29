@@ -1,0 +1,49 @@
+@charset "UTF-8";
+/***********************************************************************************
+ * Copyright (c) 2019-2022 easyblog-web and/or its affiliates. All rights reserved.
+ *
+ * 小型号到大型号的手机	< 600px
+ *
+ * easyblog-web GLOBAL CSS File
+ ************************************************************************************/
+
+@media only screen and (max-width: 600px) {
+
+  .container {
+    margin-left: unset;
+    margin-right: unset;
+  }
+
+  .rbox {
+    display: none;
+  }
+
+  .lbox .swiper-side {
+    display: none;
+  }
+
+  .bar-title {
+    display: none;
+  }
+
+  .menu-item-container {
+    display: none;
+  }
+
+  .top-bar {
+    height: 56px !important;
+  }
+
+  .m-menu-item {
+    padding: 0 10px !important;
+  }
+
+  .m-menu-item::before {
+    opacity: 0 !important;
+  }
+
+  .v-slide-group__prev {
+    display: none !important;;
+  }
+
+}
