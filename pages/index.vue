@@ -15,7 +15,7 @@
                 <v-row>
                   <v-col :cols="lboxMainSwiperCol" class="swiper">
                     <!--自定义轮播图-->
-                    <app-common-swiper :height="340"/>
+                    <app-common-swiper :height="swiperHeight"/>
                   </v-col>
                   <v-col :cols="lboxSideSwiperCol" class="swiper-side">
                     <!--自定义轮播图侧边显示-->
@@ -157,6 +157,20 @@ export default {
           return 4
         case 'xl':
           return 4
+      }
+    },
+    swiperHeight() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return 210
+        case 'sm':
+          return 340
+        case 'md':
+          return 340
+        case 'lg':
+          return 340
+        case 'xl':
+          return 340
       }
     },
   },

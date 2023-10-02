@@ -37,4 +37,31 @@
     display: none !important;
   }
 
+  .bar-title {
+    font-size: 16px !important;
+  }
+
+  .top-bar-container-inner{
+    display: none !important;
+  }
+
+  .m-top-bar-container-inner {
+    display: flex;
+    justify-content: center;
+  }
+
+  .m-bar-avatar-menu {
+    position: fixed;
+    left: 0;
+  }
+
+  .m-bar-avatar-menu-item {
+    outline: none !important; /* 去掉按钮点击时的轮廓 */
+    box-shadow: none !important;; /* 去掉按钮的阴影效果 */
+    background-color: unset !important;
+    padding: 0 !important;
+    min-width: 30px !important;
+    width: 30px !important;
+  }
+
 }

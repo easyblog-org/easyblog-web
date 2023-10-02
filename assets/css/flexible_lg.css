@@ -26,8 +26,12 @@
     color: #16499d;
   }
 
-  .m-menu-item-container{
+  .m-menu-item-container {
     display: none;
+  }
+
+  .m-top-bar-container-inner {
+    display: none !important;
   }
 
 }
