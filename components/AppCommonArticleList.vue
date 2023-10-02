@@ -119,7 +119,7 @@ export default {
     return {
       list: [],
       params: {
-        limit: 10,
+        limit: 20,
         offset: 0,
         order_cause: 'create_time',
         order_dir: 'desc',
