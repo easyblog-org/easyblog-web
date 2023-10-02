@@ -1,20 +1,27 @@
 <template>
-  <v-card v-show="show_cards!=null&&show_cards.length>0"
-          class="hot-search-box sidebar-box-border align-center rounded-sm" elevation="0">
-    <v-card-title class="hot-search-title-box">
-      <v-row justify="space-between">
-        <v-col cols="8">
-          <div class="hot-search-icon">
-            <svg t="1648301586764" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                 xmlns="http://www.w3.org/2000/svg" p-id="2207" width="22" height="22">
-              <path
-                d="M756.184615 346.584615l-74.830769 70.892308s0-283.569231-244.184615-378.092308c0 0-23.630769 259.938462-145.723077 354.461539s-370.215385 378.092308 122.092308 590.769231c0 0-244.184615-259.938462 74.830769-448.984616 0 0-23.630769 94.523077 98.461538 189.046154s0 259.938462 0 259.938462 586.830769-141.784615 169.353846-638.03077z"
-                p-id="2208" fill="#d81e06"></path>
-            </svg>
-          </div>
-          <span class="hot-search-title" v-text="this.title"></span>
-        </v-col>
-        <v-col cols="4" class="page">
+  <v-sheet
+    :color="`grey ${theme.isDark ? 'darken-2' : 'lighten-4'}`"
+  >
+    <v-skeleton-loader
+      :loading="show_cards===null"
+      type="list-item@10"
+    >
+      <v-card v-show="show_cards!=null&&show_cards.length>0"
+              class="hot-search-box sidebar-box-border align-center rounded-sm" elevation="0">
+        <v-card-title class="hot-search-title-box">
+          <v-row justify="space-between">
+            <v-col cols="8">
+              <div class="hot-search-icon">
+                <svg t="1648301586764" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                     xmlns="http://www.w3.org/2000/svg" p-id="2207" width="22" height="22">
+                  <path
+                    d="M756.184615 346.584615l-74.830769 70.892308s0-283.569231-244.184615-378.092308c0 0-23.630769 259.938462-145.723077 354.461539s-370.215385 378.092308 122.092308 590.769231c0 0-244.184615-259.938462 74.830769-448.984616 0 0-23.630769 94.523077 98.461538 189.046154s0 259.938462 0 259.938462 586.830769-141.784615 169.353846-638.03077z"
+                    p-id="2208" fill="#d81e06"></path>
+                </svg>
+              </div>
+              <span class="hot-search-title" v-text="this.title"></span>
+            </v-col>
+            <v-col cols="4" class="page">
           <span>
              <span>
                <svg @click="onHotSearchPageBtnClick(2)"
@@ -36,22 +43,24 @@
             fill="#515151" p-id="8580"></path></svg>
         </span>
       </span>
-        </v-col>
-      </v-row>
-    </v-card-title>
-    <v-card-text tag="div" class="hot-search-content-box">
-      <v-card-text v-for="(item,i) in this.show_cards" :key="item.code" class="hot-search-content">
-        <v-row tag="a" :href="articleDetailsJumpPath(item)" :title="item.title">
-          <v-col cols="9" class="text">
-            <span class="rank-num" :style="{'color':item.rank_icon}">{{ item.rank }}</span>
+            </v-col>
+          </v-row>
+        </v-card-title>
+        <v-card-text tag="div" class="hot-search-content-box">
+          <v-card-text v-for="(item,i) in this.show_cards" :key="item.code" class="hot-search-content">
+            <v-row tag="a" :href="articleDetailsJumpPath(item)" :title="item.title">
+              <v-col cols="9" class="text">
+                <span class="rank-num" :style="{'color':item.rank_icon}">{{ item.rank }}</span>
 
-            <NuxtLink :to="articleDetailsJumpPath(item)">{{ item.title }}</NuxtLink>
-          </v-col>
-          <v-col cols="3" class="click">{{ item.click_num }}</v-col>
-        </v-row>
-      </v-card-text>
-    </v-card-text>
-  </v-card>
+                <NuxtLink :to="articleDetailsJumpPath(item)">{{ item.title }}</NuxtLink>
+              </v-col>
+              <v-col cols="3" class="click">{{ item.click_num }}</v-col>
+            </v-row>
+          </v-card-text>
+        </v-card-text>
+      </v-card>
+    </v-skeleton-loader>
+  </v-sheet>
 </template>
 
 <script>
@@ -61,6 +70,12 @@ import {COMMON_HOT_SEARCH_ARTICLE_LIST_CARD_OPT} from "static/global";
 
 export default {
   name: 'app-common-hot-search-list',
+  //Vuetify components provide a theme variable that is used to determine dark
+  inject: {
+    theme: {
+      default: {isDark: false},
+    },
+  },
   props: {
     title: {
       type: String,

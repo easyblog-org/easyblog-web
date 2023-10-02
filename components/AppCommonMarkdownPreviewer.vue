@@ -68,7 +68,7 @@ export default {
             console.log('preview image+' + val)
           },
         },
-      }).then(()=>{
+      }).then(() => {
         // 触发完成事件
         this.$emit('done', true);
       })

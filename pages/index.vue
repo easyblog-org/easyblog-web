@@ -34,10 +34,8 @@
                                 gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                                 height="158px"
                               >
-
-                                <v-card-title style="font-size: 14px">{{
-                                    item.title
-                                  }}
+                                <v-card-title style="font-size: 14px">
+                                  {{ item.title }}
                                 </v-card-title>
                               </v-img>
                             </NuxtLink>
@@ -176,7 +174,7 @@ export default {
   },
   data: () => ({
     //轮播图中间显示的文章或教程
-    swiper_article_side_list: [],
+    swiper_article_side_list: null,
     showAppbar: true
   }),
   methods: {
@@ -242,7 +240,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .v-main {
   padding: unset !important;
 }
@@ -256,11 +254,5 @@ export default {
   transition: all 0.6s;
   cursor: pointer;
   border-radius: unset;
-}
-
-.lbox {
-}
-
-.rbox {
 }
 </style>

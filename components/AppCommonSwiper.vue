@@ -1,41 +1,48 @@
 <template>
-  <div v-show="list!=null">
-    <v-carousel
-      cycle
-      :interval="3000"
-      :height="height"
-      show-arrows-on-hover
-      :style="{'height':computeHeight,'width':computeWidth}"
+  <v-sheet
+    :color="`grey ${theme.isDark ? 'darken-2' : 'lighten-4'}`"
+  >
+    <v-skeleton-loader
+      :loading="list===null"
+      type="image"
     >
-
-      <v-carousel-item
-        v-for="(item) in list"
-        :key="item.code"
-        :src="item.featured_image"
-        link
-        eager
-        class="my-carousel-item"
+      <v-carousel
+        cycle
+        :interval="3000"
+        :height="height"
+        show-arrows-on-hover
+        :style="{'height':computeHeight,'width':computeWidth}"
       >
-        <NuxtLink :to="item.url" style="text-decoration: none">
-          <v-sheet
-            height="100%"
-            tile
-            style="background: unset"
-          >
-            <v-row
-              class="fill-height"
-              align="center"
-              justify="center"
+
+        <v-carousel-item
+          v-for="(item) in list"
+          :key="item.code"
+          :src="item.featured_image"
+          link
+          eager
+          class="my-carousel-item"
+        >
+          <NuxtLink :to="item.url" style="text-decoration: none">
+            <v-sheet
+              height="100%"
+              tile
+              style="background: unset"
             >
-              <div class="my-carousel-item-title">
-                {{ item.title }}
-              </div>
-            </v-row>
-          </v-sheet>
-        </NuxtLink>
-      </v-carousel-item>
-    </v-carousel>
-  </div>
+              <v-row
+                class="fill-height"
+                align="center"
+                justify="center"
+              >
+                <div class="my-carousel-item-title">
+                  {{ item.title }}
+                </div>
+              </v-row>
+            </v-sheet>
+          </NuxtLink>
+        </v-carousel-item>
+      </v-carousel>
+    </v-skeleton-loader>
+  </v-sheet>
 </template>
 
 <script>
@@ -45,6 +52,12 @@ import {prepareArticleListAppendJumpPath} from "static/util";
 
 export default {
   name: 'app-common-swiper',
+  //Vuetify components provide a theme variable that is used to determine dark
+  inject: {
+    theme: {
+      default: {isDark: false},
+    },
+  },
   props: {
     height: {
       type: String | Number,
@@ -98,7 +111,7 @@ export default {
 </script>
 
 
-<style scoped>
+<style lang="scss" scoped>
 .skeleton-card {
   height: 100%;
   display: flex;
@@ -117,5 +130,16 @@ export default {
   letter-spacing: 0.0073529412em !important;
   font-family: "Roboto", sans-serif !important;
   padding: 0 25px;
+}
+
+::v-deep .v-skeleton-loader__image {
+  height: 340px;
+  max-width: 566px;
+}
+
+@media only screen and (max-width: 600px) {
+  ::v-deep .v-skeleton-loader__image {
+    height: 210px !important;
+  }
 }
 </style>
