@@ -1,0 +1,39 @@
+@charset "UTF-8";
+/***********************************************************************************
+ * Copyright (c) 2019-2022 easyblog-web and/or its affiliates. All rights reserved.
+ *
+ *  4K 和超宽屏幕	> 1904px*
+ *
+ * easyblog-web GLOBAL CSS File
+ ************************************************************************************/
+
+@media only screen and (min-width: 1904px) {
+
+  .container {
+    margin-left: 9% !important;
+    margin-right: 9% !important;
+    max-width: 82% !important;
+  }
+
+  .menu-item-container {
+    margin-left: 15px;
+  }
+
+  .menu-item {
+    height: 56px !important;
+    border-radius: unset !important;
+  }
+
+  .menu-item:hover {
+    color: #16499d;
+  }
+
+  .m-menu-item-container{
+    display: none;
+  }
+
+  .m-top-bar-container-inner{
+    display: none !important;
+  }
+
+}

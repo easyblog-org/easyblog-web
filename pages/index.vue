@@ -10,14 +10,14 @@
           <!--轮播图-->
           <v-row>
             <!--left side-->
-            <v-col cols="9" class="lbox">
+            <v-col :cols="lboxCol" class="lbox">
               <v-sheet rounded="lg" style="background: unset">
                 <v-row>
-                  <v-col cols="8">
+                  <v-col :cols="lboxMainSwiperCol" class="swiper">
                     <!--自定义轮播图-->
-                    <app-common-swiper :height="340"/>
+                    <app-common-swiper :height="swiperHeight"/>
                   </v-col>
-                  <v-col cols="4">
+                  <v-col :cols="lboxSideSwiperCol" class="swiper-side">
                     <!--自定义轮播图侧边显示-->
                     <v-row v-for="item in swiper_article_side_list" :key="item.code">
                       <v-col cols="12">
@@ -34,10 +34,8 @@
                                 gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                                 height="158px"
                               >
-
-                                <v-card-title style="font-size: 14px">{{
-                                    item.title
-                                  }}
+                                <v-card-title style="font-size: 14px">
+                                  {{ item.title }}
                                 </v-card-title>
                               </v-img>
                             </NuxtLink>
@@ -52,7 +50,7 @@
               </v-sheet>
             </v-col>
             <!--right side-->
-            <v-col cols="3" class="rbox" ref="rightSideRef">
+            <v-col :cols="rboxCol" class="rbox" ref="rightSideRef">
               <!--热搜-->
               <app-common-hot-search-list
                 title="文章热榜"
@@ -98,25 +96,125 @@ import {prepareArticleListAppendJumpPath} from "static/util";
 
 export default {
   name: 'HomeView',
+  computed: {
+    //动态计算css
+    lboxCol() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return 12
+        case 'sm':
+          return 12
+        case 'md':
+          return 9
+        case 'lg':
+          return 9
+        case 'xl':
+          return 9
+      }
+    },
+
+    rboxCol() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return 0
+        case 'sm':
+          return 0
+        case 'md':
+          return 3
+        case 'lg':
+          return 3
+        case 'xl':
+          return 3
+      }
+    },
+
+    lboxMainSwiperCol() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return 12
+        case 'sm':
+          return 12
+        case 'md':
+          return 7
+        case 'lg':
+          return 8
+        case 'xl':
+          return 8
+      }
+    },
+
+    lboxSideSwiperCol() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return 0
+        case 'sm':
+          return 0
+        case 'md':
+          return 5
+        case 'lg':
+          return 4
+        case 'xl':
+          return 4
+      }
+    },
+    swiperHeight() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return 210
+        case 'sm':
+          return 340
+        case 'md':
+          return 340
+        case 'lg':
+          return 340
+        case 'xl':
+          return 340
+      }
+    },
+  },
   data: () => ({
     //轮播图中间显示的文章或教程
-    swiper_article_side_list: [],
+    swiper_article_side_list: null,
     showAppbar: true
   }),
   methods: {
     // 控制滑动到一定高度之后固定右侧侧边栏
     addScrollsListener() {
       const rightSide = this.$refs.rightSideRef
-      const headerTop = 1330
+      if (!rightSide) {
+        return;
+      }
+
+      const headerTop = 1335
       window.onscroll = () => {
         if (document.documentElement.scrollTop > headerTop) {
           this.showAppbar = false;
-          const contentRef = this.$refs.contentRef
-          const rightPos = (contentRef.offsetWidth / 12) * (11 / 12) * 0.954
-          rightSide.style.position = 'fixed'
-          rightSide.style.right = rightPos + 'px'
-          rightSide.style.bottom = '0px'
-          rightSide.style.width = '296.25px'
+          let rightPos = null
+          //296.25
+          let rightPosWidth = null
+          console.log("window.innerWidth=" + window.innerWidth)
+          switch (this.$vuetify.breakpoint.name) {
+            case 'md':
+              rightPos = window.innerWidth * 0.12
+              rightPosWidth = window.innerWidth * 0.2057
+              break;
+            case 'lg':
+              rightPos = window.innerWidth * 0.09
+              rightPosWidth = window.innerWidth * 0.2057
+              break;
+            case 'xl':
+              rightPos = window.innerWidth * 0.09
+              rightPosWidth = window.innerWidth * 0.2057
+              break;
+          }
+
+          if (rightPos && rightPosWidth) {
+            rightSide.style.position = 'fixed'
+            rightSide.style.right = rightPos + 'px'
+            rightSide.style.top = 'auto'
+            rightSide.style.bottom = '0px'
+            rightSide.style.width = rightPosWidth + 'px'
+          }
         } else {
           this.showAppbar = true
           rightSide.style.position = 'static'
@@ -142,7 +240,7 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
 .v-main {
   padding: unset !important;
 }
@@ -156,11 +254,5 @@ export default {
   transition: all 0.6s;
   cursor: pointer;
   border-radius: unset;
-}
-
-.lbox {
-}
-
-.rbox {
 }
 </style>

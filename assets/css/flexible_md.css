@@ -1,0 +1,37 @@
+@charset "UTF-8";
+/***********************************************************************************
+ * Copyright (c) 2019-2022 easyblog-web and/or its affiliates. All rights reserved.
+ *
+ * 大型号平板到手提电脑	960px > < 1264px*
+ *
+ * easyblog-web GLOBAL CSS File
+ ************************************************************************************/
+@media screen and (min-width: 960px) and (max-width: 1264px) {
+  .container {
+    margin-left: 6% !important;
+    margin-right: 6% !important;
+    max-width: 88% !important;
+  }
+
+  .menu-item-container {
+    margin-left: 15px;
+  }
+
+  .menu-item {
+    height: 56px !important;
+    border-radius: unset !important;
+  }
+
+  .menu-item:hover {
+    color: #16499d;
+  }
+
+  .m-menu-item-container{
+    display: none;
+  }
+
+  .m-top-bar-container-inner{
+    display: none !important;
+  }
+
+}
