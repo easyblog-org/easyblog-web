@@ -1,53 +1,99 @@
 <template>
-  <div v-show="total!=null" class="common-article-list-container">
+  <div class="common-article-list-container">
     <div>
       <h2 class="h_title">最新文章</h2>
     </div>
-    <div class="common-article-content rounded-0">
-      <v-card-text v-for="(item) in preparedArticleList" :key="item.code"
-                   class="article-list">
-        <v-row>
-          <v-col cols="3" class="">
-            <NuxtLink :to="item.url">
-              <v-img
-                :src="item.featured_image"
-                class="white--text align-end transition-swing"
-                gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-              >
-              </v-img>
-            </NuxtLink>
-          </v-col>
-          <v-col cols="9">
-            <!--标题-->
-            <v-row>
-              <NuxtLink :to="item.url">
-                <v-card-title class="article-list-title">
-                  {{ item.title }}
-                </v-card-title>
-              </NuxtLink>
+
+    <!-- 骨架加载效果 -->
+    <v-sheet
+      :color="`grey ${theme.isDark ? 'darken-2' : 'lighten-4'}`"
+    >
+      <v-skeleton-loader
+        :loading="total === null"
+        type="article@5"
+      >
+        <div class="common-article-content rounded-0">
+          <v-card-text v-for="(item) in preparedArticleList" :key="item.code"
+                       class="article-list">
+            <v-row v-if="articleListModel==='list'">
+              <v-col cols="3" class="">
+                <NuxtLink :to="item.url">
+                  <v-img
+                    :src="item.featured_image"
+                    class="white--text align-end transition-swing"
+                    gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                  >
+                  </v-img>
+                </NuxtLink>
+              </v-col>
+              <v-col cols="9">
+                <!--标题-->
+                <v-row>
+                  <NuxtLink :to="item.url">
+                    <v-card-title class="article-list-title">
+                      {{ item.title }}
+                    </v-card-title>
+                  </NuxtLink>
+                </v-row>
+                <v-row>
+                  <p v-text="item.article_summary"></p>
+                </v-row>
+                <v-row class="article-info" justify="space-between">
+                  <div>
+                    <span v-text="item.author.nick_name" class="article-list-author"></span>
+                    <span class="article-list-time"> {{ item.create_time  | formatDates('YYYY-MM-dd HH:mm') }}</span>
+                  </div>
+                  <div class="article-list-tags">
+                    <a v-for="cat in item.categories">{{ cat }}</a>
+                  </div>
+                </v-row>
+              </v-col>
             </v-row>
-            <v-row>
-              <p v-text="item.article_summary"></p>
+            <v-row v-if="articleListModel==='icon'" style="align-items:center">
+              <v-col cols="5">
+                <NuxtLink :to="item.url">
+                  <v-img
+                    :src="item.featured_image"
+                    eager
+                    min-height="100px"
+                    max-height="120px"
+                    class="white--text align-end transition-swing"
+                    gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                  >
+                  </v-img>
+                </NuxtLink>
+              </v-col>
+              <v-col cols="7">
+                <!--标题-->
+                <v-row>
+                  <NuxtLink :to="item.url">
+                    <v-card-title class="m-article-list-title">
+                      {{ item.title }}
+                    </v-card-title>
+                  </NuxtLink>
+                </v-row>
+                <v-row>
+                  <p style="margin-bottom: 5px;font-size: 13px" v-text="item.article_summary"></p>
+                </v-row>
+                <v-row class="article-info" justify="space-between">
+                  <div>
+                    <span v-text="item.author.nick_name" class="article-list-author"></span>
+                  </div>
+                </v-row>
+              </v-col>
             </v-row>
-            <v-row class="article-info" justify="space-between">
-              <div>
-                <span v-text="item.author.nick_name" class="article-list-author"></span>
-                <span class="article-list-time"> {{ item.create_time  | formatDates('YYYY-MM-dd HH:mm') }}</span>
-              </div>
-              <div class="article-list-tags">
-                <a v-for="cat in item.categories">{{ cat }}</a>
-              </div>
+          </v-card-text>
+          <div class="common-article-read-more rounded-0" @click="loadMoreArticles">
+            <v-btn v-show="total>params.offset" block class="rounded-0">
+              阅读更多
+            </v-btn>
+            <v-row style="margin-top: 10px;padding-bottom: 10px" class="align-center justify-center baseline"
+                   v-show="total<=params.offset">我是有底线的~
             </v-row>
-          </v-col>
-        </v-row>
-      </v-card-text>
-      <div class="common-article-read-more rounded-0" @click="loadMoreArticles">
-        <v-btn v-show="total>params.offset" block class="rounded-0">
-          阅读更多
-        </v-btn>
-        <v-row class="align-center justify-center baseline" v-show="total<=params.offset">我是有底线的~</v-row>
-      </div>
-    </div>
+          </div>
+        </div>
+      </v-skeleton-loader>
+    </v-sheet>
   </div>
 </template>
 
@@ -63,11 +109,17 @@ export default {
       default: 150
     }
   },
+  //Vuetify components provide a theme variable that is used to determine dark
+  inject: {
+    theme: {
+      default: {isDark: false},
+    },
+  },
   data() {
     return {
       list: [],
       params: {
-        limit: 20,
+        limit: 10,
         offset: 0,
         order_cause: 'create_time',
         order_dir: 'desc',
@@ -79,6 +131,7 @@ export default {
   methods: {
     async loadArticles() {
       // 1. 查询文章列表
+      this.total = null
       queryArticleList(this.params).then(resp => {
         this.list = prepareArticleListAppendJumpPath([...this.list, ...resp.data.data])
         this.total = resp.data.total
@@ -100,7 +153,21 @@ export default {
           article_summary: extractKeywordSummary(item.content, this.summary_word_count),
         };
       });
-    }
+    },
+    articleListModel() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return 'icon'
+        case 'sm':
+          return 'list'
+        case 'md':
+          return 'list'
+        case 'lg':
+          return 'list'
+        case 'xl':
+          return 'list'
+      }
+    },
   },
   mounted() {
     this.loadArticles()
@@ -144,8 +211,6 @@ export default {
 }
 
 .v-image {
-  height: 120px;
-  width: 210px;
   cursor: pointer !important;
   transition: all 0.8s linear;
   -moz-transition: all 0.8s linear; /* Firefox 4 */
@@ -171,15 +236,26 @@ export default {
 }
 
 .article-list-title:hover,
-.article-list-title a:hover {
+.article-list-title a:hover,
+.m-article-list-title a:hover {
   color: #16499d;
 }
 
 
 .article-list a,
-.article-list-title a {
+.article-list-title a
+.m-article-list-title a {
   color: #333333;
   text-decoration: none;
+}
+
+.m-article-list-title {
+  padding: 0 !important;
+  line-height: 28px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  cursor: pointer;
 }
 
 .article-list p {
@@ -199,7 +275,7 @@ export default {
 }
 
 .article-list-author {
-  color: #333;
+  color: #b3b2b2;
   margin: 0 5px 0 0;
   font-size: 13px;
 }

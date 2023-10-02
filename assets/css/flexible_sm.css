@@ -25,15 +25,15 @@
     display: none;
   }
 
-  .top-bar{
+  .top-bar {
     height: 56px !important;
   }
 
-  .m-menu-item{
+  .m-menu-item {
     padding: 0 10px !important;
   }
 
-  .v-slide-group__prev{
+  .v-slide-group__prev {
     display: none !important;
   }
 
@@ -41,7 +41,7 @@
     font-size: 16px !important;
   }
 
-  .top-bar-container-inner{
+  .top-bar-container-inner {
     display: none !important;
   }
 
