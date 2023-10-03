@@ -174,7 +174,7 @@ export function getClientHeight() {
  * @returns {*}
  */
 export function extractKeywordSummary(markdown, wordCount) {
-  if(!markdown){
+  if (!markdown) {
     return '';
   }
   // 去除 Markdown 标记和多余的空格
@@ -207,6 +207,10 @@ export function articleDetailsJumpPath(item) {
 
 export function splitArrayBySize(arr, partition_size) {
   const result = [];
+  if (!arr) {
+    return result;
+  }
+
   for (let i = 0; i < arr.length; i += partition_size) {
     result.push(arr.slice(i, i + partition_size));
   }
@@ -214,6 +218,10 @@ export function splitArrayBySize(arr, partition_size) {
 }
 
 export function getNthPartitionOf(arr, partition_size, partition_no) {
+  if (!arr) {
+    return [];
+  }
+
   const blocks = splitArrayBySize(arr, partition_size);
   if (partition_no > 0 && partition_no <= blocks.length) {
     return blocks[partition_no - 1];
@@ -222,7 +230,7 @@ export function getNthPartitionOf(arr, partition_size, partition_no) {
   }
 }
 
-export function removeElementAtIndex (array,index){
+export function removeElementAtIndex(array, index) {
   return (array, index) => {
     if (index >= 0 && index < array.length) {
       array.splice(index, 1);

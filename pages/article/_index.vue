@@ -66,7 +66,7 @@
           </div>
         </div>
         <v-row class="article-row">
-          <v-col cols="9" class="pt-0">
+          <v-col :cols="articleContentCols" class="pt-0 article-content">
             <v-card elevation="1" class="pb-5">
               <!--文章详情主体-->
               <div class="article-content-box">
@@ -79,7 +79,7 @@
                   <div class="author">
                     <v-col
                       class="author-img"
-                      cols="1"
+                      :cols="articleAuthorImgCols"
                       style="display: inline-block"
                     >
                       <NuxtLink to="/user-home-page">
@@ -108,7 +108,7 @@
                         </v-img>
                       </NuxtLink>
                     </v-col>
-                    <v-col cols="10" style="display: inline-block">
+                    <v-col :cols="articleDateInfoCols" style="display: inline-block">
                       <v-row>
                         <span class="author-name">{{ authorName }}</span>
                       </v-row>
@@ -147,7 +147,7 @@
               </div>
             </v-card>
           </v-col>
-          <v-col cols="3">
+          <v-col :cols="articleContentSideCols" class="article-side">
             <v-card elevation="1" rounded>
               <v-row class="author-info-card">
                 <v-col
@@ -274,7 +274,7 @@
               <v-card-title>目录</v-card-title>
 
               <div class="content-item" :style="{ 'max-height': tableOfContentMaxHeight }">
-                <v-card-text v-for="item in tableOfContents" :key="item.id">
+                <v-card-text v-for="(item,index) in tableOfContents" :key="index">
                   <a :href="item.id" :style="{'margin-left': item.indent}">{{ item.title }}</a>
                 </v-card-text>
               </div>
@@ -304,6 +304,67 @@ export default {
   components: {
     AppCommonBar,
     AppCommonMarkdownPreviewer,
+  },
+  computed: {
+    articleContentCols() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return 12
+        case 'sm':
+          return 12
+        case 'md':
+          return 9
+        case 'lg':
+          return 9
+        case 'xl':
+          return 9
+      }
+    },
+
+    articleContentSideCols() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return 0
+        case 'sm':
+          return 0
+        case 'md':
+          return 3
+        case 'lg':
+          return 3
+        case 'xl':
+          return 3
+      }
+    },
+
+    articleAuthorImgCols() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return 2
+        case 'sm':
+          return 1
+        case 'md':
+          return 1
+        case 'lg':
+          return 1
+        case 'xl':
+          return 1
+      }
+    },
+
+    articleDateInfoCols() {
+      switch (this.$vuetify.breakpoint.name) {
+        case 'xs':
+          return 9
+        case 'sm':
+          return 10
+        case 'md':
+          return 10
+        case 'lg':
+          return 10
+        case 'xl':
+          return 10
+      }
+    },
   },
   data: () => ({
     article_guide: {
@@ -508,6 +569,11 @@ export default {
       this.tableOfContentMaxHeight = `${window.innerHeight * maxHeightPercentage}px`;
     },
     fixTableOfContentBox(scrollPosition) {
+      if (this.$vuetify.breakpoint.name === 'xs' ||
+        this.$vuetify.breakpoint.name === 'sm') {
+        return;
+      }
+
       const contentRef = this.$refs.articleContentRef
       if (scrollPosition > window.innerHeight * 0.36) {
         this.showAppBar = false
@@ -619,240 +685,1219 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-.article-container {
-  padding: 0 !important;
-  margin-top: 1.767rem !important;
-  height: max-content;
+@media only screen and (max-width: 600px) {
 
-  .content-links {
-    padding: 50px 22px 5px 22px;
-
-    .row {
-      display: flex;
-      align-items: center;
-    }
-
-    a {
-      text-decoration: none;
-      color: #666;
-      text-align: center;
-      overflow: hidden;
-      white-space: normal;
-      text-overflow: ellipsis;
-      font-size: 15px;
-    }
-
-    a:hover {
-      color: #1e80ff;
-    }
+  input {
+    outline: none; // 使用outline属性去掉淡蓝色边框
+    margin: 0 13px; //默认带有margin
+    width: 100%;
+    height: 60px;
+    line-height: 60px !important;
+    font-size: 25px !important;
+    text-align: left;
+    border: 0;
+    //background:rgba(235,82,134,1);
+    border-radius: 0;
+    // font-size:***;字体大小最好不要设置 ios上有兼容性问题
+    font-family: Source Han Sans CN !important;
+    font-weight: 500 !important;
+    color: #1f2329 !important; //字体颜色
+    caret-color: #1f2329 !important; //光标颜色
   }
 
-  .article-content {
-    margin-top: 35px;
-    background-color: #ffffff;
-    padding-bottom: 10px;
-    overflow: auto;
-
-    .content-item {
-      margin-left: 10px;
-      margin-right: 10px;
-    }
-
-    .v-card__title {
-      padding-bottom: 5px;
-      padding-left: 0;
-      border-bottom: solid 1px #e4e6eb;
-      font-weight: 600;
-      font-size: 16px;
-      margin: 10px;
-    }
-
-    .v-card__text {
-      padding: 10px;
-    }
-
-    .v-card__text:hover {
-      background-color: #e4e6eb;
-      border-radius: 5px;
-    }
-
-    a {
-      text-decoration: none;
-      cursor: pointer;
-      color: #252933; //#8A919F
-      line-height: 10px;
-      white-space: inherit;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+  input::placeholder {
+    line-height: 60px !important;
+    font-size: 25px !important;
+    color: #bbbfc4;
+    text-align: left;
   }
 
-  /* 自定义滚动条样式 */
-  .article-content::-webkit-scrollbar {
-    width: 5px; /* 设置滚动条宽度 */
-  }
+  .article-container {
+    padding: 0 !important;
+    margin-top: 0 !important;
+    height: max-content;
 
-  .article-content::-webkit-scrollbar-track {
-    background-color: #ffffff; /* 设置滚动条轨道背景色 */
-  }
+    .article-content {
 
-  .article-content::-webkit-scrollbar-thumb {
-    background-color: #e4e6eb; /* 设置滚动条滑块颜色 */
-    border-radius: 4px; /* 设置滚动条滑块圆角 */
-  }
-
-  .article-content::-webkit-scrollbar-thumb:hover {
-    background-color: #e4e6eb; /* 设置滚动条滑块鼠标悬停时的颜色 */
-  }
-
-  .article-likes-bar {
-    position: fixed;
-    margin-left: -1.5rem;
-    top: 15rem;
-    z-index: 2;
-
-    .v-btn {
-      background-color: #ffffff !important;
     }
 
-    .v-btn--fab.v-size--default {
-      height: 48px;
-      width: 48px;
-      margin-bottom: 0.667rem;
+    .article-side {
+      display: none !important;
     }
 
-    .v-icon:hover {
-      color: #515767 !important;
+    .content-links {
+      padding: 50px 22px 5px 22px;
+
+      .row {
+        display: flex;
+        align-items: center;
+      }
+
+      a {
+        text-decoration: none;
+        color: #666;
+        text-align: center;
+        overflow: hidden;
+        white-space: normal;
+        text-overflow: ellipsis;
+        font-size: 15px;
+      }
+
+      a:hover {
+        color: #1e80ff;
+      }
     }
-  }
 
-  .author-info-card {
-    padding: 20px 20px 0 20px;
+    .article-content {
+      margin-top: 0;
+      background-color: #ffffff;
+      overflow: auto;
+      padding: 0 0 10px 0;
 
-    .v-image {
-      border-radius: 30px;
-    }
+      .content-item {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
 
-    .author-img {
-      padding: 5px 0 5px 5px;
-    }
+      .v-card__title {
+        padding-bottom: 5px;
+        padding-left: 0;
+        border-bottom: solid 1px #e4e6eb;
+        font-weight: 600;
+        font-size: 16px;
+        margin: 10px;
+      }
 
-    .author-name-card {
-      padding: 10px 5px 10px 5px !important;
+      .v-card__text {
+        padding: 10px;
+      }
 
-      .author-name {
-        font-size: 14px;
-        font-weight: 500;
-        color: #252933;
-        line-height: 14px;
+      .v-card__text:hover {
+        background-color: #e4e6eb;
+        border-radius: 5px;
+      }
+
+      a {
+        text-decoration: none;
+        cursor: pointer;
+        color: #252933; //#8A919F
+        line-height: 10px;
+        white-space: inherit;
         overflow: hidden;
         text-overflow: ellipsis;
       }
     }
 
-    .author-home-page-link {
-      margin-top: 5px;
+    /* 自定义滚动条样式 */
+    .article-content::-webkit-scrollbar {
+      width: 5px; /* 设置滚动条宽度 */
+    }
+
+    .article-content::-webkit-scrollbar-track {
+      background-color: #ffffff; /* 设置滚动条轨道背景色 */
+    }
+
+    .article-content::-webkit-scrollbar-thumb {
+      background-color: #e4e6eb; /* 设置滚动条滑块颜色 */
+      border-radius: 4px; /* 设置滚动条滑块圆角 */
+    }
+
+    .article-content::-webkit-scrollbar-thumb:hover {
+      background-color: #e4e6eb; /* 设置滚动条滑块鼠标悬停时的颜色 */
+    }
+
+    .article-likes-bar {
+      position: fixed;
+      right: 0.1rem;
+      bottom: 2rem;
+      z-index: 2;
+
+      .v-btn {
+        background-color: #ffffff !important;
+      }
+
+      .v-btn--fab.v-size--default {
+        height: 48px;
+        width: 48px;
+        margin-bottom: 0.667rem;
+      }
+
+      .v-icon:hover {
+        color: #515767 !important;
+      }
+    }
+
+    .author-info-card {
+      padding: 20px 20px 0 20px;
+
+      .v-image {
+        border-radius: 30px;
+      }
+
+      .author-img {
+        padding: 5px 0 5px 5px;
+      }
+
+      .author-name-card {
+        padding: 10px 5px 10px 5px !important;
+
+        .author-name {
+          font-size: 14px;
+          font-weight: 500;
+          color: #252933;
+          line-height: 14px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .author-home-page-link {
+        margin-top: 5px;
+
+        a {
+          text-decoration: none;
+          color: #3399ea;
+          font-size: 12px !important;
+        }
+      }
+    }
+
+    .author-info-moments {
+      margin-top: 0;
+      padding: 5px 10px;
+
+      .attention {
+        color: #ffffff !important;
+      }
+
+      .private-letter {
+        color: #3399ea !important;
+      }
+    }
+
+    .author-info-divider {
+      margin: 5px;
+    }
+
+    .author-record {
+      margin-top: 0;
+      padding: 0 10px;
+      color: #666666;
+      font-weight: 500;
+
+      .col {
+        padding: 10px;
+      }
+
+      .author-record-num {
+        text-decoration: none;
+        color: #666666;
+      }
+    }
+
+    .article-row {
+      margin-left: 0;
+
+      .article-content-box {
+        padding: 10px 0;
+
+        .author {
+          width: 100%;
+          min-height: 43px;
+          margin: 0 13px;
+
+          .v-image {
+            border-radius: 30px;
+          }
+
+          .author-img {
+            padding: 5px 0 5px 5px;
+          }
+
+          .author-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #515767;
+          }
+
+          .publish-time,
+          .page-views {
+            font-size: 15px;
+            color: #8a919f;
+            margin-top: 2px;
+            line-height: 22px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 600px) and (max-width: 960px) {
+
+  input {
+    outline: none; // 使用outline属性去掉淡蓝色边框
+    margin: 0 13px; //默认带有margin
+    width: 100%;
+    height: 60px;
+    line-height: 60px !important;
+    font-size: 25px !important;
+    text-align: left;
+    border: 0;
+    //background:rgba(235,82,134,1);
+    border-radius: 0;
+    // font-size:***;字体大小最好不要设置 ios上有兼容性问题
+    font-family: Source Han Sans CN !important;
+    font-weight: 500 !important;
+    color: #1f2329 !important; //字体颜色
+    caret-color: #1f2329 !important; //光标颜色
+  }
+
+  input::placeholder {
+    line-height: 60px !important;
+    font-size: 25px !important;
+    color: #bbbfc4;
+    text-align: left;
+  }
+
+  .article-container {
+    padding: 0 !important;
+    margin-top: 0 !important;
+    height: max-content;
+
+    .article-content {
+
+    }
+
+    .article-side {
+      display: none !important;
+    }
+
+    .content-links {
+      padding: 50px 22px 5px 22px;
+
+      .row {
+        display: flex;
+        align-items: center;
+      }
 
       a {
         text-decoration: none;
-        color: #3399ea;
-        font-size: 12px !important;
+        color: #666;
+        text-align: center;
+        overflow: hidden;
+        white-space: normal;
+        text-overflow: ellipsis;
+        font-size: 15px;
+      }
+
+      a:hover {
+        color: #1e80ff;
       }
     }
-  }
 
-  .author-info-moments {
-    margin-top: 0;
-    padding: 5px 10px;
+    .article-content {
+      margin-top: 0;
+      background-color: #ffffff;
+      overflow: auto;
+      padding: 0 0 10px 0;
 
-    .attention {
-      color: #ffffff !important;
+      .content-item {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+
+      .v-card__title {
+        padding-bottom: 5px;
+        padding-left: 0;
+        border-bottom: solid 1px #e4e6eb;
+        font-weight: 600;
+        font-size: 16px;
+        margin: 10px;
+      }
+
+      .v-card__text {
+        padding: 10px;
+      }
+
+      .v-card__text:hover {
+        background-color: #e4e6eb;
+        border-radius: 5px;
+      }
+
+      a {
+        text-decoration: none;
+        cursor: pointer;
+        color: #252933; //#8A919F
+        line-height: 10px;
+        white-space: inherit;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
 
-    .private-letter {
-      color: #3399ea !important;
-    }
-  }
-
-  .author-info-divider {
-    margin: 5px;
-  }
-
-  .author-record {
-    margin-top: 0;
-    padding: 0 10px;
-    color: #666666;
-    font-weight: 500;
-
-    .col {
-      padding: 10px;
+    /* 自定义滚动条样式 */
+    .article-content::-webkit-scrollbar {
+      width: 5px; /* 设置滚动条宽度 */
     }
 
-    .author-record-num {
-      text-decoration: none;
-      color: #666666;
+    .article-content::-webkit-scrollbar-track {
+      background-color: #ffffff; /* 设置滚动条轨道背景色 */
     }
-  }
 
-  .article-row {
-    margin-left: 3.5rem;
+    .article-content::-webkit-scrollbar-thumb {
+      background-color: #e4e6eb; /* 设置滚动条滑块颜色 */
+      border-radius: 4px; /* 设置滚动条滑块圆角 */
+    }
 
-    .article-content-box {
-      padding: 10px 22px;
+    .article-content::-webkit-scrollbar-thumb:hover {
+      background-color: #e4e6eb; /* 设置滚动条滑块鼠标悬停时的颜色 */
+    }
 
-      .author {
-        width: 100%;
-        min-height: 43px;
-        margin: 0 13px;
+    .article-likes-bar {
+      position: fixed;
+      right: 0.1rem;
+      bottom: 2rem;
+      z-index: 2;
 
-        .v-image {
-          border-radius: 30px;
-        }
+      .v-btn {
+        background-color: #ffffff !important;
+      }
 
-        .author-img {
-          padding: 5px 0 5px 5px;
-        }
+      .v-btn--fab.v-size--default {
+        height: 48px;
+        width: 48px;
+        margin-bottom: 0.667rem;
+      }
+
+      .v-icon:hover {
+        color: #515767 !important;
+      }
+    }
+
+    .author-info-card {
+      padding: 20px 20px 0 20px;
+
+      .v-image {
+        border-radius: 30px;
+      }
+
+      .author-img {
+        padding: 5px 0 5px 5px;
+      }
+
+      .author-name-card {
+        padding: 10px 5px 10px 5px !important;
 
         .author-name {
-          font-size: 16px;
-          font-weight: 700;
-          color: #515767;
+          font-size: 14px;
+          font-weight: 500;
+          color: #252933;
+          line-height: 14px;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
+      }
 
-        .publish-time,
-        .page-views {
-          font-size: 15px;
-          color: #8a919f;
-          margin-top: 2px;
-          line-height: 22px;
+      .author-home-page-link {
+        margin-top: 5px;
+
+        a {
+          text-decoration: none;
+          color: #3399ea;
+          font-size: 12px !important;
+        }
+      }
+    }
+
+    .author-info-moments {
+      margin-top: 0;
+      padding: 5px 10px;
+
+      .attention {
+        color: #ffffff !important;
+      }
+
+      .private-letter {
+        color: #3399ea !important;
+      }
+    }
+
+    .author-info-divider {
+      margin: 5px;
+    }
+
+    .author-record {
+      margin-top: 0;
+      padding: 0 10px;
+      color: #666666;
+      font-weight: 500;
+
+      .col {
+        padding: 10px;
+      }
+
+      .author-record-num {
+        text-decoration: none;
+        color: #666666;
+      }
+    }
+
+    .article-row {
+      margin-left: 0;
+
+      .article-content-box {
+        padding: 10px 0;
+
+        .author {
+          width: 100%;
+          min-height: 43px;
+          margin: 0 13px;
+
+          .v-image {
+            border-radius: 30px;
+          }
+
+          .author-img {
+            padding: 5px 0 5px 5px;
+          }
+
+          .author-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #515767;
+          }
+
+          .publish-time,
+          .page-views {
+            font-size: 15px;
+            color: #8a919f;
+            margin-top: 2px;
+            line-height: 22px;
+          }
         }
       }
     }
   }
 }
 
-input {
-  outline: none; // 使用outline属性去掉淡蓝色边框
-  margin: 0 13px; //默认带有margin
-  width: 100%;
-  height: 60px;
-  line-height: 60px !important;
-  font-size: 2vw !important;
-  text-align: left;
-  border: 0;
-  //background:rgba(235,82,134,1);
-  border-radius: 0;
-  // font-size:***;字体大小最好不要设置 ios上有兼容性问题
-  font-family: Source Han Sans CN !important;
-  font-weight: 500 !important;
-  color: #1f2329 !important; //字体颜色
-  caret-color: #1f2329 !important; //光标颜色
+@media screen and (min-width: 960px) and (max-width: 1264px) {
+
+  input {
+    outline: none; // 使用outline属性去掉淡蓝色边框
+    margin: 0 13px; //默认带有margin
+    width: 100%;
+    height: 60px;
+    line-height: 60px !important;
+    font-size: 2vw !important;
+    text-align: left;
+    border: 0;
+    //background:rgba(235,82,134,1);
+    border-radius: 0;
+    // font-size:***;字体大小最好不要设置 ios上有兼容性问题
+    font-family: Source Han Sans CN !important;
+    font-weight: 500 !important;
+    color: #1f2329 !important; //字体颜色
+    caret-color: #1f2329 !important; //光标颜色
+  }
+
+  input::placeholder {
+    line-height: 60px !important;
+    font-size: 2vw !important;
+    color: #bbbfc4;
+    text-align: left;
+  }
+
+  .article-container {
+    padding: 0 !important;
+    margin-top: 1.767rem !important;
+    height: max-content;
+
+    .content-links {
+      padding: 50px 22px 5px 22px;
+
+      .row {
+        display: flex;
+        align-items: center;
+      }
+
+      a {
+        text-decoration: none;
+        color: #666;
+        text-align: center;
+        overflow: hidden;
+        white-space: normal;
+        text-overflow: ellipsis;
+        font-size: 15px;
+      }
+
+      a:hover {
+        color: #1e80ff;
+      }
+    }
+
+    .article-content {
+      margin-top: 35px;
+      background-color: #ffffff;
+      padding-bottom: 10px;
+      overflow: auto;
+
+      .content-item {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+
+      .v-card__title {
+        padding-bottom: 5px;
+        padding-left: 0;
+        border-bottom: solid 1px #e4e6eb;
+        font-weight: 600;
+        font-size: 16px;
+        margin: 10px;
+      }
+
+      .v-card__text {
+        padding: 10px;
+      }
+
+      .v-card__text:hover {
+        background-color: #e4e6eb;
+        border-radius: 5px;
+      }
+
+      a {
+        text-decoration: none;
+        cursor: pointer;
+        color: #252933; //#8A919F
+        line-height: 10px;
+        white-space: inherit;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    /* 自定义滚动条样式 */
+    .article-content::-webkit-scrollbar {
+      width: 5px; /* 设置滚动条宽度 */
+    }
+
+    .article-content::-webkit-scrollbar-track {
+      background-color: #ffffff; /* 设置滚动条轨道背景色 */
+    }
+
+    .article-content::-webkit-scrollbar-thumb {
+      background-color: #e4e6eb; /* 设置滚动条滑块颜色 */
+      border-radius: 4px; /* 设置滚动条滑块圆角 */
+    }
+
+    .article-content::-webkit-scrollbar-thumb:hover {
+      background-color: #e4e6eb; /* 设置滚动条滑块鼠标悬停时的颜色 */
+    }
+
+    .article-likes-bar {
+      position: fixed;
+      margin-left: -1.5rem;
+      top: 15rem;
+      z-index: 2;
+
+      .v-btn {
+        background-color: #ffffff !important;
+      }
+
+      .v-btn--fab.v-size--default {
+        height: 48px;
+        width: 48px;
+        margin-bottom: 0.667rem;
+      }
+
+      .v-icon:hover {
+        color: #515767 !important;
+      }
+    }
+
+    .author-info-card {
+      padding: 20px 20px 0 20px;
+
+      .v-image {
+        border-radius: 30px;
+      }
+
+      .author-img {
+        padding: 5px 0 5px 5px;
+      }
+
+      .author-name-card {
+        padding: 10px 5px 10px 5px !important;
+
+        .author-name {
+          font-size: 14px;
+          font-weight: 500;
+          color: #252933;
+          line-height: 14px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .author-home-page-link {
+        margin-top: 5px;
+
+        a {
+          text-decoration: none;
+          color: #3399ea;
+          font-size: 12px !important;
+        }
+      }
+    }
+
+    .author-info-moments {
+      margin-top: 0;
+      padding: 5px 10px;
+
+      .attention {
+        color: #ffffff !important;
+      }
+
+      .private-letter {
+        color: #3399ea !important;
+      }
+    }
+
+    .author-info-divider {
+      margin: 5px;
+    }
+
+    .author-record {
+      margin-top: 0;
+      padding: 0 10px;
+      color: #666666;
+      font-weight: 500;
+
+      .col {
+        padding: 10px;
+      }
+
+      .author-record-num {
+        text-decoration: none;
+        color: #666666;
+      }
+    }
+
+    .article-row {
+      margin-left: 3.5rem;
+
+      .article-content-box {
+        padding: 10px 22px;
+
+        .author {
+          width: 100%;
+          min-height: 43px;
+          margin: 0 13px;
+
+          .v-image {
+            border-radius: 30px;
+          }
+
+          .author-img {
+            padding: 5px 0 5px 5px;
+          }
+
+          .author-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #515767;
+          }
+
+          .publish-time,
+          .page-views {
+            font-size: 15px;
+            color: #8a919f;
+            margin-top: 2px;
+            line-height: 22px;
+          }
+        }
+      }
+    }
+  }
 }
 
-input::placeholder {
-  line-height: 60px !important;
-  font-size: 2vw !important;
-  color: #bbbfc4;
-  text-align: left;
+@media screen and (min-width: 1264px) and (max-width: 1904px) {
+
+  input {
+    outline: none; // 使用outline属性去掉淡蓝色边框
+    margin: 0 13px; //默认带有margin
+    width: 100%;
+    height: 60px;
+    line-height: 60px !important;
+    font-size: 2vw !important;
+    text-align: left;
+    border: 0;
+    //background:rgba(235,82,134,1);
+    border-radius: 0;
+    // font-size:***;字体大小最好不要设置 ios上有兼容性问题
+    font-family: Source Han Sans CN !important;
+    font-weight: 500 !important;
+    color: #1f2329 !important; //字体颜色
+    caret-color: #1f2329 !important; //光标颜色
+  }
+
+  input::placeholder {
+    line-height: 60px !important;
+    font-size: 2vw !important;
+    color: #bbbfc4;
+    text-align: left;
+  }
+
+  .article-container {
+    padding: 0 !important;
+    margin-top: 1.767rem !important;
+    height: max-content;
+
+    .content-links {
+      padding: 50px 22px 5px 22px;
+
+      .row {
+        display: flex;
+        align-items: center;
+      }
+
+      a {
+        text-decoration: none;
+        color: #666;
+        text-align: center;
+        overflow: hidden;
+        white-space: normal;
+        text-overflow: ellipsis;
+        font-size: 15px;
+      }
+
+      a:hover {
+        color: #1e80ff;
+      }
+    }
+
+    .article-content {
+      margin-top: 35px;
+      background-color: #ffffff;
+      padding-bottom: 10px;
+      overflow: auto;
+
+      .content-item {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+
+      .v-card__title {
+        padding-bottom: 5px;
+        padding-left: 0;
+        border-bottom: solid 1px #e4e6eb;
+        font-weight: 600;
+        font-size: 16px;
+        margin: 10px;
+      }
+
+      .v-card__text {
+        padding: 10px;
+      }
+
+      .v-card__text:hover {
+        background-color: #e4e6eb;
+        border-radius: 5px;
+      }
+
+      a {
+        text-decoration: none;
+        cursor: pointer;
+        color: #252933; //#8A919F
+        line-height: 10px;
+        white-space: inherit;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    /* 自定义滚动条样式 */
+    .article-content::-webkit-scrollbar {
+      width: 5px; /* 设置滚动条宽度 */
+    }
+
+    .article-content::-webkit-scrollbar-track {
+      background-color: #ffffff; /* 设置滚动条轨道背景色 */
+    }
+
+    .article-content::-webkit-scrollbar-thumb {
+      background-color: #e4e6eb; /* 设置滚动条滑块颜色 */
+      border-radius: 4px; /* 设置滚动条滑块圆角 */
+    }
+
+    .article-content::-webkit-scrollbar-thumb:hover {
+      background-color: #e4e6eb; /* 设置滚动条滑块鼠标悬停时的颜色 */
+    }
+
+    .article-likes-bar {
+      position: fixed;
+      margin-left: -1.5rem;
+      top: 15rem;
+      z-index: 2;
+
+      .v-btn {
+        background-color: #ffffff !important;
+      }
+
+      .v-btn--fab.v-size--default {
+        height: 48px;
+        width: 48px;
+        margin-bottom: 0.667rem;
+      }
+
+      .v-icon:hover {
+        color: #515767 !important;
+      }
+    }
+
+    .author-info-card {
+      padding: 20px 20px 0 20px;
+
+      .v-image {
+        border-radius: 30px;
+      }
+
+      .author-img {
+        padding: 5px 0 5px 5px;
+      }
+
+      .author-name-card {
+        padding: 10px 5px 10px 5px !important;
+
+        .author-name {
+          font-size: 14px;
+          font-weight: 500;
+          color: #252933;
+          line-height: 14px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .author-home-page-link {
+        margin-top: 5px;
+
+        a {
+          text-decoration: none;
+          color: #3399ea;
+          font-size: 12px !important;
+        }
+      }
+    }
+
+    .author-info-moments {
+      margin-top: 0;
+      padding: 5px 10px;
+
+      .attention {
+        color: #ffffff !important;
+      }
+
+      .private-letter {
+        color: #3399ea !important;
+      }
+    }
+
+    .author-info-divider {
+      margin: 5px;
+    }
+
+    .author-record {
+      margin-top: 0;
+      padding: 0 10px;
+      color: #666666;
+      font-weight: 500;
+
+      .col {
+        padding: 10px;
+      }
+
+      .author-record-num {
+        text-decoration: none;
+        color: #666666;
+      }
+    }
+
+    .article-row {
+      margin-left: 3.5rem;
+
+      .article-content-box {
+        padding: 10px 22px;
+
+        .author {
+          width: 100%;
+          min-height: 43px;
+          margin: 0 13px;
+
+          .v-image {
+            border-radius: 30px;
+          }
+
+          .author-img {
+            padding: 5px 0 5px 5px;
+          }
+
+          .author-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #515767;
+          }
+
+          .publish-time,
+          .page-views {
+            font-size: 15px;
+            color: #8a919f;
+            margin-top: 2px;
+            line-height: 22px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1904px) {
+
+  input {
+    outline: none; // 使用outline属性去掉淡蓝色边框
+    margin: 0 13px; //默认带有margin
+    width: 100%;
+    height: 60px;
+    line-height: 60px !important;
+    font-size: 2vw !important;
+    text-align: left;
+    border: 0;
+    //background:rgba(235,82,134,1);
+    border-radius: 0;
+    // font-size:***;字体大小最好不要设置 ios上有兼容性问题
+    font-family: Source Han Sans CN !important;
+    font-weight: 500 !important;
+    color: #1f2329 !important; //字体颜色
+    caret-color: #1f2329 !important; //光标颜色
+  }
+
+  input::placeholder {
+    line-height: 60px !important;
+    font-size: 2vw !important;
+    color: #bbbfc4;
+    text-align: left;
+  }
+
+  .article-container {
+    padding: 0 !important;
+    margin-top: 1.767rem !important;
+    height: max-content;
+
+    .content-links {
+      padding: 50px 22px 5px 22px;
+
+      .row {
+        display: flex;
+        align-items: center;
+      }
+
+      a {
+        text-decoration: none;
+        color: #666;
+        text-align: center;
+        overflow: hidden;
+        white-space: normal;
+        text-overflow: ellipsis;
+        font-size: 15px;
+      }
+
+      a:hover {
+        color: #1e80ff;
+      }
+    }
+
+    .article-content {
+      margin-top: 35px;
+      background-color: #ffffff;
+      padding-bottom: 10px;
+      overflow: auto;
+
+      .content-item {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+
+      .v-card__title {
+        padding-bottom: 5px;
+        padding-left: 0;
+        border-bottom: solid 1px #e4e6eb;
+        font-weight: 600;
+        font-size: 16px;
+        margin: 10px;
+      }
+
+      .v-card__text {
+        padding: 10px;
+      }
+
+      .v-card__text:hover {
+        background-color: #e4e6eb;
+        border-radius: 5px;
+      }
+
+      a {
+        text-decoration: none;
+        cursor: pointer;
+        color: #252933; //#8A919F
+        line-height: 10px;
+        white-space: inherit;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    /* 自定义滚动条样式 */
+    .article-content::-webkit-scrollbar {
+      width: 5px; /* 设置滚动条宽度 */
+    }
+
+    .article-content::-webkit-scrollbar-track {
+      background-color: #ffffff; /* 设置滚动条轨道背景色 */
+    }
+
+    .article-content::-webkit-scrollbar-thumb {
+      background-color: #e4e6eb; /* 设置滚动条滑块颜色 */
+      border-radius: 4px; /* 设置滚动条滑块圆角 */
+    }
+
+    .article-content::-webkit-scrollbar-thumb:hover {
+      background-color: #e4e6eb; /* 设置滚动条滑块鼠标悬停时的颜色 */
+    }
+
+    .article-likes-bar {
+      position: fixed;
+      margin-left: -1.5rem;
+      top: 15rem;
+      z-index: 2;
+
+      .v-btn {
+        background-color: #ffffff !important;
+      }
+
+      .v-btn--fab.v-size--default {
+        height: 48px;
+        width: 48px;
+        margin-bottom: 0.667rem;
+      }
+
+      .v-icon:hover {
+        color: #515767 !important;
+      }
+    }
+
+    .author-info-card {
+      padding: 20px 20px 0 20px;
+
+      .v-image {
+        border-radius: 30px;
+      }
+
+      .author-img {
+        padding: 5px 0 5px 5px;
+      }
+
+      .author-name-card {
+        padding: 10px 5px 10px 5px !important;
+
+        .author-name {
+          font-size: 14px;
+          font-weight: 500;
+          color: #252933;
+          line-height: 14px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+
+      .author-home-page-link {
+        margin-top: 5px;
+
+        a {
+          text-decoration: none;
+          color: #3399ea;
+          font-size: 12px !important;
+        }
+      }
+    }
+
+    .author-info-moments {
+      margin-top: 0;
+      padding: 5px 10px;
+
+      .attention {
+        color: #ffffff !important;
+      }
+
+      .private-letter {
+        color: #3399ea !important;
+      }
+    }
+
+    .author-info-divider {
+      margin: 5px;
+    }
+
+    .author-record {
+      margin-top: 0;
+      padding: 0 10px;
+      color: #666666;
+      font-weight: 500;
+
+      .col {
+        padding: 10px;
+      }
+
+      .author-record-num {
+        text-decoration: none;
+        color: #666666;
+      }
+    }
+
+    .article-row {
+      margin-left: 3.5rem;
+
+      .article-content-box {
+        padding: 10px 22px;
+
+        .author {
+          width: 100%;
+          min-height: 43px;
+          margin: 0 13px;
+
+          .v-image {
+            border-radius: 30px;
+          }
+
+          .author-img {
+            padding: 5px 0 5px 5px;
+          }
+
+          .author-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #515767;
+          }
+
+          .publish-time,
+          .page-views {
+            font-size: 15px;
+            color: #8a919f;
+            margin-top: 2px;
+            line-height: 22px;
+          }
+        }
+      }
+    }
+  }
 }
 </style>

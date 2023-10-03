@@ -187,6 +187,11 @@ export default {
 
       const headerTop = 1335
       window.onscroll = () => {
+        if (this.$vuetify.breakpoint.name === 'xs' ||
+          this.$vuetify.breakpoint.name === 'sm') {
+          return;
+        }
+
         if (document.documentElement.scrollTop > headerTop) {
           this.showAppbar = false;
           let rightPos = null

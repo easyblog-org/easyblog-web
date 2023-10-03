@@ -86,12 +86,12 @@ export default {
       this.content = resp.data.content
       this.preview(resp.data.content)
     })
-    window.addEventListener('resize', this.preview)
-    this.unwatch = this.$watch('value', (val) => {
-      if (this.vditor && this.getValue() !== val) {
-        this.setValue(val)
-      }
-    })
+    // window.addEventListener('resize', this.preview)
+    // this.unwatch = this.$watch('value', (val) => {
+    //   if (this.vditor && this.getValue() !== val) {
+    //     this.setValue(val)
+    //   }
+    // })
   },
   beforeDestroy() {
     if (this.unwatch) {
