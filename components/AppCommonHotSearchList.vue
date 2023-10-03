@@ -3,7 +3,7 @@
     :color="`grey ${theme.isDark ? 'darken-2' : 'lighten-4'}`"
   >
     <v-skeleton-loader
-      :loading="show_cards===null"
+      :loading="loading"
       type="list-item@10"
     >
       <v-card v-show="show_cards!=null&&show_cards.length>0"
@@ -111,8 +111,9 @@ export default {
     // 全部数据
     list: [],
     //当前展示的数据
-    show_cards: [],
-    card_opt: null
+    show_cards: null,
+    card_opt: null,
+    loading: true
   }),
   methods: {
     /**
@@ -145,10 +146,11 @@ export default {
     },
     //获取用于展示的文章
     getShowArticles() {
+      this.loading = true
       queryArticleList(this.params).then(resp => {
         this.list = this.renderArticles(resp.data.data)
-        console.log(this.list)
         this.switchShowCard()
+        this.loading = false
       })
     },
     renderArticles(original_articles = []) {
