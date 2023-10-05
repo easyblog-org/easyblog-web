@@ -513,6 +513,7 @@ export default {
      */
     generateTableOfContents() {
       this.$nextTick(() => {
+        this.tableOfContents = []
         console.log("Start gen content.....")
         const articleContent = document.getElementById('vditor');
         if (!articleContent) {
