@@ -52,7 +52,7 @@
               <v-col cols="9" class="text">
                 <span class="rank-num" :style="{'color':item.rank_icon}">{{ item.rank }}</span>
 
-                <NuxtLink :to="articleDetailsJumpPath(item)">{{ item.title }}</NuxtLink>
+                <NuxtLink :to="articleDetailsJumpPath(item)" target="_blank">{{ item.title }}</NuxtLink>
               </v-col>
               <v-col cols="3" class="click">{{ item.click_num }}</v-col>
             </v-row>

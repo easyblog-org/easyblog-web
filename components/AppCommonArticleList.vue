@@ -17,9 +17,10 @@
                        class="article-list">
             <v-row v-if="articleListModel==='list'">
               <v-col cols="3" class="">
-                <NuxtLink :to="item.url">
+                <NuxtLink :to="item.url" target="_blank">
                   <v-img
                     :src="item.featured_image"
+                    style="max-height: 117px;min-height: 117px;"
                     class="white--text align-end transition-swing"
                     gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                   >
@@ -55,8 +56,8 @@
                   <v-img
                     :src="item.featured_image"
                     eager
-                    min-height="100px"
-                    max-height="120px"
+                    min-height="117px"
+                    max-height="117px"
                     class="white--text align-end transition-swing"
                     gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
                   >
@@ -66,7 +67,7 @@
               <v-col cols="7">
                 <!--标题-->
                 <v-row>
-                  <NuxtLink :to="item.url">
+                  <NuxtLink :to="item.url" target="_blank">
                     <v-card-title class="m-article-list-title">
                       {{ item.title }}
                     </v-card-title>
@@ -84,12 +85,21 @@
             </v-row>
           </v-card-text>
           <div class="common-article-read-more rounded-0" @click="loadMoreArticles">
-            <v-btn v-show="total>params.offset" block class="rounded-0">
-              阅读更多
-            </v-btn>
-            <v-row style="margin-top: 10px;padding-bottom: 10px" class="align-center justify-center baseline"
-                   v-show="total<=params.offset">我是有底线的~
-            </v-row>
+            <v-sheet
+              :color="`grey ${theme.isDark ? 'darken-2' : 'lighten-4'}`"
+            >
+              <v-skeleton-loader
+                :loading="loadingMore"
+                type="article@5"
+              >
+                <v-btn v-show="total>params.offset" block class="rounded-0">
+                  阅读更多
+                </v-btn>
+                <v-row style="margin-top: 10px;padding-bottom: 10px;color: #999AAA" class="align-center justify-center baseline"
+                       v-show="total<=params.offset">The End
+                </v-row>
+              </v-skeleton-loader>
+            </v-sheet>
           </div>
         </div>
       </v-skeleton-loader>
@@ -121,25 +131,38 @@ export default {
       params: {
         limit: 20,
         offset: 0,
+        loadMoreLimit: 10,
         order_cause: 'create_time',
         order_dir: 'desc',
         sections: 'article_content,article_author_avatar,article_category'
       },
-      total: null
+      total: null,
+      loadingMore: false
     }
   },
   methods: {
     async loadArticles() {
       // 1. 查询文章列表
-      this.total = null
+      if (!this.list) {
+        // 骨架屏加载效果
+        this.total = null
+      }
+
       queryArticleList(this.params).then(resp => {
-        this.list = prepareArticleListAppendJumpPath([...this.list, ...resp.data.data])
+        const viewAbleList = prepareArticleListAppendJumpPath(resp.data.data)
+        viewAbleList.forEach(item => {
+          this.list.push(item)
+        })
         this.total = resp.data.total
+      }).finally(() => {
+        this.loadingMore = false
       })
     },
     loadMoreArticles() {
-      this.params.offset += this.params.limit
+      this.params.limit = this.params.loadMoreLimit
+      this.params.offset += this.params.loadMoreLimit
       if (this.params.offset >= this.total) return;
+      this.loadingMore = true
 
       this.loadArticles()
     }

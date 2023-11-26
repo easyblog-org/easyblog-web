@@ -22,7 +22,7 @@
           eager
           class="my-carousel-item"
         >
-          <NuxtLink :to="item.url" style="text-decoration: none">
+          <NuxtLink target="_blank" :to="item.url" style="text-decoration: none">
             <v-sheet
               height="100%"
               tile
