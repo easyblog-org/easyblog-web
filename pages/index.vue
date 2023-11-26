@@ -27,7 +27,7 @@
                             :class="{ 'on-hover': hover }"
                             class="head-line"
                           >
-                            <NuxtLink :to="item.url" style="text-decoration: none;color: unset">
+                            <NuxtLink :to="item.url" target="_blank" style="text-decoration: none;color: unset">
                               <v-img
                                 :src="item.featured_image"
                                 class="white--text align-end transition-swing"

@@ -48,7 +48,7 @@ export default {
       Vditor.preview(document.getElementById('vditor'), content, {
         theme: {current: this.active ? 'dark' : 'light'},
         mode: 'light',
-        speech: {enable: true},
+        speech: {enable: false},
         icon: 'ant',
         hljs: {
           /** 代码块没有指定语言时，使用此值。默认值: "" */
