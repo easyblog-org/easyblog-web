@@ -1,12 +1,182 @@
 [
   {
     "type": "网站运营",
-    "name": "短链生成",
-    "description": "简单易用的渠道短链接生成&统计工具"
+    "name": "网站运营",
+    "description": "网站运营工具大全",
+    "items": [
+      {
+        "name": "短链生成",
+        "description": "简单易用的渠道短链接生成&统计工具",
+        "location": "/tools/shortlink",
+        "icon":"https://image.easyblog.top/fI/8d844bAxi+5eOuWlepQ6j7FJEBy1ZSntAq1R4euM="
+      }
+    ]
   },
   {
     "type": "JSON工具",
-    "name": "短链生成",
-    "description": "简单易用的渠道短链接生成&统计工具"
+    "name": "JSON工具",
+    "description": "简单易用的渠道短链接生成&统计工具",
+    "items": [
+      {
+        "name": "JSON在线解析",
+        "description": "简单易用的渠道短链接生成&统计工具",
+        "location": "/tools/json-format",
+        "icon":"https://image.easyblog.top/xoq+e9OcyKZHBt8/7oKjlZKIPFwLBIPA/CY5hWVTdJ0="
+      },
+      {
+        "name": "JSON压缩转义",
+        "description": "简单易用的渠道短链接生成&统计工具",
+        "location": "/tools",
+        "icon":"https://image.easyblog.top/dWuDdCharwQV0i5oD/9c4A6j7FJEBy1ZSntAq1R4euM="
+      },
+      {
+        "name": "JSON生成JAVA实体",
+        "description": "简单易用的渠道短链接生成&统计工具",
+        "location": "/tools",
+        "icon":"https://image.easyblog.top/zThq6ffvre/ZTrUSQBpzwrkZz1v/AzoJFOP5HyIPwg8="
+      },
+      {
+        "name": "JSON生成C#实体",
+        "description": "简单易用的渠道短链接生成&统计工具",
+        "location": "/tools",
+        "icon":"https://image.easyblog.top/vfAyWzNSrsHmAypoBglQbCWE/gThd79bOfQr5CxvfYJzSEzLsmI5CAZ3qW9bZ+HD/3lzFi/1XG2p3pO5qiKLGw=="
+      },
+      {
+        "name": "JSON转SQL",
+        "description": "简单易用的渠道短链接生成&统计工具",
+        "location": "/tools",
+        "icon":"https://image.easyblog.top/eAS5gbAwt1IgmkKWV3qMP9TBz0Q5TNsPSy5gnIJm4ds="
+      },
+      {
+        "name": "驼峰下划线互转",
+        "description": "简单易用的渠道短链接生成&统计工具",
+        "location": "/tools",
+        "icon":"https://image.easyblog.top/tNKDn4AsS2hbwlo7/a5zBA6j7FJEBy1ZSntAq1R4euM="
+      }
+    ]
+  },
+  {
+    "type": "SQL工具",
+    "name": "SQL工具",
+    "description": "简单易用的SQL工具",
+    "items": [
+      {
+        "name": "SQL转实体",
+        "description": "简单易用的渠道短链接生成&统计工具",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      }
+    ]
+  },
+  {
+    "type": "科学计算器",
+    "name": "科学计算器",
+    "description": "简单易用的渠道短链接生成&统计工具",
+    "items": [
+      {
+        "name": "科学计算器",
+        "description": "科学计算器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      },
+      {
+        "name": "温度转换器",
+        "description": "温度转换器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      },
+      {
+        "name": "长度转换器",
+        "description": "长度转换器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      },
+      {
+        "name": "面积转换器",
+        "description": "面积转换器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      },
+      {
+        "name": "容积转换器",
+        "description": "容积转换器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      }
+    ]
+  },
+  {
+    "type": "图片工具",
+    "name": "图片工具",
+    "description": "简单易用的渠道短链接生成&统计工具",
+    "items": [
+      {
+        "name": "图片压缩",
+        "description": "科学计算器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      },
+      {
+        "name": "图片裁剪",
+        "description": "温度转换器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      },
+      {
+        "name": "长度转换器",
+        "description": "长度转换器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      },
+      {
+        "name": "面积转换器",
+        "description": "面积转换器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      },
+      {
+        "name": "容积转换器",
+        "description": "容积转换器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      }
+    ]
+  },
+  {
+    "type": "时间工具",
+    "name": "时间工具",
+    "description": "简单易用的渠道短链接生成&统计工具",
+    "items": [
+      {
+        "name": "图片压缩",
+        "description": "科学计算器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      },
+      {
+        "name": "图片裁剪",
+        "description": "温度转换器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      },
+      {
+        "name": "长度转换器",
+        "description": "长度转换器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      },
+      {
+        "name": "面积转换器",
+        "description": "面积转换器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      },
+      {
+        "name": "容积转换器",
+        "description": "容积转换器",
+        "location": "/tools",
+        "icon":"https://file-gz1.67tool.com/file/icon/min/dqhuvzClU93wq6QzETlxg54E.webp"
+      }
+    ]
   }
 ]

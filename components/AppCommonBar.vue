@@ -19,11 +19,11 @@
               <div class="menu-item-container">
                 <v-btn
                   v-for="link in links"
-                  :key="link"
+                  :key="link.id"
                   text
                   class="menu-item"
                 >
-                  {{ link }}
+                  <NuxtLink :to="link.url" class="menu-context">{{ link.name }}</NuxtLink>
                 </v-btn>
               </div>
 
@@ -291,10 +291,10 @@
         >
           <v-tab
             v-for="link in links"
-            :key="link"
+            :key="link.id"
             class="m-menu-item"
           >
-            {{ link }}
+            <NuxtLink :to="link.url">{{ link.name }}</NuxtLink>
           </v-tab>
         </v-tabs>
       </div>
@@ -330,11 +330,31 @@ export default {
   },
   data: () => ({
     links: [
-      '入门教程',
-      '编程实战',
-      '编程题库',
-      '开源项目',
-      '在线工具'
+      {
+        "id": 1,
+        "url": "/",
+        "name": "入门教程"
+      },
+      {
+        "id": 2,
+        "url": "/",
+        "name": "编程实战"
+      },
+      {
+        "id": 3,
+        "url": "/",
+        "name": "编程题库"
+      },
+      {
+        "id": 4,
+        "url": "/",
+        "name": "开源项目"
+      },
+      {
+        "id": 5,
+        "url": "/tools",
+        "name": "在线工具"
+      }
     ],
     // 初始高度为0
     screenHeight: 0,
@@ -518,5 +538,10 @@ export default {
   bottom: 0;
   pointer-events: none;
   transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1), z-index 1ms;
+}
+
+.nuxt-link-active, .menu-context {
+  color: #000000;
+  text-decoration: none;
 }
 </style>

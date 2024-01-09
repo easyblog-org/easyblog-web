@@ -88,7 +88,7 @@ export default {
   padding-bottom: 5px;
   height: 45px;
   border-radius: 3px;
-  margin-top: 16px;
+  margin-top: 40px;
   margin-bottom: 16px;
   line-height: 0;
 }

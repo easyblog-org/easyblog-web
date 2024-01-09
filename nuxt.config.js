@@ -63,6 +63,13 @@ export default {
         '^/api': '/', // 把 /api 替换成 /
       }
     },
+    '/shortlink': {
+      target: 'http://152.32.191.32', // 目标接口域名
+      changeOrigin: true, // 表示是否跨域
+      pathRewrite: {
+        '^/shortlink': '/', // 把 /shortlink 替换成 /
+      }
+    },
     '/mxnzp-api': {
       target: 'https://www.mxnzp.com', // 目标接口域名
       changeOrigin: true, // 表示是否跨域

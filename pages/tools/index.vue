@@ -8,87 +8,89 @@
           href: '/',
         },
         {
-          text: '联系我们',
-          href: '/contact',
+          text: '在线工具',
+          href: '/tools',
         }]"></app-common-bread-crumb-navigation>
 
     <v-container class="pr-0 pl-0 pt-0">
-      <v-row style="min-height: 543px">
+      <v-row>
         <v-col>
-          <v-card>
-            <v-card-title class="pl-3">联系我们</v-card-title>
-            <v-divider></v-divider>
+          <v-card style="min-height: 1024px">
+            <v-toolbar
+              flat
+              color="primary"
+              dark
+            >
+              <v-toolbar-title>
+                {{ activeToolMenu }}
+              </v-toolbar-title>
+            </v-toolbar>
+            <v-tabs vertical>
+              <v-tab @click="onMenuClick('全部工具')" style="text-align: justify;">
+                全部工具
+              </v-tab>
+              <v-tab v-for="toolMenu in toolMenus" :key="toolMenu"
+                     @click="onMenuClick(toolMenu)" style="text-align: justify;">
+                {{ toolMenu }}
+              </v-tab>
 
-            <div class="pl-3 pr-3">
-              <v-card-subtitle class="my-subtitle">方式一：邮件与我们交流</v-card-subtitle>
-              <v-card-text class="text-left mb-8 mt-4 ml-3 pb-2">
-                <v-row>
-                  <v-col cols="3">
-                    <v-row>
-                      EasyBlog客服
-                    </v-row>
-                    <v-row>
-                      <v-chip
-                        class="mt-3"
-                        color="primary"
-                        tag="a"
-                        label
-                      >
-                        <v-icon left>
-                          mdi-email
-                        </v-icon>
-                        easyblog_kefu.163.com
-                      </v-chip>
-                    </v-row>
-                  </v-col>
-                  <v-col cols="3">
-                    <v-row>
-                      举报
-                    </v-row>
-                    <v-row>
-                      <v-chip
-                        class="mt-3"
-                        color="primary"
-                        tag="a"
-                        label
-                      >
-                        <v-icon left>
-                          mdi-email
-                        </v-icon>
-                        easyblog_jb.163.com
-                      </v-chip>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </div>
+              <v-tab-item>
+                <v-card flat>
+                  <v-card-text v-for="(toolsConfig) in activeToolMenuItems" :key="toolsConfig.type">
+                    <h3>
+                      {{ toolsConfig.name }}
+                    </h3>
 
-            <div class="pl-3 pr-3">
-              <v-card-subtitle class="my-subtitle">方式二：在我们的互动社区留下你的声音</v-card-subtitle>
-              <v-card-text class="text-left pb-15 mt-4 ml-3 pb-2">
-                <v-row>
-                  <v-col cols="3">
-                    <v-row>
-                      EasyBlog社区
-                    </v-row>
-                    <v-row>
-                      <v-chip
-                        class="mt-3"
-                        color="primary"
-                        tag="a"
-                        href="/community"
-                        label
-                      >
-                        <v-icon left>
-                          mdi-fire
-                        </v-icon>
-                        community.easyblog.top
-                      </v-chip>
-                    </v-row>
-                  </v-col>
-                </v-row>
-              </v-card-text>
-            </div>
+                    <v-card v-for="item in toolsConfig.items" :key="item.name" max-width="30%"
+                            min-width="30%"
+                            style="display: inline-flex;margin: 10px 10px 20px 0">
+                      <NuxtLink :to="item.location" class="tool-item-context" target="_blank">
+                        <div>
+                          <v-avatar
+                            tile
+                            color="grey darken-1"
+                            size="40"
+                            style="display: inline-block; margin: 15px 0 15px 15px"
+                          >
+                            <img
+                              :src="item.icon"
+                              alt="avatar"/>
+                          </v-avatar>
+                          <v-card-title class="tool-item-title"> {{ item.name }}</v-card-title>
+                        </div>
+                        <v-card-subtitle class="tool-item-subtitle"> {{ item.description }}</v-card-subtitle>
+                      </NuxtLink>
+                    </v-card>
+                  </v-card-text>
+                </v-card>
+              </v-tab-item>
+              <v-tab-item v-for="toolMenu in toolMenus" :key="toolMenu">
+                <v-card flat>
+                  <v-card-text>
+                    <v-card v-for="item in activeToolMenuItems.items" :key="item.name" max-width="30%"
+                            min-width="30%"
+                            style="display: inline-flex;margin: 10px 10px 20px 0">
+                      <NuxtLink :to="item.location" class="tool-item-context" target="_blank">
+                        <div>
+                          <v-avatar
+                            tile
+                            color="grey darken-1"
+                            size="40"
+                            style="display: inline-block; margin: 15px 0 15px 15px"
+                          >
+                            <img
+                              :src="item.icon"
+                              alt="avatar"/>
+                          </v-avatar>
+                          <v-card-title class="tool-item-title"> {{ item.name }}</v-card-title>
+                        </div>
+                        <v-card-subtitle class="tool-item-subtitle"> {{ item.description }}</v-card-subtitle>
+                      </NuxtLink>
+                    </v-card>
+                  </v-card-text>
+                </v-card>
+              </v-tab-item>
+            </v-tabs>
           </v-card>
         </v-col>
       </v-row>
@@ -104,6 +106,8 @@
 import AppCommonBar from '@/components/AppCommonBar'
 import AppCommonBreadCrumbNavigation from '@/components/AppCommonBreadCrumbNavigation'
 import AppSimpleFooter from '@/components/AppSimpleFooter'
+import toolsConfig from '@/static/tool/tools.json'
+
 
 export default {
   name: 'ContactUsView',
@@ -111,14 +115,91 @@ export default {
     AppSimpleFooter,
     AppCommonBreadCrumbNavigation,
     AppCommonBar
+  },
+  data: () => ({
+    activeToolMenu: '全部工具',
+    activeToolMenuItems: [],
+    toolMenus: [],
+    toolsConfigs: {}
+  }),
+  methods: {
+    fetchTools() {
+      if (!toolsConfig) return
+
+      this.toolsConfigs = toolsConfig.reduce((map, obj) => {
+        const {type, ...rest} = obj;
+
+        // 如果Map中已存在相同type的项，则将当前对象合并到已存在项中的items数组
+        if (map.has(type)) {
+          const existingItem = map.get(type);
+          existingItem.items.push(...rest.items);
+        } else {
+          // 否则，创建一个新的项
+          map.set(type, {...rest, items: [...rest.items]});
+        }
+
+        return map;
+      }, new Map());
+    },
+    fetchToolMenus() {
+      if (!toolsConfig) return
+
+      this.toolMenus = toolsConfig.map(obj => obj.type)
+    },
+    switchToolMenu(toolMenu) {
+      if (!toolMenu) return
+
+      if ('全部工具' === toolMenu) {
+        this.activeToolMenuItems = toolsConfig;
+      } else {
+        const toolConfig = this.toolsConfigs.get(toolMenu)
+        const formattedJSON = JSON.stringify(toolConfig, null, 2);
+        console.log("switchToolMenu==>" + formattedJSON)
+        this.activeToolMenuItems = toolConfig
+      }
+    },
+    onMenuClick(toolMenu) {
+      this.activeToolMenu = toolMenu
+      console.log(this.activeToolMenu)
+      this.switchToolMenu(toolMenu)
+    }
+  },
+  computed: {},
+  created() {
+    this.fetchTools()
+    this.fetchToolMenus()
+    this.switchToolMenu("全部工具")
   }
 }
 </script>
 
 <style scoped>
-.my-subtitle{
+.my-subtitle {
   font-size: 16px;
   color: #5fa207;
   font-weight: 600;
+}
+
+.tool-item-context {
+  color: #252933;
+  text-decoration: unset;
+}
+
+.tool-item-title, .tool-item-subtitle {
+  padding: 10px;
+}
+
+.tool-item-title {
+  font-size: 16px;
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.tool-item-subtitle {
+  color: #999;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 300px;
 }
 </style>
