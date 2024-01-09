@@ -30,7 +30,7 @@
               <v-col cols="9">
                 <!--标题-->
                 <v-row>
-                  <NuxtLink :to="item.url">
+                  <NuxtLink :to="item.url" target="_blank">
                     <v-card-title class="article-list-title">
                       {{ item.title }}
                     </v-card-title>
