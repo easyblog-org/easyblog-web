@@ -4,29 +4,24 @@
     <div class="flex flex-col-reverse lg:flex-row gap-6">
       <div class="lg:w-3/4">
         <article class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-8">
-          <div class="max-w-3xl mx-auto">
-            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">{{ article.title }}</h1>
-            <div class="flex items-center gap-3 mb-6 text-sm text-gray-400 dark:text-gray-500 flex-wrap">
-              <span>{{ formatDate(article.date) }}</span>
-              <span v-if="article.category">· {{ article.category }}</span>
-              <span>· {{ viewCount }} 次阅读</span>
-            </div>
-
-            <div v-if="article.collection" class="mb-6 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-lg p-4 flex items-center justify-between">
-              <div>
-                <span class="text-xs text-primary font-medium">所属专栏</span>
-                <p class="text-sm font-semibold text-gray-900 dark:text-white mt-0.5">{{ article.collection.title }}</p>
-              </div>
-              <button class="text-xs bg-primary text-white px-4 py-1.5 rounded-full hover:bg-primary-hover transition-colors" @click="handleSubscribe">订阅专栏</button>
-            </div>
-
-            <div ref="contentRef" class="prose prose-gray dark:prose-invert max-w-none">
-              <MarkdownPreviewer v-if="article.body" :content="article.body" @done="extractHeadings" />
-              <p v-else class="text-gray-400 text-center py-12">文章内容加载中...</p>
-            </div>
+          <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">{{ article.title || '加载中...' }}</h1>
+          <div class="flex items-center gap-3 mb-6 text-sm text-gray-400 dark:text-gray-500 flex-wrap">
+            <span>{{ formatDate(article.date) }}</span>
+            <span v-if="article.category">· {{ article.category }}</span>
+            <span>· {{ viewCount }} 次阅读</span>
           </div>
 
-          <div class="max-w-3xl mx-auto mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
+          <div v-if="article.collection" class="mb-6 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-lg p-4 flex items-center justify-between">
+            <div>
+              <span class="text-xs text-primary font-medium">所属专栏</span>
+              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-0.5">{{ article.collection.title }}</p>
+            </div>
+            <button class="text-xs bg-primary text-white px-4 py-1.5 rounded-full hover:bg-primary-hover transition-colors" @click="handleSubscribe">订阅专栏</button>
+          </div>
+
+          <nuxt-content ref="contentRef" :document="article" />
+
+          <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
             <div class="flex items-center justify-between">
               <button
                 class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
@@ -50,11 +45,9 @@
           </div>
         </article>
 
-        <div class="max-w-3xl mx-auto mt-6">
-          <AuthorCard />
-        </div>
+        <AuthorCard class="mt-6" />
 
-        <div v-if="prevArticle || nextArticle" class="max-w-3xl mx-auto mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div v-if="prevArticle || nextArticle" class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <NuxtLink
             v-if="prevArticle"
             :to="'/article/' + prevArticle.slug"
@@ -74,11 +67,9 @@
           </NuxtLink>
         </div>
 
-        <div class="max-w-3xl mx-auto mt-8">
-          <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-4 text-sm">评论</h3>
-            <p class="text-sm text-gray-400 dark:text-gray-500">评论功能即将上线，敬请期待...</p>
-          </div>
+        <div class="mt-8 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
+          <h3 class="font-semibold text-gray-900 dark:text-white mb-4 text-sm">评论</h3>
+          <p class="text-sm text-gray-400 dark:text-gray-500">评论功能即将上线，敬请期待...</p>
         </div>
       </div>
 
@@ -95,21 +86,36 @@
 
 <script>
 import Breadcrumb from '~/components/layout/Breadcrumb.vue'
-import MarkdownPreviewer from '~/components/article/MarkdownPreviewer.vue'
 import PostTOC from '~/components/article/PostTOC.vue'
 import AuthorCard from '~/components/article/AuthorCard.vue'
 
 export default {
   name: 'ArticleDetailPage',
-  components: { Breadcrumb, MarkdownPreviewer, PostTOC, AuthorCard },
-  async asyncData({ params, store }) {
+  components: { Breadcrumb, PostTOC, AuthorCard },
+  async asyncData({ params, $content, store }) {
     const slug = params.slug
+    let article = {}
+    try {
+      article = await $content('articles', slug).fetch()
+    } catch (e) {
+      console.warn('[article] $content fetch failed, fallback to store:', e.message)
+    }
+    if (!article.title) {
+      const articles = store.state.articles || []
+      const found = articles.find((a) => a.slug === slug)
+      if (found) {
+        article = { ...found, body: found.body || '' }
+      } else {
+        article = { title: '文章未找到', slug, date: '', body: '' }
+      }
+    }
     const articles = store.state.articles || []
-    const article = articles.find((a) => a.slug === slug) || { title: '文章未找到', slug, date: '', body: '' }
     const idx = articles.findIndex((a) => a.slug === slug)
-    const prevArticle = idx > 0 ? articles[idx - 1] : null
-    const nextArticle = idx < articles.length - 1 ? articles[idx + 1] : null
-    return { article, prevArticle, nextArticle }
+    return {
+      article,
+      prevArticle: idx > 0 ? articles[idx - 1] : null,
+      nextArticle: idx < articles.length - 1 ? articles[idx + 1] : null,
+    }
   },
   data() {
     return {
@@ -130,57 +136,33 @@ export default {
   mounted() {
     this.loadViewCount()
     this.loadLikeCount()
+    this.$nextTick(() => {
+      setTimeout(() => this.extractHeadings(), 300)
+    })
   },
   methods: {
     formatDate(date) {
       if (!date) return ''
-      return String(date)
+      const d = new Date(date)
+      const y = d.getFullYear()
+      const m = String(d.getMonth() + 1).padStart(2, '0')
+      const day = String(d.getDate()).padStart(2, '0')
+      return `${y}-${m}-${day}`
     },
     extractHeadings() {
-      this.$nextTick(() => {
-        const container = this.$refs.contentRef
-        if (!container) return
-        const headingEls = container.querySelectorAll('h2, h3')
-        const headings = []
-        headingEls.forEach((el) => {
-          if (!el.id) {
-            el.id = 'heading-' + Math.random().toString(36).substr(2, 9)
-          }
-          headings.push({
-            id: el.id,
-            text: el.textContent,
-            level: parseInt(el.tagName.charAt(1)),
-          })
-        })
-        this.tocHeadings = headings
-        this.addCopyButtons()
-      })
-    },
-    addCopyButtons() {
-      const container = this.$refs.contentRef
+      const container = this.$refs.contentRef?.$el || document.querySelector('.nuxt-content')
       if (!container) return
-      const codeBlocks = container.querySelectorAll('pre')
-      codeBlocks.forEach((pre) => {
-        if (pre.querySelector('.copy-btn')) return
-        const btn = document.createElement('button')
-        btn.className = 'copy-btn absolute top-2 right-2 text-xs text-gray-400 hover:text-white bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded transition-colors'
-        btn.textContent = '复制'
-        btn.addEventListener('click', () => {
-          const code = pre.querySelector('code')
-          const text = code ? code.textContent : pre.textContent
-          navigator.clipboard.writeText(text).then(() => {
-            btn.textContent = '已复制'
-            setTimeout(() => { btn.textContent = '复制' }, 2000)
-          })
-        })
-        pre.style.position = 'relative'
-        pre.appendChild(btn)
+      const headingEls = container.querySelectorAll('h2, h3')
+      const headings = []
+      headingEls.forEach((el) => {
+        if (!el.id) el.id = 'heading-' + Math.random().toString(36).substr(2, 9)
+        headings.push({ id: el.id, text: el.textContent, level: parseInt(el.tagName.charAt(1)) })
       })
+      this.tocHeadings = headings
     },
     loadViewCount() {
       const key = 'view_' + this.article.slug
-      let count = parseInt(localStorage.getItem(key) || '0')
-      count++
+      let count = parseInt(localStorage.getItem(key) || '0') + 1
       localStorage.setItem(key, String(count))
       this.viewCount = count
     },

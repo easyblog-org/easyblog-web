@@ -29,3 +29,67 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-400 dark:bg-gray-600;
 }
+
+.nuxt-content h2 {
+  @apply text-xl font-bold text-gray-900 dark:text-white mt-8 mb-4 pb-2 border-b border-gray-100 dark:border-gray-800;
+}
+
+.nuxt-content h3 {
+  @apply text-lg font-semibold text-gray-900 dark:text-white mt-6 mb-3;
+}
+
+.nuxt-content p {
+  @apply text-gray-700 dark:text-gray-300 leading-relaxed mb-4;
+}
+
+.nuxt-content a {
+  @apply text-primary hover:underline;
+}
+
+.nuxt-content ul, .nuxt-content ol {
+  @apply pl-6 mb-4 space-y-1;
+}
+
+.nuxt-content ul li {
+  @apply list-disc text-gray-700 dark:text-gray-300;
+}
+
+.nuxt-content ol li {
+  @apply list-decimal text-gray-700 dark:text-gray-300;
+}
+
+.nuxt-content blockquote {
+  @apply border-l-4 border-primary/40 pl-4 py-2 my-4 italic text-gray-600 dark:text-gray-400 bg-primary/5 rounded-r-lg;
+}
+
+.nuxt-content pre {
+  @apply rounded-lg overflow-x-auto my-4;
+}
+
+.nuxt-content code {
+  @apply text-sm;
+}
+
+.nuxt-content :not(pre) > code {
+  @apply bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-sm text-pink-600 dark:text-pink-400;
+}
+
+.nuxt-content img {
+  @apply rounded-lg max-w-full mx-auto my-4 shadow-sm;
+}
+
+.nuxt-content table {
+  @apply w-full border-collapse my-4;
+}
+
+.nuxt-content th, .nuxt-content td {
+  @apply border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm;
+}
+
+.nuxt-content th {
+  @apply bg-gray-50 dark:bg-gray-800 font-medium text-gray-900 dark:text-white;
+}
+
+.nuxt-content hr {
+  @apply border-gray-200 dark:border-gray-700 my-8;
+}

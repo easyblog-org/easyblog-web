@@ -40,7 +40,11 @@ export default {
 
   buildModules: ['@nuxt/typescript-build'],
 
-  modules: ['@nuxtjs/axios', '@nuxtjs/sitemap', '@nuxtjs/feed'],
+  modules: ['@nuxtjs/axios', '@nuxtjs/sitemap', '@nuxtjs/feed', '@nuxt/content'],
+
+  content: {
+    dir: 'content',
+  },
 
   axios: {},
 
@@ -89,9 +93,9 @@ export default {
             if (!attrs.draft) {
               routes.push('/article/' + (attrs.slug || path.basename(filePath, '.md')))
             }
-          } catch (e) {}
+          } catch (e) { }
         }
-      } catch (e) {}
+      } catch (e) { }
       return routes
     },
   },

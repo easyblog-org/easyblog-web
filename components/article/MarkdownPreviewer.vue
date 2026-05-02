@@ -1,5 +1,5 @@
 <template>
-  <div ref="previewRef" class="w-full px-4 py-2"></div>
+  <div ref="previewRef" class="markdown-body w-full"></div>
 </template>
 
 <script>
@@ -7,11 +7,6 @@ export default {
   name: 'MarkdownPreviewer',
   props: {
     content: { type: String, default: '' },
-  },
-  data() {
-    return {
-      vditorInstance: null,
-    }
   },
   watch: {
     content() {
@@ -21,26 +16,24 @@ export default {
   mounted() {
     this.renderPreview()
   },
-  beforeDestroy() {
-    if (this.vditorInstance) {
-      this.vditorInstance.destroy()
-      this.vditorInstance = null
-    }
-  },
   methods: {
     async renderPreview() {
       if (!this.content || !this.$refs.previewRef) return
       try {
         const Vditor = (await import('vditor')).default
-        await import('vditor/dist/method.min')
-        this.$refs.previewRef.innerHTML = ''
-        Vditor.preview.render(this.$refs.previewRef, this.content, {
-          mode: 'light',
+        const html = await Vditor.md2html(this.content, {
+          mode: { render: 'light' },
           hljs: { enable: true, lineNumber: true },
         })
+        this.$refs.previewRef.innerHTML = html
         this.$emit('done')
       } catch (e) {
-        this.$refs.previewRef.innerHTML = this.content
+        console.error('[MarkdownPreviewer] render error:', e)
+        if (this.$refs.previewRef) {
+          const div = document.createElement('div')
+          div.textContent = this.content
+          this.$refs.previewRef.innerHTML = '<pre class="text-sm text-gray-500 whitespace-pre-wrap p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">' + div.innerHTML + '</pre>'
+        }
       }
     },
   },

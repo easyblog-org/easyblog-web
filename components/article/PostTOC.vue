@@ -6,9 +6,9 @@
         <a
           :href="'#' + h.id"
           :class="[
-            'block no-underline transition-colors duration-150 hover:text-primary',
+            'block no-underline transition-colors duration-200 hover:text-primary',
             h.level === 2 ? 'text-gray-600 dark:text-gray-400' : 'text-gray-400 dark:text-gray-500 pl-3 text-xs',
-            activeId === h.id ? 'text-primary font-medium' : ''
+            activeId === h.id ? 'text-primary font-medium border-l-2 border-primary pl-2' : 'border-l-2 border-transparent pl-2'
           ]"
           @click.prevent="scrollTo(h.id)"
         >
@@ -32,10 +32,19 @@ export default {
   data() {
     return {
       activeId: '',
+      _observer: null,
     }
   },
+  watch: {
+    headings: {
+      handler() {
+        this.$nextTick(() => this.setupObserver())
+      },
+      deep: true,
+    },
+  },
   mounted() {
-    this.observeHeadings()
+    this.$nextTick(() => this.setupObserver())
   },
   beforeDestroy() {
     if (this._observer) this._observer.disconnect()
@@ -44,26 +53,32 @@ export default {
     scrollTo(id) {
       const el = document.getElementById(id)
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        const offset = 80
+        const top = el.getBoundingClientRect().top + window.pageYOffset - offset
+        window.scrollTo({ top, behavior: 'smooth' })
         this.activeId = id
       }
     },
-    observeHeadings() {
-      if (typeof IntersectionObserver === 'undefined') return
-      this._observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              this.activeId = entry.target.id
-            }
-          })
-        },
-        { rootMargin: '-80px 0px -60% 0px' }
-      )
+    setupObserver() {
+      if (this._observer) this._observer.disconnect()
+      if (!this.headings.length || typeof IntersectionObserver === 'undefined') return
+      const headingEls = []
       this.headings.forEach((h) => {
         const el = document.getElementById(h.id)
-        if (el) this._observer.observe(el)
+        if (el) headingEls.push(el)
       })
+      if (!headingEls.length) return
+      this._observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries.filter((e) => e.isIntersecting)
+          if (visible.length) {
+            const sorted = visible.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
+            this.activeId = sorted[0].target.id
+          }
+        },
+        { rootMargin: '-80px 0px -55% 0px', threshold: 0 }
+      )
+      headingEls.forEach((el) => this._observer.observe(el))
     },
   },
 }
