@@ -15,7 +15,9 @@
         <ArticleList v-else :articles="filteredArticles" />
       </div>
       <div class="lg:w-1/4">
-        <Sidebar :categories="categories" :tags="tags" :collections="collections" />
+        <div class="sticky top-20">
+          <Sidebar :categories="categories" :tags="tags" :collections="collections" />
+        </div>
       </div>
     </div>
   </div>

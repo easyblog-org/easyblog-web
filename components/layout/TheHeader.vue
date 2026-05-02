@@ -8,7 +8,12 @@
           v-for="item in navItems"
           :key="item.path"
           :to="item.path"
-          class="mx-3 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors no-underline text-sm"
+          :class="[
+            'mx-3 text-sm no-underline transition-colors',
+            isActive(item.path)
+              ? 'text-primary font-medium relative after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:bg-primary after:w-full'
+              : 'text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary'
+          ]"
         >
           {{ item.label }}
         </NuxtLink>
@@ -57,7 +62,12 @@
         v-for="item in navItems"
         :key="item.path"
         :to="item.path"
-        class="block py-2.5 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors no-underline text-sm"
+        :class="[
+          'block py-2.5 text-sm no-underline transition-colors',
+          isActive(item.path)
+            ? 'text-primary font-medium'
+            : 'text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary'
+        ]"
         @click.native="mobileMenuOpen = false"
       >
         {{ item.label }}
@@ -119,6 +129,10 @@ export default {
         document.documentElement.classList.remove('dark')
         localStorage.setItem('theme', 'light')
       }
+    },
+    isActive(path) {
+      if (path === '/') return this.$route.path === '/'
+      return this.$route.path.startsWith(path)
     },
   },
 }
