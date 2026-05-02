@@ -1,263 +1,84 @@
 <template>
-  <v-app>
-    <div class="home light-grey-bg" ref="contentRef">
-      <!--顶部标题栏-->
-      <app-common-bar :show="showAppbar"></app-common-bar>
-
-      <!--主页面-->
-      <v-main style="padding: 30px 0 0 !important;">
-        <v-container>
-          <!--轮播图-->
-          <v-row>
-            <!--left side-->
-            <v-col :cols="lboxCol" class="lbox">
-              <v-sheet rounded="lg" style="background: unset">
-                <v-row>
-                  <v-col :cols="lboxMainSwiperCol" class="swiper">
-                    <!--自定义轮播图-->
-                    <app-common-swiper :height="swiperHeight"/>
-                  </v-col>
-                  <v-col :cols="lboxSideSwiperCol" class="swiper-side">
-                    <!--自定义轮播图侧边显示-->
-                    <v-row v-for="item in swiper_article_side_list" :key="item.code">
-                      <v-col cols="12">
-                        <v-hover v-slot="{ hover }">
-                          <v-card
-                            :elevation="hover ? 12 : 0"
-                            :class="{ 'on-hover': hover }"
-                            class="head-line"
-                          >
-                            <NuxtLink :to="item.url" target="_blank" style="text-decoration: none;color: unset">
-                              <v-img
-                                :src="item.featured_image"
-                                class="white--text align-end transition-swing"
-                                gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
-                                height="158px"
-                              >
-                                <v-card-title style="font-size: 14px">
-                                  {{ item.title }}
-                                </v-card-title>
-                              </v-img>
-                            </NuxtLink>
-                          </v-card>
-                        </v-hover>
-                      </v-col>
-                    </v-row>
-                  </v-col>
-                </v-row>
-                <!--内容-->
-                <app-common-article-list/>
-              </v-sheet>
-            </v-col>
-            <!--right side-->
-            <v-col :cols="rboxCol" class="rbox" ref="rightSideRef">
-              <!--热搜-->
-              <app-common-hot-search-list
-                title="文章热榜"
-                :params="{
-                  limit: 20,
-                  offset: 0,
-                  order_cause: 'page_views',
-                  order_dir: 'desc'
-                }"
-              ></app-common-hot-search-list>
-              <div class="pa-3"></div>
-              <!--广告区-->
-              <app-side-bar-ad></app-side-bar-ad>
-              <div class="pa-3"></div>
-              <!--热搜-->
-              <app-common-hot-search-list
-                title="7x24小时头条"
-                :params="{
-                  limit: 20,
-                  offset: 0,
-                  create_time_begin:new Date().getTime()-7 * 24 * 3600 * 1000,
-                  order_cause: 'page_views',
-                  order_dir: 'desc'
-                }"
-              ></app-common-hot-search-list>
-              <div class="pa-3"></div>
-              <!--友情链接-->
-              <app-common-friend-linker></app-common-friend-linker>
-              <div class="pa-3"></div>
-              <!--footer-->
-              <app-common-footer></app-common-footer>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-main>
+  <div class="max-w-6xl mx-auto px-4 py-6">
+    <div v-if="filterLabel" class="mb-4 flex items-center gap-2">
+      <span class="text-sm text-gray-500 dark:text-gray-400">筛选：{{ filterLabel }}</span>
+      <button class="text-xs text-primary hover:underline" @click="clearFilter">清除</button>
     </div>
-  </v-app>
+    <div class="flex flex-col-reverse lg:flex-row gap-6">
+      <div class="lg:w-3/4">
+        <div v-if="filteredArticles.length === 0" class="text-center text-gray-400 dark:text-gray-500 py-16">
+          <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+          </svg>
+          <p>暂无文章，请先在 content/articles/ 目录下添加 Markdown 文件</p>
+        </div>
+        <ArticleList v-else :articles="filteredArticles" />
+      </div>
+      <div class="lg:w-1/4">
+        <Sidebar :categories="categories" :tags="tags" :collections="collections" />
+      </div>
+    </div>
+  </div>
 </template>
 
-<script lang="js">
-import {queryArticleList} from "@/api/article";
-import {prepareArticleListAppendJumpPath} from "static/util";
+<script>
+import ArticleList from '~/components/article/ArticleList.vue'
+import Sidebar from '~/components/layout/Sidebar.vue'
 
 export default {
-  name: 'HomeView',
+  name: 'HomePage',
+  components: { ArticleList, Sidebar },
   computed: {
-    //动态计算css
-    lboxCol() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-          return 12
-        case 'sm':
-          return 12
-        case 'md':
-          return 9
-        case 'lg':
-          return 9
-        case 'xl':
-          return 9
-      }
+    allArticles() {
+      return this.$store ? this.$store.state.articles || [] : []
     },
-
-    rboxCol() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-          return 0
-        case 'sm':
-          return 0
-        case 'md':
-          return 3
-        case 'lg':
-          return 3
-        case 'xl':
-          return 3
-      }
+    categories() {
+      return this.$store ? this.$store.state.categories || [] : []
     },
-
-    lboxMainSwiperCol() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-          return 12
-        case 'sm':
-          return 12
-        case 'md':
-          return 7
-        case 'lg':
-          return 8
-        case 'xl':
-          return 8
-      }
+    tags() {
+      return this.$store ? this.$store.state.tags || [] : []
     },
-
-    lboxSideSwiperCol() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-          return 0
-        case 'sm':
-          return 0
-        case 'md':
-          return 5
-        case 'lg':
-          return 4
-        case 'xl':
-          return 4
-      }
+    collections() {
+      return [
+        { slug: 'backend-practice', title: '后端工程实践', description: '从零构建高可用后端系统', price: '¥99', articleCount: 12 },
+        { slug: 'ai-exploration', title: 'AI 探索笔记', description: 'AI 应用开发实战记录', price: '¥49', articleCount: 8 },
+      ]
     },
-    swiperHeight() {
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs':
-          return 210
-        case 'sm':
-          return 340
-        case 'md':
-          return 340
-        case 'lg':
-          return 340
-        case 'xl':
-          return 340
+    filteredArticles() {
+      let result = this.allArticles
+      const category = this.$route.query.category
+      const tag = this.$route.query.tag
+      const q = this.$route.query.q
+      if (category) {
+        result = result.filter((a) => a.category === category)
       }
+      if (tag) {
+        result = result.filter((a) => a.tags && a.tags.includes(tag))
+      }
+      if (q) {
+        const lower = q.toLowerCase()
+        result = result.filter(
+          (a) =>
+            (a.title && a.title.toLowerCase().includes(lower)) ||
+            (a.summary && a.summary.toLowerCase().includes(lower))
+        )
+      }
+      return result
+    },
+    filterLabel() {
+      const category = this.$route.query.category
+      const tag = this.$route.query.tag
+      const q = this.$route.query.q
+      if (category) return '分类: ' + category
+      if (tag) return '标签: ' + tag
+      if (q) return '搜索: ' + q
+      return ''
     },
   },
-  data: () => ({
-    //轮播图中间显示的文章或教程
-    swiper_article_side_list: null,
-    showAppbar: true
-  }),
   methods: {
-    // 控制滑动到一定高度之后固定右侧侧边栏
-    addScrollsListener() {
-      const rightSide = this.$refs.rightSideRef
-      if (!rightSide) {
-        return;
-      }
-
-      const headerTop = 1335
-      window.onscroll = () => {
-        if (this.$vuetify.breakpoint.name === 'xs' ||
-          this.$vuetify.breakpoint.name === 'sm') {
-          return;
-        }
-
-        if (document.documentElement.scrollTop > headerTop) {
-          this.showAppbar = false;
-          let rightPos = null
-          //296.25
-          let rightPosWidth = null
-          console.log("window.innerWidth=" + window.innerWidth)
-          switch (this.$vuetify.breakpoint.name) {
-            case 'md':
-              rightPos = window.innerWidth * 0.12
-              rightPosWidth = window.innerWidth * 0.2057
-              break;
-            case 'lg':
-              rightPos = window.innerWidth * 0.09
-              rightPosWidth = window.innerWidth * 0.2057
-              break;
-            case 'xl':
-              rightPos = window.innerWidth * 0.09
-              rightPosWidth = window.innerWidth * 0.2057
-              break;
-          }
-
-          if (rightPos && rightPosWidth) {
-            rightSide.style.position = 'fixed'
-            rightSide.style.right = rightPos + 'px'
-            rightSide.style.top = 'auto'
-            rightSide.style.bottom = '0px'
-            rightSide.style.width = rightPosWidth + 'px'
-          }
-        } else {
-          this.showAppbar = true
-          rightSide.style.position = 'static'
-        }
-      }
+    clearFilter() {
+      this.$router.push({ path: '/' })
     },
-    async loadArticles() {
-      // 1. 查询轮播图文章
-      queryArticleList({
-        limit: 2,
-        offset: 5,
-        is_top: true,
-        order_cause: 'create_time',
-        order_dir: 'desc'
-      }).then(resp => {
-        this.swiper_article_side_list = prepareArticleListAppendJumpPath(resp.data.data)
-      })
-    },
-  },
-  mounted() {
-    this.loadArticles()
-    this.addScrollsListener()
   },
 }
 </script>
-<style lang="scss" scoped>
-.v-main {
-  padding: unset !important;
-}
-
-.main-content-title {
-  border-bottom: #e4e3e3 1px solid;
-  margin: 15px;
-}
-
-.head-line {
-  transition: all 0.6s;
-  cursor: pointer;
-  border-radius: unset;
-}
-</style>

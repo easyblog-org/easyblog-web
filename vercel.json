@@ -1,0 +1,5 @@
+{
+  "buildEnvironment": {
+    "NODE_ENV": "production"
+  }
+}
