@@ -8,6 +8,7 @@
             <span>{{ formatDate(article.date) }}</span>
             <span v-if="article.category">· {{ article.category }}</span>
             <span>· {{ viewCount }} 次阅读</span>
+            <span>· 阅读约 {{ readingTime }} 分钟</span>
           </div>
 
           <div v-if="article.collection" class="mb-6 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-lg p-4 flex items-center justify-between">
@@ -18,7 +19,10 @@
             <button class="text-xs bg-primary text-white px-4 py-1.5 rounded-full hover:bg-primary-hover transition-colors" @click="handleSubscribe">订阅专栏</button>
           </div>
 
-          <nuxt-content ref="contentRef" :document="article" />
+          <nuxt-content v-if="!article._rawBody" ref="contentRef" :document="article" />
+          <div v-else ref="contentRef" class="nuxt-content prose prose-sm dark:prose-invert max-w-none">
+            <div class="whitespace-pre-wrap text-gray-700 dark:text-gray-300 leading-relaxed">{{ article._rawBody }}</div>
+          </div>
 
           <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
             <div class="flex items-center justify-between">
@@ -118,15 +122,20 @@ export default {
     try {
       article = await $content('articles', slug).fetch()
     } catch (e) {
-      console.warn('[article] $content fetch failed, fallback to store:', e.message)
+      try {
+        const results = await $content('articles', { deep: true }).where({ slug }).limit(1).fetch()
+        if (results.length > 0) article = results[0]
+      } catch (e2) {
+        console.warn('[article] all $content attempts failed, fallback to store:', e2.message)
+      }
     }
     if (!article.title) {
       const articles = store.state.articles || []
       const found = articles.find((a) => a.slug === slug)
       if (found) {
-        article = { ...found, body: found.body || '' }
+        article = { ...found, _rawBody: found.body || '' }
       } else {
-        article = { title: '文章未找到', slug, date: '', body: '' }
+        article = { title: '文章未找到', slug, date: '', _rawBody: '' }
       }
     }
     const articles = store.state.articles || []
@@ -146,6 +155,17 @@ export default {
     }
   },
   computed: {
+    readingTime() {
+      let body = this.article._rawBody || ''
+      if (!body && typeof this.article.body === 'string') {
+        body = this.article.body
+      }
+      if (!body) return 1
+      const text = String(body).replace(/[#*`\-\[\](){}>!|\\]/g, '').replace(/\s+/g, '')
+      const charCount = text.length
+      const minutes = Math.max(1, Math.ceil(charCount / 300))
+      return minutes
+    },
     relatedArticles() {
       const all = this.$store.state.articles || []
       const currentSlug = this.article.slug || ''

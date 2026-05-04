@@ -18,11 +18,37 @@
     <div class="max-w-6xl mx-auto px-4 pt-4 pb-6">
     <div class="lg:hidden">
 
-      <div v-if="filteredArticles.length === 0" class="text-center text-gray-400 dark:text-gray-500 py-16">
-        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-        </svg>
-        <p>暂无文章</p>
+      <div v-if="filteredArticles.length === 0" class="text-center py-16 px-4">
+        <div v-if="$route.query.q" class="empty-state">
+          <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <p class="text-base font-medium text-gray-600 dark:text-gray-400 mb-2">没有找到相关文章</p>
+          <p class="text-sm text-gray-400 dark:text-gray-500 mb-5">搜索「<span class="text-primary font-medium">{{ $route.query.q }}</span>」未匹配到任何内容</p>
+          <button class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary-hover transition-colors font-medium" @click="$router.push({ query: {} })">
+            返回首页
+          </button>
+        </div>
+
+        <div v-else-if="$route.query.category || $route.query.tag" class="empty-state">
+          <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          <p class="text-base font-medium text-gray-600 dark:text-gray-400 mb-2">该分类下暂无文章</p>
+          <p class="text-sm text-gray-400 dark:text-gray-500 mb-5">尝试切换其他分类或浏览全部文章</p>
+          <button class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary-hover transition-colors font-medium" @click="$router.push('/')">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            返回首页
+          </button>
+        </div>
+
+        <div v-else class="empty-state">
+          <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+          </svg>
+          <p class="text-base font-medium text-gray-600 dark:text-gray-400 mb-2">文章正在路上</p>
+          <p class="text-sm text-gray-400 dark:text-gray-500">作者还在努力创作中，敬请期待</p>
+        </div>
       </div>
 
       <template v-else>
@@ -124,11 +150,38 @@
 
     <div class="hidden lg:flex flex-row gap-6">
       <div class="lg:w-3/4">
-        <div v-if="filteredArticles.length === 0" class="text-center text-gray-400 dark:text-gray-500 py-16">
-          <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-          </svg>
-          <p>暂无文章，请先在 content/articles/ 目录下添加 Markdown 文件</p>
+        <div v-if="filteredArticles.length === 0" class="text-center py-16 px-4">
+          <div v-if="$route.query.q" class="empty-state">
+            <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <p class="text-base font-medium text-gray-600 dark:text-gray-400 mb-2">没有找到相关文章</p>
+            <p class="text-sm text-gray-400 dark:text-gray-500 mb-5">搜索「<span class="text-primary font-medium">{{ $route.query.q }}</span>」未匹配到任何内容</p>
+            <button class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary-hover transition-colors font-medium" @click="$router.push('/')">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+              返回首页
+            </button>
+          </div>
+
+          <div v-else-if="$route.query.category || $route.query.tag" class="empty-state">
+            <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            <p class="text-base font-medium text-gray-600 dark:text-gray-400 mb-2">该分类下暂无文章</p>
+            <p class="text-sm text-gray-400 dark:text-gray-500 mb-5">尝试切换其他分类或浏览全部文章</p>
+            <button class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary-hover transition-colors font-medium" @click="$router.push('/')">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+              返回首页
+            </button>
+          </div>
+
+          <div v-else class="empty-state">
+            <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+            </svg>
+            <p class="text-base font-medium text-gray-600 dark:text-gray-400 mb-2">文章正在路上</p>
+            <p class="text-sm text-gray-400 dark:text-gray-500">作者还在努力创作中，敬请期待</p>
+          </div>
         </div>
         <ArticleList v-else :articles="filteredArticles" />
       </div>

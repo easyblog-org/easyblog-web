@@ -1,5 +1,5 @@
 ---
-title: TailwindCSS 快速入门TailwindCSS 快速入门
+title: 目前最省最强用 Claude ops 4.5 + Gemini 3 Pro 的方案，30 块钱一年
 slug: tailwindcss-quickstart-copy
 date: 2026-04-28
 category: 技术
