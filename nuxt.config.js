@@ -1,5 +1,7 @@
 export default {
-  // Global page headers: https://go.nuxtjs.dev/config-head
+  target: 'static',
+  ssr: true,
+
   head: {
     titleTemplate: '%s - EasyBlog',
     title: 'EasyBlog',
@@ -7,81 +9,104 @@ export default {
       lang: 'zh',
     },
     meta: [
-      {charset: 'utf-8'},
-      {name: 'viewport', content: 'width=device-width, initial-scale=1,user-scalable=0'},
-      {hid: 'description', name: 'description', content: ''},
-      //在此处添加
-      {name: 'referrer', content: 'no-referrer'},
+      { charset: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1,user-scalable=0' },
+      { hid: 'description', name: 'description', content: '' },
+      { name: 'referrer', content: 'no-referrer' },
     ],
-    link: [{rel: 'icon', type: 'image/x-icon', href: '/favicon.ico'}],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    script: [
+      {
+        src: process.env.UMAMI_SCRIPT_URL || '',
+        async: true,
+        defer: true,
+        'data-website-id': process.env.UMAMI_WEBSITE_ID || '',
+      },
+      {
+        hid: 'theme-init',
+        innerHTML: "(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()",
+      },
+    ],
+    __dangerouslyDisableSanitizersByTagID: {
+      'theme-init': ['innerHTML'],
+    },
   },
 
-  // Global CSS: https://go.nuxtjs.dev/config-css
-  css: [
-    '@/assets/css/flexible_lg.css',
-    '@/assets/css/flexible_md.css',
-    '@/assets/css/flexible_sm.css',
-    '@/assets/css/flexible_xl.css',
-    '@/assets/css/flexible_xs.css',
-    '@/assets/css/global.css',
-    '@/assets/css/verifier.css',
-  ],
+  css: ['@/assets/css/main.css'],
 
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-    {src: '~/plugins/dateFormat.js'},
-  ],
+  plugins: [{ src: '~/plugins/dateFormat.js' }, { src: '~/plugins/article-loader.js', mode: 'server' }],
 
-  // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
 
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
-  buildModules: [
-    // https://go.nuxtjs.dev/typescript
-    '@nuxt/typescript-build',
-    // https://go.nuxtjs.dev/vuetify
-    '@nuxtjs/vuetify',
-  ],
+  buildModules: ['@nuxt/typescript-build'],
 
-  // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    // https://go.nuxtjs.dev/axios
-    '@nuxtjs/axios',
-    'nuxt-user-agent'
-  ],
+  modules: ['@nuxtjs/axios', '@nuxtjs/sitemap', '@nuxtjs/feed', '@nuxt/content'],
 
-  axios: {
-    proxy: true, // 表示开启代理
-    prefix: '/api', // 表示给请求url加个前缀 /api
-    credentials: true // 表示跨域请求时是否需要使用凭证
+  content: {
+    dir: 'content',
   },
-  proxy: {
-    '/api': {
-      target: 'http://api.easyblog.top', // 目标接口域名
-      changeOrigin: true, // 表示是否跨域
-      pathRewrite: {
-        '^/api': '/', // 把 /api 替换成 /
-      }
+
+  axios: {},
+
+  sitemap: {
+    hostname: 'https://easyblog.top',
+    gzip: true,
+  },
+
+  feed: [
+    {
+      path: '/feed.xml',
+      type: 'rss2',
     },
-    '/mxnzp-api': {
-      target: 'https://www.mxnzp.com', // 目标接口域名
-      changeOrigin: true, // 表示是否跨域
-      pathRewrite: {
-        '^/mxnzp-api': '/',
+  ],
+
+  generate: {
+    fallback: '404.html',
+    async routes() {
+      const fm = require('front-matter')
+      const fs = require('fs')
+      const path = require('path')
+      const contentDir = path.resolve(__dirname, 'content/articles')
+      const routes = []
+      try {
+        if (!fs.existsSync(contentDir)) return routes
+        function walkDir(dir) {
+          const results = []
+          const list = fs.readdirSync(dir)
+          for (const file of list) {
+            const filePath = path.join(dir, file)
+            const stat = fs.statSync(filePath)
+            if (stat && stat.isDirectory()) {
+              results.push(...walkDir(filePath))
+            } else if (file.endsWith('.md')) {
+              results.push(filePath)
+            }
+          }
+          return results
+        }
+        const files = walkDir(contentDir)
+        for (const filePath of files) {
+          try {
+            const raw = fs.readFileSync(filePath, 'utf-8')
+            const parsed = fm(raw)
+            const attrs = parsed.attributes || {}
+            if (!attrs.draft) {
+              routes.push('/article/' + (attrs.slug || path.basename(filePath, '.md')))
+            }
+          } catch (e) { }
+        }
+      } catch (e) { }
+      return routes
+    },
+  },
+
+  build: {
+    vendor: ['axios'],
+    postcss: {
+      plugins: {
+        tailwindcss: {},
+        autoprefixer: {},
       },
     },
-    '/open-api': {
-      target: 'http://apis.juhe.cn', // 目标接口域名
-      changeOrigin: true, // 表示是否跨域
-      pathRewrite: {
-        '^/open-api': '/',
-      }
-    }
   },
-  vuetify: {
-    customVariables: ['~/assets/scss/variables.scss'],
-  },
-  build: {
-    vendor: ['axios'] //为防止重复打包
-  }
 }
