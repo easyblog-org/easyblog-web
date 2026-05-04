@@ -18,7 +18,23 @@
     <div class="max-w-6xl mx-auto px-4 pt-4 pb-6">
     <div class="lg:hidden">
 
-      <div v-if="filteredArticles.length === 0" class="text-center py-16 px-4">
+      <div v-if="loading" class="jj-feed-list">
+        <div v-for="n in 3" :key="'sk-' + n" class="jj-feed-item">
+          <div class="jj-feed-body p-4">
+            <div class="skeleton-line" style="width: 70%; height: 20px; margin-bottom: 10px"></div>
+            <div class="skeleton-line" style="width: 100%; height: 14px; margin-bottom: 8px"></div>
+            <div class="skeleton-line" style="width: 45%; height: 14px; margin-bottom: 12px"></div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div class="skeleton-avatar"></div>
+              <div class="skeleton-line" style="width: 60px; height: 13px"></div>
+              <div class="skeleton-line" style="width: 80px; height: 13px"></div>
+              <div class="skeleton-line" style="width: 50px; height: 13px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-else-if="filteredArticles.length === 0" class="text-center py-16 px-4">
         <div v-if="$route.query.q" class="empty-state">
           <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -52,7 +68,7 @@
       </div>
 
       <template v-else>
-        <div v-if="heroArticles.length > 0 && !activeCategory" class="relative mb-3">
+        <div v-if="heroArticles.length > 0" class="relative mb-3">
           <div class="overflow-x-auto snap-x snap-mandatory scrollbar-hide flex gap-4 pb-2 pl-2 pr-5">
             <NuxtLink
               v-for="(article, idx) in heroArticles"
@@ -128,9 +144,6 @@
                       {{ article.likes || Math.floor(Math.random() * 500 + 10) }}
                     </span>
                   </div>
-                  <button class="jj-more-btn" @click.prevent>
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                  </button>
                 </div>
               </div>
               <div v-if="article.cover" class="jj-feed-cover">
@@ -183,7 +196,29 @@
             <p class="text-sm text-gray-400 dark:text-gray-500">作者还在努力创作中，敬请期待</p>
           </div>
         </div>
-        <ArticleList v-else :articles="filteredArticles" />
+        <div v-if="loading" class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+          <div v-for="n in 4" :key="'dsk-' + n" style="padding: 18px 22px; border-bottom: 1px solid #f0f0f0" class="dark:border-gray-800">
+            <div style="display: flex; gap: 18px;">
+              <div style="flex: 1; min-width: 0;">
+                <div class="skeleton-line" style="width: 65%; height: 20px; margin-bottom: 10px"></div>
+                <div class="skeleton-line" style="width: 100%; height: 14px; margin-bottom: 8px"></div>
+                <div class="skeleton-line" style="width: 40%; height: 14px; margin-bottom: 14px"></div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div class="skeleton-avatar"></div>
+                  <div class="skeleton-line" style="width: 70px; height: 13px"></div>
+                  <div class="skeleton-line" style="width: 60px; height: 13px"></div>
+                  <div class="skeleton-line" style="width: 50px; height: 13px"></div>
+                  <div class="skeleton-line" style="width: 40px; height: 13px"></div>
+                  <div class="skeleton-tag"></div>
+                  <div class="skeleton-tag"></div>
+                  <div class="skeleton-tag"></div>
+                </div>
+              </div>
+              <div class="skeleton-cover"></div>
+            </div>
+          </div>
+        </div>
+        <ArticleList v-else :articles="filteredArticles" :key="'list-' + filteredArticles.length" />
       </div>
       <div class="lg:w-1/4">
         <div class="sticky top-20">
@@ -218,6 +253,7 @@ export default {
       _scrollObserver: null,
       displayCount: 10,
       pageSize: 10,
+      loading: true,
     }
   },
   computed: {
@@ -273,15 +309,6 @@ export default {
       if (this.activeCategory) return true
       return this.displayCount >= this.restArticles.length
     },
-    filterLabel() {
-      const category = this.$route.query.category
-      const tag = this.$route.query.tag
-      const q = this.$route.query.q
-      if (category) return '分类: ' + category
-      if (tag) return '标签: ' + tag
-      if (q) return '搜索: ' + q
-      return ''
-    },
     activeCategory() {
       return this.$route.query.tag || ''
     },
@@ -296,7 +323,17 @@ export default {
         this._heroScrollEl.addEventListener('scroll', this.onHeroScroll, { passive: true })
       }
       this.initScrollObserver()
+      if (this.allArticles.length > 0) {
+        setTimeout(() => { this.loading = false }, 80)
+      }
     })
+  },
+  watch: {
+    allArticles(val) {
+      if (val.length > 0 && this.loading) {
+        setTimeout(() => { this.loading = false }, 80)
+      }
+    },
   },
   beforeDestroy() {
     if (this._heroScrollEl) {
@@ -346,9 +383,6 @@ export default {
       if (cardWidth > 0) {
         this.currentHeroIndex = Math.round(scrollLeft / cardWidth)
       }
-    },
-    clearFilter() {
-      this.$router.push({ path: '/' })
     },
     selectCategory(name) {
       if (name) {
@@ -540,32 +574,6 @@ export default {
   color: #777;
 }
 
-.jj-more-btn {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  color: #bbb;
-  cursor: pointer;
-  flex-shrink: 0;
-  border: none;
-  background: transparent;
-  padding: 0;
-  transition: all 0.15s ease;
-}
-
-.jj-more-btn:hover {
-  background-color: #f0f0f0;
-  color: #666;
-}
-
-.dark .jj-more-btn:hover {
-  background-color: rgba(255,255,255,0.08);
-  color: #ccc;
-}
-
 .jj-feed-cover {
   width: 96px;
   height: 72px;
@@ -650,5 +658,72 @@ export default {
   height: 3px;
   background: var(--color-primary, #1e80ff);
   border-radius: 2px;
+}
+
+.skeleton-line {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+.dark .skeleton-line {
+  background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.06) 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.dark .skeleton-avatar {
+  background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.06) 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-cover {
+  width: 120px;
+  height: 80px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.dark .skeleton-cover {
+  background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.06) 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-tag {
+  display: inline-block;
+  width: 48px;
+  height: 20px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.dark .skeleton-tag {
+  background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.06) 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.jj-feed-item {
+  contain: layout style;
 }
 </style>

@@ -107,8 +107,6 @@ export default {
       isDark: false,
       navItems: [
         { label: '首页', path: '/' },
-        { label: '分类', path: '/categories' },
-        { label: '标签', path: '/tags' },
          { label: '归档', path: '/archive' },
         { label: '专栏', path: '/collections' },
         { label: '关于', path: '/about' },

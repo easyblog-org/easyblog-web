@@ -1,12 +1,20 @@
 <template>
   <div class="max-w-6xl mx-auto px-4 py-6">
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
-      <div :class="['relative about-hero p-8 md:p-12 text-center', { 'about-fade-in': loaded }]" style="transition-delay: 0ms">
-        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/20 mb-4 about-logo about-scale-in" :style="{ transitionDelay: '100ms' }">
-          <span class="text-2xl font-bold text-primary">E</span>
+      <div :class="['relative about-hero p-8 md:p-12 text-center overflow-hidden', { 'about-fade-in': loaded }]" style="transition-delay: 0ms">
+        <div class="absolute top-0 right-0 w-48 h-48 bg-white/25 rounded-full -translate-y-1/2 translate-x-1/4 hero-shape"></div>
+        <div class="absolute bottom-0 left-0 w-40 h-40 bg-white/15 rounded-full translate-y-1/2 -translate-x-1/4 hero-shape"></div>
+        <div class="absolute top-1/2 right-10 w-2.5 h-24 bg-white/35 rounded-full -translate-y-1/2 rotate-12 hero-shape"></div>
+        <div class="absolute top-8 left-14 w-20 h-2.5 bg-white/28 rounded-full rotate-[-20deg] hero-shape"></div>
+        <div class="absolute bottom-10 right-1/4 w-3 h-16 bg-white/22 rounded-full rotate-[25deg] hero-shape"></div>
+        <div class="absolute top-1/3 left-6 w-28 h-2 bg-white/18 rounded-full rotate-[15deg] hero-shape"></div>
+        <div class="relative z-10">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/15 backdrop-blur-sm mb-4 about-logo about-scale-in ring-1 ring-white/20" :style="{ transitionDelay: '100ms' }">
+            <span class="text-2xl font-bold text-white">E</span>
+          </div>
+          <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">EasyBlog</h1>
+          <p class="text-sm text-white/70">一个轻量、优雅的静态博客系统</p>
         </div>
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2">EasyBlog</h1>
-        <p class="text-sm text-gray-500 dark:text-gray-400">一个轻量、优雅的静态博客系统</p>
       </div>
 
       <div class="p-6 md:p-8">
@@ -131,11 +139,48 @@ export default {
 }
 
 .about-hero {
-  background: linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(139,92,246,0.06) 40%, rgba(236,72,153,0.05) 70%, transparent 100%);
+  background: linear-gradient(135deg, #4f7cff 0%, #2d5af5 100%);
+  position: relative;
 }
 
 .dark .about-hero {
-  background: linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(139,92,246,0.10) 40%, rgba(236,72,153,0.08) 70%, transparent 100%);
+  background: linear-gradient(135deg, #3a6cf0 0%, #1e4fe4 100%);
+}
+
+.hero-shape {
+  pointer-events: none;
+}
+
+.about-hero .hero-shape:nth-child(1) { animation: shape-float-1 10s ease-in-out infinite; }
+.about-hero .hero-shape:nth-child(2) { animation: shape-float-2 12s ease-in-out infinite; }
+.about-hero .hero-shape:nth-child(3) { animation: shape-float-3 8s ease-in-out infinite; }
+.about-hero .hero-shape:nth-child(4) { animation: shape-float-4 14s ease-in-out infinite; }
+.about-hero .hero-shape:nth-child(5) { animation: shape-float-5 11s ease-in-out infinite; }
+.about-hero .hero-shape:nth-child(6) { animation: shape-float-6 9s ease-in-out infinite; }
+
+@keyframes shape-float-1 {
+  0%, 100% { transform: translateY(-50%) translateX(25%) scale(1); opacity: 0.25; }
+  50% { transform: translateY(-40%) translateX(30%) scale(1.08); opacity: 0.35; }
+}
+@keyframes shape-float-2 {
+  0%, 100% { transform: translateY(50%) translateX(-25%) scale(1); opacity: 0.15; }
+  50% { transform: translateY(60%) translateX(-20%) scale(1.12); opacity: 0.22; }
+}
+@keyframes shape-float-3 {
+  0%, 100% { transform: translateY(-50%) rotate(12deg); opacity: 0.35; }
+  50% { transform: translateY(-55%) rotate(18deg); opacity: 0.48; }
+}
+@keyframes shape-float-4 {
+  0%, 100% { transform: rotate(-20deg); opacity: 0.28; }
+  50% { transform: rotate(-14deg) translateX(8px); opacity: 0.38; }
+}
+@keyframes shape-float-5 {
+  0%, 100% { transform: rotate(25deg) translateY(0); opacity: 0.22; }
+  50% { transform: rotate(32deg) translateY(-10px); opacity: 0.32; }
+}
+@keyframes shape-float-6 {
+  0%, 100% { transform: rotate(15deg); opacity: 0.18; }
+  50% { transform: rotate(10deg) translateX(12px); opacity: 0.26; }
 }
 
 .about-hero:not(.about-fade-in) {

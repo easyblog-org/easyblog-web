@@ -33,9 +33,18 @@
                 {{ article.likes || Math.floor(Math.random() * 500 + 10) }}
               </span>
             </div>
-            <button class="jj-more-btn" @click.prevent>
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-            </button>
+            <div v-if="article.tags && article.tags.length" class="jj-desktop-tags">
+              <template v-for="(tag, tIdx) in displayTags(article.tags)">
+                <a
+                  v-if="tag !== '...'"
+                  :key="'t-' + tIdx"
+                  href="#"
+                  class="jj-tag-pill"
+                  @click.prevent="goTag(tag)"
+                >{{ tag }}</a>
+                <span v-else :key="'ellipsis-' + tIdx" class="jj-tag-ellipsis">...</span>
+              </template>
+            </div>
           </div>
         </div>
         <div v-if="article.cover" class="jj-desktop-cover">
@@ -118,6 +127,14 @@ export default {
       const day = String(d.getDate()).padStart(2, '0')
       return `${y}-${m}-${day}`
     },
+    displayTags(tags) {
+      if (!tags || !tags.length) return []
+      if (tags.length <= 5) return tags
+      return [...tags.slice(0, 5), '...']
+    },
+    goTag(tag) {
+      this.$router.push({ path: '/', query: { tag } })
+    },
   },
 }
 </script>
@@ -127,6 +144,12 @@ export default {
   background: #fff;
   border-radius: var(--radius-card);
   overflow: hidden;
+  animation: feed-fade-in 0.5s ease-out both;
+}
+
+@keyframes feed-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .dark .jj-desktop-feed {
@@ -277,32 +300,6 @@ export default {
   color: #777;
 }
 
-.jj-more-btn {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  color: #bbb;
-  cursor: pointer;
-  flex-shrink: 0;
-  border: none;
-  background: transparent;
-  padding: 0;
-  transition: all 0.15s ease;
-}
-
-.jj-more-btn:hover {
-  background-color: #f0f0f0;
-  color: #666;
-}
-
-.dark .jj-more-btn:hover {
-  background-color: rgba(255,255,255,0.08);
-  color: #ccc;
-}
-
 .jj-desktop-cover {
   width: 120px;
   height: 80px;
@@ -320,5 +317,50 @@ export default {
 
 .jj-sentinel {
   height: 1px;
+}
+
+.jj-desktop-tags {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  margin-left: auto;
+}
+
+.jj-tag-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  line-height: 1;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background-color: #f0f2f5;
+  color: #666;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.jj-tag-pill:hover {
+  background-color: #e8e9ec;
+  color: var(--color-primary, #1e80ff);
+}
+
+.dark .jj-tag-pill {
+  background-color: rgba(255,255,255,0.06);
+  color: #999;
+}
+
+.dark .jj-tag-pill:hover {
+  background-color: rgba(255,255,255,0.1);
+  color: var(--color-primary, #1e80ff);
+}
+
+.jj-tag-ellipsis {
+  font-size: 12px;
+  color: #bbb;
+}
+
+.jj-desktop-item {
+  contain: layout style;
 }
 </style>

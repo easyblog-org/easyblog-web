@@ -2,16 +2,16 @@
   <div class="max-w-6xl mx-auto px-4 py-6">
     <div class="flex flex-col-reverse lg:flex-row gap-6">
       <div class="lg:w-3/4">
-        <article class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-8">
+        <article :class="['bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-8 article-fade-in', { 'is-loaded': loaded }]">
           <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">{{ article.title || '加载中...' }}</h1>
-          <div class="flex items-center gap-3 mb-6 text-sm text-gray-400 dark:text-gray-500 flex-wrap">
+          <div :class="['flex items-center gap-3 mb-6 text-sm text-gray-400 dark:text-gray-500 flex-wrap article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 80ms">
             <span>{{ formatDate(article.date) }}</span>
             <span v-if="article.category">· {{ article.category }}</span>
             <span>· {{ viewCount }} 次阅读</span>
             <span>· 阅读约 {{ readingTime }} 分钟</span>
           </div>
 
-          <div v-if="article.collection" class="mb-6 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-lg p-4 flex items-center justify-between">
+          <div v-if="article.collection" :class="['mb-6 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-lg p-4 flex items-center justify-between article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 120ms">
             <div>
               <span class="text-xs text-primary font-medium">所属专栏</span>
               <p class="text-sm font-semibold text-gray-900 dark:text-white mt-0.5">{{ article.collection.title }}</p>
@@ -19,12 +19,12 @@
             <button class="text-xs bg-primary text-white px-4 py-1.5 rounded-full hover:bg-primary-hover transition-colors" @click="handleSubscribe">订阅专栏</button>
           </div>
 
-          <nuxt-content v-if="!article._rawBody" ref="contentRef" :document="article" />
-          <div v-else ref="contentRef" class="nuxt-content prose prose-sm dark:prose-invert max-w-none">
+          <nuxt-content v-if="!article._rawBody" ref="contentRef" :document="article" class="article-fade-in" :class="{ 'is-loaded': loaded }" style="transition-delay: 160ms" />
+          <div v-else ref="contentRef" :class="['nuxt-content prose prose-sm dark:prose-invert max-w-none article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 160ms">
             <div class="whitespace-pre-wrap text-gray-700 dark:text-gray-300 leading-relaxed">{{ article._rawBody }}</div>
           </div>
 
-          <div class="mt-8 pt-6 border-t border-gray-100 dark:border-gray-800">
+          <div :class="['mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 200ms">
             <div class="flex items-center justify-between">
               <button
                 class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
@@ -48,7 +48,7 @@
           </div>
         </article>
 
-        <div v-if="prevArticle || nextArticle" class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div v-if="prevArticle || nextArticle" :class="['mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 260ms">
           <NuxtLink
             v-if="prevArticle"
             :to="'/article/' + prevArticle.slug"
@@ -68,7 +68,7 @@
           </NuxtLink>
         </div>
 
-        <div class="mt-8 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
+        <div :class="['mt-8 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 320ms">
           <h3 class="font-semibold text-gray-900 dark:text-white mb-4 text-sm">评论</h3>
           <p class="text-sm text-gray-400 dark:text-gray-500">评论功能即将上线，敬请期待...</p>
         </div>
@@ -76,11 +76,11 @@
 
       <div class="lg:w-1/4 hidden lg:block">
         <div class="sticky top-20 space-y-4">
-          <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4">
+          <div :class="['bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4 article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 200ms">
             <PostTOC :headings="tocHeadings" />
           </div>
 
-          <div v-if="relatedArticles.length > 0" class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4">
+          <div v-if="relatedArticles.length > 0" :class="['bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4 article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 280ms">
             <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">📌 推荐阅读</h3>
             <div class="space-y-3">
               <NuxtLink
@@ -95,14 +95,16 @@
             </div>
           </div>
 
-          <div v-if="article.tags && article.tags.length > 0" class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4">
+          <div v-if="article.tags && article.tags.length > 0" :class="['bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4 article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 360ms">
             <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">🏷️ 文章标签</h3>
             <div class="flex flex-wrap gap-2">
               <span v-for="tag in article.tags" :key="tag" class="text-xs px-2 py-1 bg-primary/10 dark:bg-primary/20 text-primary rounded-full">{{ tag }}</span>
             </div>
           </div>
 
-          <AuthorCard />
+          <div :class="['article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 420ms">
+            <AuthorCard />
+          </div>
         </div>
       </div>
     </div>
@@ -152,6 +154,7 @@ export default {
       viewCount: 0,
       likeCount: 0,
       liked: false,
+      loaded: false,
     }
   },
   computed: {
@@ -189,6 +192,7 @@ export default {
   mounted() {
     this.loadViewCount()
     this.loadLikeCount()
+    setTimeout(() => { this.loaded = true }, 50)
     this.$nextTick(() => {
       setTimeout(() => this.extractHeadings(), 300)
     })
@@ -244,8 +248,21 @@ export default {
       })
     },
     handleSubscribe() {
-      alert('订阅功能开发中')
-    },
+    alert('订阅功能开发中')
   },
+},
 }
 </script>
+
+<style scoped>
+.article-fade-in {
+  opacity: 0;
+  transform: translateX(24px);
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+}
+
+.article-fade-in.is-loaded {
+  opacity: 1;
+  transform: translateX(0);
+}
+</style>
