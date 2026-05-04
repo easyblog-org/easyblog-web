@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <div v-if="collections && collections.length" class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4">
+    <div v-if="showCollection && collections && collections.length" class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4">
       <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">推荐专栏</h3>
       <div class="space-y-3">
         <div
@@ -113,6 +113,11 @@ export default {
     categories: { type: Array, default: () => [] },
     tags: { type: Array, default: () => [] },
     collections: { type: Array, default: () => [] },
+  },
+  data() {
+    return {
+      showCollection: false,
+    }
   },
   computed: {
     currentYear() {

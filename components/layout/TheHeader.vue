@@ -105,10 +105,11 @@ export default {
       searchQuery: '',
       mobileMenuOpen: false,
       isDark: false,
+      showCollection: false,
       navItems: [
         { label: '首页', path: '/' },
          { label: '归档', path: '/archive' },
-        { label: '专栏', path: '/collections' },
+        ...(this.showCollection ? [{ label: '专栏', path: '/collections' }] : []),
         { label: '关于', path: '/about' },
       ],
     }
