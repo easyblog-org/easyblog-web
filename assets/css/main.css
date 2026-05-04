@@ -2,8 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-primary: #1e80ff;
+  --color-title: #1a1a1a;
+  --color-subtitle: #666666;
+  --color-meta: #999999;
+  --color-divider: #f0f0f0;
+  --color-card-bg: #ffffff;
+  --radius-card: 14px;
+  --radius-pill: 20px;
+  --gradient-hero: linear-gradient(135deg, #4f7cff 0%, #2d5af5 100%);
+  --spacing-card-y: 18px;
+  --spacing-card-x: 18px;
+}
+
+.dark {
+  --color-title: #f0f0f0;
+  --color-subtitle: #aaaaaa;
+  --color-meta: #777777;
+  --color-divider: #1f2937;
+  --color-card-bg: #111827;
+}
+
 html {
   scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -28,6 +51,50 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-400 dark:bg-gray-600;
+}
+
+@screen lg {
+  .mobile-only { display: none !important; }
+}
+
+.mobile-card {
+  background: var(--color-card-bg);
+  border-radius: var(--radius-card);
+  transition: all 0.2s ease;
+}
+
+.mobile-card:active {
+  transform: scale(0.98);
+  opacity: 0.7;
+}
+
+.mobile-list-item {
+  transition: all 0.2s ease;
+}
+
+.mobile-hero-tag {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: var(--radius-pill);
+  padding: 4px 12px;
+  font-size: 12px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease forwards;
+  opacity: 0;
 }
 
 .nuxt-content h2 {

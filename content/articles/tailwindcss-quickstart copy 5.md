@@ -1,6 +1,6 @@
 ---
 title: TailwindCSS 快速入门
-slug: tailwindcss-quickstart
+slug: tailwindcss-quickstart-5
 date: 2026-04-28
 category: 技术
 tags:

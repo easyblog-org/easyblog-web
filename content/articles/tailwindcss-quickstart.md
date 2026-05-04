@@ -7,7 +7,10 @@ tags:
   - TailwindCSS
   - CSS
   - 前端
+  - 响应式设计
+  - 提示词工程
 summary: 一篇关于 TailwindCSS 的快速入门指南，介绍核心概念和常用工具类。
+featured: true
 ---
 
 ## TailwindCSS 快速入门

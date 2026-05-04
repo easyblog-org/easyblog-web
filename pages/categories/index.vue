@@ -1,6 +1,5 @@
 <template>
   <div class="max-w-6xl mx-auto px-4 py-6">
-    <Breadcrumb :items="[{ text: '首页', href: '/' }, { text: '文章分类' }]" />
     <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">文章分类</h1>
     <div v-if="categories.length === 0" class="text-center text-gray-400 dark:text-gray-500 py-12">暂无分类</div>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -13,11 +12,8 @@
 </template>
 
 <script>
-import Breadcrumb from '~/components/layout/Breadcrumb.vue'
-
 export default {
   name: 'CategoriesPage',
-  components: { Breadcrumb },
   computed: {
     categories() {
       return this.$store ? this.$store.state.categories || [] : []

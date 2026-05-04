@@ -1,6 +1,5 @@
 <template>
   <div class="max-w-6xl mx-auto px-4 py-6">
-    <Breadcrumb :items="breadcrumbItems" />
     <div class="flex flex-col-reverse lg:flex-row gap-6">
       <div class="lg:w-3/4">
         <article class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-8">
@@ -45,8 +44,6 @@
           </div>
         </article>
 
-        <AuthorCard class="mt-6" />
-
         <div v-if="prevArticle || nextArticle" class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <NuxtLink
             v-if="prevArticle"
@@ -78,6 +75,30 @@
           <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4">
             <PostTOC :headings="tocHeadings" />
           </div>
+
+          <div v-if="relatedArticles.length > 0" class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4">
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">📌 推荐阅读</h3>
+            <div class="space-y-3">
+              <NuxtLink
+                v-for="ra in relatedArticles"
+                :key="ra.slug"
+                :to="'/article/' + ra.slug"
+                class="block group no-underline"
+              >
+                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors line-clamp-2 leading-snug">{{ ra.title }}</p>
+                <span v-if="ra.category" class="text-xs text-gray-400 dark:text-gray-500 mt-1 block">{{ ra.category }}</span>
+              </NuxtLink>
+            </div>
+          </div>
+
+          <div v-if="article.tags && article.tags.length > 0" class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4">
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">🏷️ 文章标签</h3>
+            <div class="flex flex-wrap gap-2">
+              <span v-for="tag in article.tags" :key="tag" class="text-xs px-2 py-1 bg-primary/10 dark:bg-primary/20 text-primary rounded-full">{{ tag }}</span>
+            </div>
+          </div>
+
+          <AuthorCard />
         </div>
       </div>
     </div>
@@ -85,13 +106,12 @@
 </template>
 
 <script>
-import Breadcrumb from '~/components/layout/Breadcrumb.vue'
 import PostTOC from '~/components/article/PostTOC.vue'
 import AuthorCard from '~/components/article/AuthorCard.vue'
 
 export default {
   name: 'ArticleDetailPage',
-  components: { Breadcrumb, PostTOC, AuthorCard },
+  components: { PostTOC, AuthorCard },
   async asyncData({ params, $content, store }) {
     const slug = params.slug
     let article = {}
@@ -126,11 +146,24 @@ export default {
     }
   },
   computed: {
-    breadcrumbItems() {
-      return [
-        { text: '首页', href: '/' },
-        { text: this.article.title || '文章详情' },
-      ]
+    relatedArticles() {
+      const all = this.$store.state.articles || []
+      const currentSlug = this.article.slug || ''
+      const currentTags = this.article.tags || []
+      const currentCategory = this.article.category || ''
+      return all
+        .filter((a) => a.slug !== currentSlug)
+        .map((a) => {
+          let score = 0
+          if (currentCategory && a.category === currentCategory) score += 2
+          ;(a.tags || []).forEach((t) => {
+            if (currentTags.includes(t)) score += 1
+          })
+          return { ...a, _score: score }
+        })
+        .filter((a) => a._score > 0)
+        .sort((a, b) => b._score - a._score)
+        .slice(0, 5)
     },
   },
   mounted() {

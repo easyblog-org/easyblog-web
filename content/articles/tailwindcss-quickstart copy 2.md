@@ -1,6 +1,6 @@
 ---
 title: TailwindCSS 快速入门
-slug: tailwindcss-quickstart
+slug: tailwindcss-quickstart-2
 date: 2026-04-28
 category: 技术
 tags:
@@ -8,6 +8,7 @@ tags:
   - CSS
   - 前端
 summary: 一篇关于 TailwindCSS 的快速入门指南，介绍核心概念和常用工具类。
+featured: true
 ---
 
 ## TailwindCSS 快速入门
