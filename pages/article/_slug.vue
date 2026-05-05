@@ -1,5 +1,11 @@
 <template>
-  <div class="max-w-6xl mx-auto px-4 py-6">
+  <div class="min-h-screen flex flex-col">
+    <transition name="toast">
+      <div v-if="showToast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-sm px-4 py-2 rounded-lg shadow-lg pointer-events-none">
+        链接已复制到剪贴板
+      </div>
+    </transition>
+    <div class="max-w-6xl mx-auto px-4 py-6 w-full flex-1">
     <div class="flex flex-col-reverse lg:flex-row gap-6">
       <div class="lg:w-3/4">
         <article :class="['bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-8 article-fade-in', { 'is-loaded': loaded }]">
@@ -108,16 +114,19 @@
         </div>
       </div>
     </div>
+    </div>
+    <SimpleFooter />
   </div>
 </template>
 
 <script>
 import PostTOC from '~/components/article/PostTOC.vue'
 import AuthorCard from '~/components/article/AuthorCard.vue'
+import SimpleFooter from '~/components/layout/SimpleFooter.vue'
 
 export default {
   name: 'ArticleDetailPage',
-  components: { PostTOC, AuthorCard },
+  components: { PostTOC, AuthorCard, SimpleFooter },
   async asyncData({ params, $content, store }) {
     const slug = params.slug
     let article = {}
@@ -155,6 +164,7 @@ export default {
       likeCount: 0,
       liked: false,
       loaded: false,
+      showToast: false,
     }
   },
   computed: {
@@ -244,7 +254,10 @@ export default {
     },
     copyLink() {
       navigator.clipboard.writeText(window.location.href).then(() => {
-        alert('链接已复制到剪贴板')
+        this.showToast = true
+        setTimeout(() => {
+          this.showToast = false
+        }, 2000)
       })
     },
     handleSubscribe() {
@@ -264,5 +277,16 @@ export default {
 .article-fade-in.is-loaded {
   opacity: 1;
   transform: translateX(0);
+}
+
+.toast-enter-active,
+.toast-leave-active {
+  transition: all 0.3s ease;
+}
+
+.toast-enter-from,
+.toast-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-12px);
 }
 </style>

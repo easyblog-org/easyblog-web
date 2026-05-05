@@ -1,5 +1,6 @@
 <template>
-  <div class="max-w-6xl mx-auto px-4 py-6">
+  <div class="min-h-screen flex flex-col">
+    <div class="max-w-6xl mx-auto px-4 py-6 w-full flex-1">
     <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">文章归档</h1>
 
     <div v-if="loading" class="archive-skeleton">
@@ -61,12 +62,17 @@
       <p class="text-sm text-gray-400 dark:text-gray-500">共 {{ articles.length }} 篇文章</p>
     </div>
     </template>
+    </div>
+    <SimpleFooter />
   </div>
 </template>
 
 <script>
+import SimpleFooter from '~/components/layout/SimpleFooter.vue'
+
 export default {
   name: 'ArchivePage',
+  components: { SimpleFooter },
   data() {
     return {
       loading: true,
@@ -146,17 +152,17 @@ export default {
 }
 
 @keyframes archive-fade-up {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes archive-fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes archive-row-in {
-  from { opacity: 0; transform: translateX(-8px); }
+  from { opacity: 0; transform: translateX(12px); }
   to { opacity: 1; transform: translateX(0); }
 }
 </style>

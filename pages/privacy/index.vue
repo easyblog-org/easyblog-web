@@ -1,5 +1,6 @@
 <template>
-  <div class="max-w-4xl mx-auto px-4 py-6">
+  <div class="min-h-screen flex flex-col">
+    <div class="max-w-4xl mx-auto px-4 py-6 w-full flex-1">
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-10">
       <div class="border-b border-gray-100 dark:border-gray-800 pb-4 mb-6">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white">隐私协议</h1>
@@ -103,6 +104,7 @@
           </ul>
         </section>
       </div>
+    </div>
     </div>
     <SimpleFooter />
   </div>

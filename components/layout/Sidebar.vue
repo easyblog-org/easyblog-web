@@ -77,9 +77,11 @@
         <a href="https://juejin.cn" target="_blank" rel="noopener" class="text-gray-400 hover:text-primary dark:text-gray-500 dark:hover:text-primary transition-colors" title="掘金">
            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 1316 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7796" width="24" height="24"><path d="M643.181714 247.698286l154.916572-123.172572L643.181714 0.256 643.072 0l-154.660571 124.269714 154.660571 123.245715 0.109714 0.182857z m0 388.461714h0.109715l399.579428-315.245714-108.361143-87.04-291.218285 229.888h-0.146286l-0.109714 0.146285L351.817143 234.093714l-108.251429 87.04 399.433143 315.136 0.146286-0.146285z m-0.146285 215.552l0.146285-0.146286 534.893715-422.034285 108.397714 87.04-243.309714 192L643.145143 1024 10.422857 525.056 0 516.754286l108.251429-86.893715L643.035429 851.748571z" fill="currentColor" p-id="7797"></path></svg>
         </a>
-        <a href="#" class="text-gray-400 hover:text-[#29AE66] dark:text-[#29AE66]dark:hover:text-[#29AE66] transition-colors" title="微信公众号">
+        <button @click="showWechatQrcode = true" class="text-gray-400 hover:text-[#29AE66] dark:text-[#29AE66]dark:hover:text-[#29AE66] transition-colors cursor-pointer bg-transparent border-0 p-0" title="微信公众号">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 01.213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 00.167-.054l1.903-1.114a.864.864 0 01.717-.098 10.16 10.16 0 002.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 01-1.162 1.178A1.17 1.17 0 014.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 01-1.162 1.178 1.17 1.17 0 01-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 01.598.082l1.584.926a.272.272 0 00.14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 01-.023-.156.49.49 0 01.201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-7.062-6.122zM14.033 13.3c.535 0 .969.44.969.982a.976.976 0 01-.969.983.976.976 0 01-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 01-.969.983.976.976 0 01-.969-.983c0-.542.434-.982.97-.982z"/></svg>
-        </a>
+        </button>
+
+    <WechatQrcodePopup :value="showWechatQrcode" @input="showWechatQrcode = $event" />
       </div>
     </div>
 
@@ -92,7 +94,7 @@
         <NuxtLink to="/service-protocol" class="text-xs text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors no-underline">用户协议</NuxtLink>
         <NuxtLink to="/sitemap" class="text-xs text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors no-underline">网站地图</NuxtLink>
       </nav>
-      <p class="text-xs text-gray-400 dark:text-gray-600">&copy; 2019-{{ currentYear }} EasyBlog 版权所有 · Powered by Nuxt</p>
+      <p class="text-xs text-gray-400 dark:text-gray-600">&copy; {{ currentYear }} EasyBlog 版权所有 · Powered by Nuxt</p>
     </div>
   </div>
 </template>
@@ -107,8 +109,11 @@ const CATEGORY_ICONS = [
   '<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
 ]
 
+import WechatQrcodePopup from '@/components/common/WechatQrcodePopup.vue'
+
 export default {
   name: 'SidebarComponent',
+  components: { WechatQrcodePopup },
   props: {
     categories: { type: Array, default: () => [] },
     tags: { type: Array, default: () => [] },
@@ -117,6 +122,7 @@ export default {
   data() {
     return {
       showCollection: false,
+      showWechatQrcode: false,
     }
   },
   computed: {
