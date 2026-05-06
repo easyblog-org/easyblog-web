@@ -1,10 +1,10 @@
-import fm from 'front-matter'
 import fs from 'fs'
 import path from 'path'
+import fm from 'front-matter'
 
 export default function (context, inject) {
   const contentDir = path.resolve(process.cwd(), 'content/articles')
-  let articles = []
+  const articles = []
 
   try {
     if (!fs.existsSync(contentDir)) {
@@ -38,7 +38,8 @@ export default function (context, inject) {
         const raw = fs.readFileSync(filePath, 'utf-8')
         const parsed = fm(raw)
         const attrs = parsed.attributes || {}
-        if (attrs.draft) continue
+        const status = attrs.status || (attrs.draft ? 'draft' : 'published')
+        if (status !== 'published') continue
         articles.push({
           title: attrs.title || '',
           slug: attrs.slug || path.basename(filePath, '.md'),
@@ -49,6 +50,7 @@ export default function (context, inject) {
           summary: attrs.summary || '',
           cover: attrs.cover || '',
           featured: attrs.featured || false,
+          status: 'published',
           body: parsed.body || '',
         })
       } catch (e) {
