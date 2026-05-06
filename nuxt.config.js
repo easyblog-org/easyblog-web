@@ -2,6 +2,14 @@ export default {
   target: 'static',
   ssr: true,
 
+  env: {
+    ENABLE_REDIS_STATS: process.env.ENABLE_REDIS_STATS || 'false',
+  },
+
+  serverMiddleware: [
+    { path: '/api/stats', handler: '~/server/api/stats.js' },
+  ],
+
   head: {
     titleTemplate: '%s - EasyBlog',
     title: 'EasyBlog',
@@ -16,12 +24,6 @@ export default {
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     script: [
-      {
-        src: process.env.UMAMI_SCRIPT_URL || '',
-        async: true,
-        defer: true,
-        'data-website-id': process.env.UMAMI_WEBSITE_ID || '',
-      },
       {
         hid: 'theme-init',
         innerHTML: "(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()",

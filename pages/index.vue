@@ -18,15 +18,57 @@
     <div class="max-w-6xl mx-auto px-4 pt-4 pb-6">
     <div class="lg:hidden">
 
-      <div v-if="filteredArticles.length === 0" class="text-center text-gray-400 dark:text-gray-500 py-16">
-        <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-        </svg>
-        <p>暂无文章</p>
+      <div v-if="loading" class="jj-feed-list">
+        <div v-for="n in 3" :key="'sk-' + n" class="jj-feed-item">
+          <div class="jj-feed-body p-4">
+            <div class="skeleton-line" style="width: 70%; height: 20px; margin-bottom: 10px"></div>
+            <div class="skeleton-line" style="width: 100%; height: 14px; margin-bottom: 8px"></div>
+            <div class="skeleton-line" style="width: 45%; height: 14px; margin-bottom: 12px"></div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div class="skeleton-avatar"></div>
+              <div class="skeleton-line" style="width: 60px; height: 13px"></div>
+              <div class="skeleton-line" style="width: 80px; height: 13px"></div>
+              <div class="skeleton-line" style="width: 50px; height: 13px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-else-if="filteredArticles.length === 0" class="text-center py-16 px-4">
+        <div v-if="$route.query.q" class="empty-state">
+          <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+          <p class="text-base font-medium text-gray-600 dark:text-gray-400 mb-2">没有找到相关文章</p>
+          <p class="text-sm text-gray-400 dark:text-gray-500 mb-5">搜索「<span class="text-primary font-medium">{{ $route.query.q }}</span>」未匹配到任何内容</p>
+          <button class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary-hover transition-colors font-medium" @click="$router.push({ query: {} })">
+            返回首页
+          </button>
+        </div>
+
+        <div v-else-if="$route.query.category || $route.query.tag" class="empty-state">
+          <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          <p class="text-base font-medium text-gray-600 dark:text-gray-400 mb-2">该分类下暂无文章</p>
+          <p class="text-sm text-gray-400 dark:text-gray-500 mb-5">尝试切换其他分类或浏览全部文章</p>
+          <button class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary-hover transition-colors font-medium" @click="$router.push('/')">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            返回首页
+          </button>
+        </div>
+
+        <div v-else class="empty-state">
+          <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+          </svg>
+          <p class="text-base font-medium text-gray-600 dark:text-gray-400 mb-2">文章正在路上</p>
+          <p class="text-sm text-gray-400 dark:text-gray-500">作者还在努力创作中，敬请期待</p>
+        </div>
       </div>
 
       <template v-else>
-        <div v-if="heroArticles.length > 0 && !activeCategory" class="relative mb-3">
+        <div v-if="heroArticles.length > 0" class="relative mb-3">
           <div class="overflow-x-auto snap-x snap-mandatory scrollbar-hide flex gap-4 pb-2 pl-2 pr-5">
             <NuxtLink
               v-for="(article, idx) in heroArticles"
@@ -95,16 +137,13 @@
                     </span>
                     <span class="jj-stat-item">
                       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                      {{ article.views || Math.floor(Math.random() * 9000 + 1000).toLocaleString() }}
+                      {{ getMobileViews(article).toLocaleString() }}
                     </span>
-                    <span class="jj-stat-item">
+                    <span class="jj-stat-item cursor-pointer hover:text-red-500 transition-colors" @click="handleMobileLike(article, $event)">
                       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
-                      {{ article.likes || Math.floor(Math.random() * 500 + 10) }}
+                      {{ getMobileLikes(article) }}
                     </span>
                   </div>
-                  <button class="jj-more-btn" @click.prevent>
-                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                  </button>
                 </div>
               </div>
               <div v-if="article.cover" class="jj-feed-cover">
@@ -124,13 +163,62 @@
 
     <div class="hidden lg:flex flex-row gap-6">
       <div class="lg:w-3/4">
-        <div v-if="filteredArticles.length === 0" class="text-center text-gray-400 dark:text-gray-500 py-16">
-          <svg class="w-16 h-16 mx-auto mb-4 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-          </svg>
-          <p>暂无文章，请先在 content/articles/ 目录下添加 Markdown 文件</p>
+        <div v-if="filteredArticles.length === 0" class="text-center py-16 px-4">
+          <div v-if="$route.query.q" class="empty-state">
+            <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <p class="text-base font-medium text-gray-600 dark:text-gray-400 mb-2">没有找到相关文章</p>
+            <p class="text-sm text-gray-400 dark:text-gray-500 mb-5">搜索「<span class="text-primary font-medium">{{ $route.query.q }}</span>」未匹配到任何内容</p>
+            <button class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary-hover transition-colors font-medium" @click="$router.push('/')">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+              返回首页
+            </button>
+          </div>
+
+          <div v-else-if="$route.query.category || $route.query.tag" class="empty-state">
+            <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            <p class="text-base font-medium text-gray-600 dark:text-gray-400 mb-2">该分类下暂无文章</p>
+            <p class="text-sm text-gray-400 dark:text-gray-500 mb-5">尝试切换其他分类或浏览全部文章</p>
+            <button class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary-hover transition-colors font-medium" @click="$router.push('/')">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+              返回首页
+            </button>
+          </div>
+
+          <div v-else class="empty-state">
+            <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+            </svg>
+            <p class="text-base font-medium text-gray-600 dark:text-gray-400 mb-2">文章正在路上</p>
+            <p class="text-sm text-gray-400 dark:text-gray-500">作者还在努力创作中，敬请期待</p>
+          </div>
         </div>
-        <ArticleList v-else :articles="filteredArticles" />
+        <div v-if="loading" class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+          <div v-for="n in 4" :key="'dsk-' + n" style="padding: 18px 22px; border-bottom: 1px solid #f0f0f0" class="dark:border-gray-800">
+            <div style="display: flex; gap: 18px;">
+              <div style="flex: 1; min-width: 0;">
+                <div class="skeleton-line" style="width: 65%; height: 20px; margin-bottom: 10px"></div>
+                <div class="skeleton-line" style="width: 100%; height: 14px; margin-bottom: 8px"></div>
+                <div class="skeleton-line" style="width: 40%; height: 14px; margin-bottom: 14px"></div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div class="skeleton-avatar"></div>
+                  <div class="skeleton-line" style="width: 70px; height: 13px"></div>
+                  <div class="skeleton-line" style="width: 60px; height: 13px"></div>
+                  <div class="skeleton-line" style="width: 50px; height: 13px"></div>
+                  <div class="skeleton-line" style="width: 40px; height: 13px"></div>
+                  <div class="skeleton-tag"></div>
+                  <div class="skeleton-tag"></div>
+                  <div class="skeleton-tag"></div>
+                </div>
+              </div>
+              <div class="skeleton-cover"></div>
+            </div>
+          </div>
+        </div>
+        <ArticleList v-else :articles="filteredArticles" :key="'list-' + filteredArticles.length" />
       </div>
       <div class="lg:w-1/4">
         <div class="sticky top-20">
@@ -145,6 +233,7 @@
 <script>
 import ArticleList from '~/components/article/ArticleList.vue'
 import Sidebar from '~/components/layout/Sidebar.vue'
+import { getBatchStats, toggleLike } from '~/utils/stats.js'
 
 const CATEGORY_COLORS = {
   '前端': '#667eea',
@@ -165,6 +254,10 @@ export default {
       _scrollObserver: null,
       displayCount: 10,
       pageSize: 10,
+      loading: true,
+      _mobileViewsMap: {},
+      _mobileLikesMap: {},
+      _mobileStatsLoaded: false,
     }
   },
   computed: {
@@ -220,15 +313,6 @@ export default {
       if (this.activeCategory) return true
       return this.displayCount >= this.restArticles.length
     },
-    filterLabel() {
-      const category = this.$route.query.category
-      const tag = this.$route.query.tag
-      const q = this.$route.query.q
-      if (category) return '分类: ' + category
-      if (tag) return '标签: ' + tag
-      if (q) return '搜索: ' + q
-      return ''
-    },
     activeCategory() {
       return this.$route.query.tag || ''
     },
@@ -243,7 +327,19 @@ export default {
         this._heroScrollEl.addEventListener('scroll', this.onHeroScroll, { passive: true })
       }
       this.initScrollObserver()
+      if (this.allArticles.length > 0) {
+        setTimeout(() => { this.loading = false }, 80)
+      }
+      this.fetchMobileStats()
     })
+  },
+  watch: {
+    allArticles(val) {
+      if (val.length > 0 && this.loading) {
+        setTimeout(() => { this.loading = false }, 80)
+        this.fetchMobileStats()
+      }
+    },
   },
   beforeDestroy() {
     if (this._heroScrollEl) {
@@ -294,9 +390,6 @@ export default {
         this.currentHeroIndex = Math.round(scrollLeft / cardWidth)
       }
     },
-    clearFilter() {
-      this.$router.push({ path: '/' })
-    },
     selectCategory(name) {
       if (name) {
         this.$router.push({ query: { tag: name } })
@@ -315,6 +408,36 @@ export default {
     },
     handleSubscribe(col) {
       alert('订阅专栏：' + col.title + '（功能开发中）')
+    },
+    async fetchMobileStats() {
+      if (!this.restArticles.length || this._mobileStatsLoaded) return
+      this._mobileStatsLoaded = true
+      try {
+        const slugs = this.restArticles.map((a) => a.slug)
+        const { viewsMap, likesMap } = await getBatchStats(slugs)
+        this._mobileViewsMap = viewsMap || {}
+        this._mobileLikesMap = likesMap || {}
+      } catch (e) {
+        console.warn('[Index] fetchMobileStats failed:', e.message)
+        this._mobileStatsLoaded = false
+      }
+    },
+    getMobileViews(article) {
+      const val = (this._mobileViewsMap || {})[article.slug]
+      return typeof val === 'number' ? val : article.views || 0
+    },
+    getMobileLikes(article) {
+      const val = (this._mobileLikesMap || {})[article.slug]
+      return typeof val === 'number' ? val : article.likes || 0
+    },
+    async handleMobileLike(article, e) {
+      if (e) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+      const result = await toggleLike(article.slug)
+      if (!this._mobileLikesMap) this._mobileLikesMap = {}
+      this._mobileLikesMap[article.slug] = result.count
     },
   },
 }
@@ -487,32 +610,6 @@ export default {
   color: #777;
 }
 
-.jj-more-btn {
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  color: #bbb;
-  cursor: pointer;
-  flex-shrink: 0;
-  border: none;
-  background: transparent;
-  padding: 0;
-  transition: all 0.15s ease;
-}
-
-.jj-more-btn:hover {
-  background-color: #f0f0f0;
-  color: #666;
-}
-
-.dark .jj-more-btn:hover {
-  background-color: rgba(255,255,255,0.08);
-  color: #ccc;
-}
-
 .jj-feed-cover {
   width: 96px;
   height: 72px;
@@ -597,5 +694,72 @@ export default {
   height: 3px;
   background: var(--color-primary, #1e80ff);
   border-radius: 2px;
+}
+
+.skeleton-line {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+.dark .skeleton-line {
+  background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.06) 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.dark .skeleton-avatar {
+  background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.06) 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-cover {
+  width: 120px;
+  height: 80px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.dark .skeleton-cover {
+  background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.06) 75%);
+  background-size: 200% 100%;
+}
+
+.skeleton-tag {
+  display: inline-block;
+  width: 48px;
+  height: 20px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.dark .skeleton-tag {
+  background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.06) 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.jj-feed-item {
+  contain: layout style;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-6xl mx-auto px-4 py-6">
+  <div v-if="showCollection" class="max-w-6xl mx-auto px-4 py-6">
     <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">专栏</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
@@ -33,6 +33,7 @@ export default {
   name: 'CollectionsPage',
   data() {
     return {
+      showCollection: false,
       collections: [
         { slug: 'backend-practice', title: '后端工程实践', description: '从零构建高可用后端系统，涵盖微服务架构、数据库优化、缓存策略、消息队列等核心主题。', price: '¥99', articleCount: 12 },
         { slug: 'ai-exploration', title: 'AI 探索笔记', description: 'AI 应用开发实战记录，从 LLM 原理到 RAG 系统、Agent 开发的完整学习路径。', price: '¥49', articleCount: 8 },

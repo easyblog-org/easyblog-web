@@ -1,8 +1,7 @@
 <template>
-  <div class="text-center my-6">
+  <div class="text-center my-6 lg:my-0 lg:mt-auto lg:py-5">
     <p class="text-sm text-gray-500 dark:text-gray-500">
-      &copy;2019-{{ currentYear }} EasyBlog 版权所有
-      <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" class="ml-2 hover:text-primary transition-colors no-underline text-gray-500 dark:text-gray-500">ICP备案号</a>
+      &copy;{{ currentYear }} EasyBlog 版权所有. Powered by Nuxt.
     </p>
   </div>
 </template>
