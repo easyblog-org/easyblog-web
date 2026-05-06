@@ -114,11 +114,6 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import SimpleFooter from '~/components/layout/SimpleFooter.vue'
-
-export default {
-  name: 'ServiceProtocolPage',
-  components: { SimpleFooter },
-}
 </script>

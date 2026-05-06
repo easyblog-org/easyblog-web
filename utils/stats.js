@@ -1,4 +1,12 @@
-const ENABLED = process.env.ENABLE_REDIS_STATS === 'true'
+const ENABLED = (() => {
+  if (typeof window === 'undefined') return false
+  try {
+    const meta = document.querySelector('meta[name="enable-redis-stats"]')
+    return meta && meta.content === 'true'
+  } catch {
+    return false
+  }
+})()
 const API_BASE = '/api/stats'
 
 function lsGet(key, fallback) {
@@ -18,8 +26,9 @@ function lsSet(key, value) {
   } catch { }
 }
 
-async function apiFetch(path, options) {
-  const res = await fetch(`${API_BASE}${path}`, options)
+async function apiFetch(action, params, options) {
+  const query = new URLSearchParams({ action, ...params }).toString()
+  const res = await fetch(`${API_BASE}?${query}`, options)
   if (!res.ok) throw new Error(`API ${res.status}`)
   return res.json()
 }
@@ -32,7 +41,7 @@ export async function getBatchStats(slugs) {
   if (!slugs || !slugs.length) return { viewsMap: {}, likesMap: {} }
   if (ENABLED) {
     try {
-      return await apiFetch(`/batch?slugs=${slugs.join(',')}`)
+      return await apiFetch('batch', { slugs: slugs.join(',') })
     } catch (e) {
       console.warn('[Stats] batch API failed:', e.message)
     }
@@ -55,7 +64,7 @@ export async function getBatchStats(slugs) {
 export async function getViewCount(slug) {
   if (ENABLED) {
     try {
-      const data = await apiFetch(`/view?slug=${encodeURIComponent(slug)}`)
+      const data = await apiFetch('view', { slug: encodeURIComponent(slug) })
       return data.count || 0
     } catch (e) {
       console.warn('[Stats] view API failed:', e.message)
@@ -80,7 +89,7 @@ export async function getViewCount(slug) {
 export async function getLikeCount(slug) {
   if (ENABLED) {
     try {
-      const data = await apiFetch(`/batch?slugs=${encodeURIComponent(slug)}`)
+      const data = await apiFetch('batch', { slugs: encodeURIComponent(slug) })
       return (data.likesMap && data.likesMap[slug]) || 0
     } catch (e) {
       console.warn('[Stats] like count API failed:', e.message)
@@ -99,7 +108,7 @@ export async function getLikeCount(slug) {
 export async function getArticleStats(slug) {
   if (ENABLED) {
     try {
-      const data = await apiFetch(`/batch?slugs=${encodeURIComponent(slug)}`)
+      const data = await apiFetch('batch', { slugs: encodeURIComponent(slug) })
       return {
         views: (data.viewsMap && data.viewsMap[slug]) || 0,
         likes: (data.likesMap && data.likesMap[slug]) || 0,
@@ -128,7 +137,7 @@ export async function getArticleStats(slug) {
 export async function toggleLike(slug) {
   if (ENABLED) {
     try {
-      const data = await apiFetch(`/like?slug=${encodeURIComponent(slug)}`, {
+      const data = await apiFetch('like', { slug: encodeURIComponent(slug) }, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       })
@@ -161,7 +170,7 @@ export async function toggleLike(slug) {
 export async function getLikedStatus(slug) {
   if (ENABLED) {
     try {
-      const data = await apiFetch(`/liked?slug=${encodeURIComponent(slug)}`)
+      const data = await apiFetch('liked', { slug: encodeURIComponent(slug) })
       return data.liked || false
     } catch (e) {
       console.warn('[Stats] liked status API failed:', e.message)

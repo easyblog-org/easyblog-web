@@ -28,23 +28,16 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'CollectionsPage',
-  data() {
-    return {
-      showCollection: false,
-      collections: [
-        { slug: 'backend-practice', title: '后端工程实践', description: '从零构建高可用后端系统，涵盖微服务架构、数据库优化、缓存策略、消息队列等核心主题。', price: '¥99', articleCount: 12 },
-        { slug: 'ai-exploration', title: 'AI 探索笔记', description: 'AI 应用开发实战记录，从 LLM 原理到 RAG 系统、Agent 开发的完整学习路径。', price: '¥49', articleCount: 8 },
-        { slug: 'devops-toolkit', title: 'DevOps 工具箱', description: 'CI/CD、容器化、Kubernetes、监控告警等运维开发实践指南。', price: '¥69', articleCount: 10 },
-      ],
-    }
-  },
-  methods: {
-    handleSubscribe(col) {
-      alert('订阅专栏：' + col.title + '（功能开发中）')
-    },
-  },
+<script setup>
+const showCollection = ref(true)
+
+const collections = [
+  { slug: 'backend-practice', title: '后端工程实践', description: '从零构建高可用后端系统，涵盖微服务架构、数据库优化、缓存策略、消息队列等核心主题。', price: '¥99', articleCount: 12 },
+  { slug: 'ai-exploration', title: 'AI 探索笔记', description: 'AI 应用开发实战记录，从 LLM 原理到 RAG 系统、Agent 开发的完整学习路径。', price: '¥49', articleCount: 8 },
+  { slug: 'devops-toolkit', title: 'DevOps 工具箱', description: 'CI/CD、容器化、Kubernetes、监控告警等运维开发实践指南。', price: '¥69', articleCount: 10 },
+]
+
+function handleSubscribe(col) {
+  alert('订阅专栏：' + col.title + '（功能开发中）')
 }
 </script>

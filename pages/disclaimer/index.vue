@@ -58,11 +58,6 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import SimpleFooter from '~/components/layout/SimpleFooter.vue'
-
-export default {
-  name: 'DisclaimerPage',
-  components: { SimpleFooter },
-}
 </script>

@@ -17,24 +17,15 @@
             <span>· 阅读约 {{ readingTime }} 分钟</span>
           </div>
 
-          <div v-if="article.collection" :class="['mb-6 bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-lg p-4 flex items-center justify-between article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 120ms">
-            <div>
-              <span class="text-xs text-primary font-medium">所属专栏</span>
-              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-0.5">{{ article.collection.title }}</p>
-            </div>
-            <button class="text-xs bg-primary text-white px-4 py-1.5 rounded-full hover:bg-primary-hover transition-colors" @click="handleSubscribe">订阅专栏</button>
-          </div>
-
-          <nuxt-content v-if="!article._rawBody" ref="contentRef" :document="article" class="article-fade-in" :class="{ 'is-loaded': loaded }" style="transition-delay: 160ms" />
-          <div v-else ref="contentRef" :class="['nuxt-content prose prose-sm dark:prose-invert max-w-none article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 160ms">
-            <div class="whitespace-pre-wrap text-gray-700 dark:text-gray-300 leading-relaxed">{{ article._rawBody }}</div>
+          <div class="nuxt-content prose prose-sm dark:prose-invert max-w-none article-fade-in" :class="{ 'is-loaded': loaded }" style="transition-delay: 160ms">
+            <div v-html="renderedBody" class="text-gray-700 dark:text-gray-300 leading-relaxed"></div>
           </div>
 
           <div :class="['mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 200ms">
             <div class="flex items-center justify-between">
               <button
                 class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
-                @click="toggleLike"
+                @click="handleToggleLike"
               >
                 <svg :class="['w-5 h-5', liked ? 'text-red-500 fill-red-500' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
@@ -119,151 +110,203 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { marked } from 'marked'
+import hljs from 'highlight.js'
 import { getViewCount, getLikeCount, toggleLike, getLikedStatus } from '~/utils/stats.js'
-import PostTOC from '~/components/article/PostTOC.vue'
-import AuthorCard from '~/components/article/AuthorCard.vue'
-import SimpleFooter from '~/components/layout/SimpleFooter.vue'
+import { useBlogStore } from '~/store/blog'
 
-export default {
-  name: 'ArticleDetailPage',
-  components: { PostTOC, AuthorCard, SimpleFooter },
-  async asyncData({ params, $content, store }) {
-    const slug = params.slug
-    let article = {}
-    try {
-      const results = await $content('articles', { deep: true }).where({ slug }).limit(1).fetch()
-      if (results.length > 0) article = results[0]
-    } catch (e) {
-      console.warn('[article] $content query failed, fallback to store:', e.message)
-    }
-    if (!article.title) {
-      const articles = store.state.articles || []
-      const found = articles.find((a) => a.slug === slug)
-      if (found) {
-        article = { ...found, _rawBody: found.body || '' }
-      } else {
-        article = { title: '文章未找到', slug, date: '', _rawBody: '' }
-      }
-    }
-    const articles = store.state.articles || []
-    const idx = articles.findIndex((a) => a.slug === slug)
-    return {
-      article,
-      prevArticle: idx > 0 ? articles[idx - 1] : null,
-      nextArticle: idx < articles.length - 1 ? articles[idx + 1] : null,
-    }
-  },
-  data() {
-    return {
-      tocHeadings: [],
-      viewCount: 0,
-      likeCount: 0,
-      liked: false,
-      loaded: false,
-      showToast: false,
-    }
-  },
-  computed: {
-    readingTime() {
-      let body = this.article._rawBody || ''
-      if (!body && typeof this.article.body === 'string') {
-        body = this.article.body
-      }
-      if (!body) return 1
-      const text = String(body).replace(/[#*`\-\[\](){}>!|\\]/g, '').replace(/\s+/g, '')
-      const charCount = text.length
-      const minutes = Math.max(1, Math.ceil(charCount / 300))
-      return minutes
-    },
-    relatedArticles() {
-      const all = this.$store.state.articles || []
-      const currentSlug = this.article.slug || ''
-      const currentTags = this.article.tags || []
-      const currentCategory = this.article.category || ''
-      return all
-        .filter((a) => a.slug !== currentSlug)
-        .map((a) => {
-          let score = 0
-          if (currentCategory && a.category === currentCategory) score += 2
-          ;(a.tags || []).forEach((t) => {
-            if (currentTags.includes(t)) score += 1
-          })
-          return { ...a, _score: score }
-        })
-        .filter((a) => a._score > 0)
-        .sort((a, b) => b._score - a._score)
-        .slice(0, 5)
-    },
-  },
-  mounted() {
-    this.loadViewCount()
-    this.loadLikeCount()
-    setTimeout(() => { this.loaded = true }, 50)
-    this.$nextTick(() => {
-      setTimeout(() => this.extractHeadings(), 300)
-    })
-  },
-  methods: {
-    formatDate(date) {
-      if (!date) return ''
-      const d = new Date(date)
-      const y = d.getFullYear()
-      const m = String(d.getMonth() + 1).padStart(2, '0')
-      const day = String(d.getDate()).padStart(2, '0')
-      return `${y}-${m}-${day}`
-    },
-    extractHeadings() {
-      const container = this.$refs.contentRef?.$el || document.querySelector('.nuxt-content')
-      if (!container) return
-      const headingEls = container.querySelectorAll('h2, h3')
-      const headings = []
-      headingEls.forEach((el) => {
-        if (!el.id) el.id = 'heading-' + Math.random().toString(36).substr(2, 9)
-        headings.push({ id: el.id, text: el.textContent, level: parseInt(el.tagName.charAt(1)) })
-      })
-      this.tocHeadings = headings
-    },
-    async loadViewCount() {
-      try {
-        this.viewCount = await getViewCount(this.article.slug)
-      } catch (e) {
-        console.warn('[ArticleDetail] loadViewCount failed:', e.message)
-        this.viewCount = 0
-      }
-    },
-    async loadLikeCount() {
-      try {
-        this.likeCount = await getLikeCount(this.article.slug)
-        this.liked = await getLikedStatus(this.article.slug)
-      } catch (e) {
-        console.warn('[ArticleDetail] loadLikeCount failed:', e.message)
-        this.likeCount = 0
-        this.liked = false
-      }
-    },
-    async toggleLike() {
-      try {
-        const result = await toggleLike(this.article.slug)
-        this.likeCount = result.count
-        this.liked = result.liked
-      } catch (e) {
-        console.warn('[ArticleDetail] toggleLike API failed:', e.message)
-      }
-    },
-    copyLink() {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        this.showToast = true
-        setTimeout(() => {
-          this.showToast = false
-        }, 2000)
-      })
-    },
-    handleSubscribe() {
-    alert('订阅功能开发中')
-  },
-},
+const renderer = new marked.Renderer()
+renderer.code = function({ text, lang }) {
+  const language = lang || 'plaintext'
+  let highlighted
+  try {
+    highlighted = hljs.highlight(text, { language }).value
+  } catch (e) {
+    highlighted = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  }
+  const lines = text.split('\n')
+  const lineNumbersHtml = lines.map((_, i) => `<span class="ln">${i + 1}</span>`).join('')
+  const codeId = 'code-' + Math.random().toString(36).substr(2, 9)
+
+  return `
+    <figure class="code-block" data-lang="${language}">
+      <figcaption class="code-header">
+        <span class="code-lang-dot">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+        </span>
+        <span class="code-lang-name">${language}</span>
+        <button class="code-copy" data-target="${codeId}" onclick="const t=this;const c=document.getElementById(t.dataset.target);navigator.clipboard.writeText(c.textContent).then(()=>{t.classList.add('copied');t.innerHTML='<svg viewBox=\'0 0 24 24\' width=\'14\' height=\'14\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'2\'><polyline points=\'20 6 9 17 4 12\'/></svg>已复制';setTimeout(()=>{t.classList.remove(\'copied\');t.innerHTML=\'<svg viewBox=\'\\\'0 0 24 24\\\' width=\\\'14\\\' height=\\\'14\\\' fill=\\\'none\\\' stroke=\\\'currentColor\\\' stroke-width=\\\'2\\\'><rect x=\\\'9\\\' y=\\\'9\\\' width=\\\'13\\\' height=\\\'13\\\' rx=\\\'2\\\' ry=\\\'2\\\'></rect><path d=\\\'M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1\\\'></path></svg>复制代码\';},2000)})">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path></svg>
+          复制代码
+        </button>
+      </figcaption>
+      <div class="code-body">
+        <div class="line-numbers" aria-hidden="true">${lineNumbersHtml}</div>
+        <pre class="code-pre"><code id="${codeId}" class="hljs language-${language}">${highlighted}</code></pre>
+      </div>
+    </figure>
+  `
 }
+
+marked.setOptions({
+  breaks: true,
+  gfm: true,
+  renderer: renderer,
+})
+
+const route = useRoute()
+const blogStore = useBlogStore()
+
+const slug = computed(() => route.params.slug)
+
+const { data: apiData } = await useFetch('/api/articles', {
+  key: 'articles-data',
+})
+
+const allArticles = computed(() => {
+  const storeArticles = blogStore.articles || []
+  if (storeArticles.length > 0) return storeArticles
+  return apiData.value?.articles || []
+})
+
+const article = computed(() => {
+  const articles = allArticles.value || []
+  const found = articles.find((a) => a.slug === slug.value)
+  if (found) {
+    return { ...found, _rawBody: found.body || '' }
+  }
+  return { title: '文章未找到', slug: slug.value, date: '', _rawBody: '', tags: [], category: '' }
+})
+
+const renderedBody = computed(() => {
+  const body = article.value._rawBody || ''
+  if (!body) return ''
+  return marked.parse(body)
+})
+
+const currentIndex = computed(() => allArticles.value.findIndex((a) => a.slug === slug.value))
+
+const prevArticle = computed(() => {
+  if (currentIndex.value > 0) return allArticles.value[currentIndex.value - 1]
+  return null
+})
+
+const nextArticle = computed(() => {
+  if (currentIndex.value >= 0 && currentIndex.value < allArticles.value.length - 1) return allArticles.value[currentIndex.value + 1]
+  return null
+})
+
+const tocHeadings = ref([])
+const viewCount = ref(0)
+const likeCount = ref(0)
+const liked = ref(false)
+const loaded = ref(false)
+const showToast = ref(false)
+
+const readingTime = computed(() => {
+  let body = article.value._rawBody || ''
+  if (!body && typeof article.value.body === 'string') {
+    body = article.value.body
+  }
+  if (!body) return 1
+  const text = String(body).replace(/[#*`\-()[\]{}>!|\\]/g, '').replace(/\s+/g, '')
+  const charCount = text.length
+  const minutes = Math.max(1, Math.ceil(charCount / 300))
+  return minutes
+})
+
+const relatedArticles = computed(() => {
+  const all = allArticles.value || []
+  const currentSlug = article.value.slug || ''
+  const currentTags = article.value.tags || []
+  const currentCategory = article.value.category || ''
+  return all
+    .filter((a) => a.slug !== currentSlug)
+    .map((a) => {
+      let score = 0
+      if (currentCategory && a.category === currentCategory) score += 2
+      ;(a.tags || []).forEach((t) => {
+        if (currentTags.includes(t)) score += 1
+      })
+      return { ...a, _score: score }
+    })
+    .filter((a) => a._score > 0)
+    .sort((a, b) => b._score - a._score)
+    .slice(0, 5)
+})
+
+function formatDate(date) {
+  if (!date) return ''
+  const d = new Date(date)
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
+function extractHeadings() {
+  const container = document.querySelector('.nuxt-content')
+  if (!container) return
+  const headingEls = container.querySelectorAll('h2, h3')
+  const headings = []
+  headingEls.forEach((el) => {
+    if (!el.id) el.id = 'heading-' + Math.random().toString(36).substr(2, 9)
+    headings.push({ id: el.id, text: el.textContent, level: parseInt(el.tagName.charAt(1)) })
+  })
+  tocHeadings.value = headings
+}
+
+async function loadViewCount() {
+  try {
+    viewCount.value = await getViewCount(article.value.slug)
+  } catch (e) {
+    console.warn('[ArticleDetail] loadViewCount failed:', e.message)
+    viewCount.value = 0
+  }
+}
+
+async function loadLikeCount() {
+  try {
+    likeCount.value = await getLikeCount(article.value.slug)
+    liked.value = await getLikedStatus(article.value.slug)
+  } catch (e) {
+    console.warn('[ArticleDetail] loadLikeCount failed:', e.message)
+    likeCount.value = 0
+    liked.value = false
+  }
+}
+
+async function handleToggleLike() {
+  try {
+    const result = await toggleLike(article.value.slug)
+    likeCount.value = result.count
+    liked.value = result.liked
+  } catch (e) {
+    console.warn('[ArticleDetail] toggleLike API failed:', e.message)
+  }
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    showToast.value = true
+    setTimeout(() => {
+      showToast.value = false
+    }, 2000)
+  })
+}
+
+
+onMounted(() => {
+  loadViewCount()
+  loadLikeCount()
+  setTimeout(() => { loaded.value = true }, 50)
+  nextTick(() => {
+    setTimeout(() => extractHeadings(), 300)
+  })
+})
 </script>
 
 <style scoped>

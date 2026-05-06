@@ -87,37 +87,35 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import SimpleFooter from '~/components/layout/SimpleFooter.vue'
+import { useBlogStore } from '~/store/blog'
 
-export default {
-  name: 'SitemapPage',
-  components: { SimpleFooter },
-  data() {
-    return {
-      loaded: false,
-    }
-  },
-  computed: {
-    articles() {
-      const all = this.$store.state.articles || []
-      return [...all].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
-    },
-  },
-  mounted() {
-    setTimeout(() => { this.loaded = true }, 50)
-  },
-  methods: {
-    formatDate(date) {
-      if (!date) return ''
-      const d = new Date(date)
-      const y = d.getFullYear()
-      const m = String(d.getMonth() + 1).padStart(2, '0')
-      const day = String(d.getDate()).padStart(2, '0')
-      return `${y}-${m}-${day}`
-    },
-  },
+const blogStore = useBlogStore()
+const loaded = ref(false)
+
+const { data: apiData } = await useFetch('/api/articles', {
+  key: 'sitemap-articles',
+})
+
+const articles = computed(() => {
+  const storeArticles = blogStore.articles || []
+  const source = storeArticles.length > 0 ? storeArticles : (apiData.value?.articles || [])
+  return [...source].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))
+})
+
+function formatDate(date) {
+  if (!date) return ''
+  const d = new Date(date)
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
 }
+
+onMounted(() => {
+  setTimeout(() => { loaded.value = true }, 50)
+})
 </script>
 
 <style scoped>

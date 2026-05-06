@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": "^18.0.0"
+    "node": "^20.0.0"
   },
   "scripts": {
-    "dev": "nuxt",
+    "dev": "nuxt dev",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
@@ -16,39 +16,26 @@
     "lintfix": "prettier --write --list-different . && npm run lint:js -- --fix"
   },
   "dependencies": {
-    "@nuxt/content": "^1.15.1",
-    "@nuxtjs/axios": "^5.13.6",
-    "@nuxtjs/feed": "^2.0.0",
-    "@nuxtjs/sitemap": "^2.4.0",
+    "@nuxt/content": "^2.13.0",
+    "@nuxtjs/sitemap": "^5.1.0",
+    "@pinia/nuxt": "^0.5.1",
     "autoprefixer": "^10.5.0",
-    "core-js": "^3.25.3",
     "front-matter": "^4.0.2",
-    "node-fetch-native": "^1.6.7",
-    "nuxt": "^2.15.8",
+    "highlight.js": "^11.11.1",
+    "marked": "^18.0.3",
+    "nuxt": "^3.11.0",
+    "pinia": "^2.1.7",
     "postcss": "^8.5.13",
     "tailwindcss": "^3.4.19",
     "ufo": "^1.6.4",
     "vditor": "^3.7.7",
-    "vue": "^2.7.10",
-    "vue-client-only": "^2.1.0",
-    "vue-meta": "^2.4.0",
-    "vue-no-ssr": "^1.1.1",
-    "vue-router": "^3.6.5",
-    "vue-server-renderer": "^2.7.10",
-    "vue-template-compiler": "^2.7.10",
-    "vuex": "^3.6.2"
+    "vue": "^3.4.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.19.1",
     "@commitlint/cli": "^17.1.2",
     "@commitlint/config-conventional": "^17.1.0",
-    "@nuxt/types": "^2.15.8",
-    "@nuxt/typescript-build": "^2.1.0",
-    "@nuxtjs/eslint-config-typescript": "^11.0.0",
-    "@nuxtjs/eslint-module": "^3.1.0",
     "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-nuxt": "^4.0.0",
     "eslint-plugin-vue": "^9.5.1",
     "prettier": "^2.7.1",
     "typescript": "^5.0.4"

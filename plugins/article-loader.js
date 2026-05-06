@@ -1,103 +1,33 @@
-import fs from 'fs'
-import path from 'path'
-import fm from 'front-matter'
+export default defineNuxtPlugin(async (nuxtApp) => {
+  let articles = []
+  let categories = []
+  let tags = []
 
-export default function (context, inject) {
-  const contentDir = path.resolve(process.cwd(), 'content/articles')
-  const articles = []
-
-  try {
-    if (!fs.existsSync(contentDir)) {
-      console.warn('[article-loader] content/articles/ directory not found, using empty articles array')
-      inject('articles', [])
-      context.store.commit('setArticles', [])
-      context.store.commit('setCategories', [])
-      context.store.commit('setTags', [])
-      return
+  if (process.server) {
+    try {
+      const { $fetch } = await import('ofetch')
+      const data = await $fetch('/api/articles', { baseURL: 'http://localhost:3001' })
+      articles = data.articles || []
+      categories = data.categories || []
+      tags = data.tags || []
+    } catch (e) {
+      console.warn('[article-loader] Server fetch failed:', e.message)
     }
-
-    function walkDir(dir) {
-      const results = []
-      const list = fs.readdirSync(dir)
-      for (const file of list) {
-        const filePath = path.join(dir, file)
-        const stat = fs.statSync(filePath)
-        if (stat && stat.isDirectory()) {
-          results.push(...walkDir(filePath))
-        } else if (file.endsWith('.md')) {
-          results.push(filePath)
-        }
-      }
-      return results
-    }
-
-    const files = walkDir(contentDir)
-
-    for (const filePath of files) {
-      try {
-        const raw = fs.readFileSync(filePath, 'utf-8')
-        const parsed = fm(raw)
-        const attrs = parsed.attributes || {}
-        const status = attrs.status || (attrs.draft ? 'draft' : 'published')
-        if (status !== 'published') continue
-        articles.push({
-          title: attrs.title || '',
-          slug: attrs.slug || path.basename(filePath, '.md'),
-          date: attrs.date || '',
-          updated: attrs.updated || '',
-          category: attrs.category || '',
-          tags: attrs.tags || [],
-          summary: attrs.summary || '',
-          cover: attrs.cover || '',
-          featured: attrs.featured || false,
-          status: 'published',
-          body: parsed.body || '',
-        })
-      } catch (e) {
-        console.warn(`[article-loader] Failed to parse ${filePath}:`, e.message)
-      }
-    }
-
-    articles.sort((a, b) => (a.date > b.date ? -1 : 1))
-
-    const categories = []
-    const categoryMap = {}
-    for (const article of articles) {
-      if (article.category) {
-        if (!categoryMap[article.category]) {
-          categoryMap[article.category] = 0
-          categories.push(article.category)
-        }
-        categoryMap[article.category]++
-      }
-    }
-
-    const tags = []
-    const tagMap = {}
-    for (const article of articles) {
-      if (article.tags) {
-        for (const tag of article.tags) {
-          if (!tagMap[tag]) {
-            tagMap[tag] = 0
-            tags.push(tag)
-          }
-          tagMap[tag]++
-        }
-      }
-    }
-
-    const categoryList = categories.map((name) => ({ name, count: categoryMap[name] }))
-    const tagList = tags.map((name) => ({ name, count: tagMap[name] }))
-
-    inject('articles', articles)
-    context.store.commit('setArticles', articles)
-    context.store.commit('setCategories', categoryList)
-    context.store.commit('setTags', tagList)
-  } catch (e) {
-    console.error('[article-loader] Error loading articles:', e.message)
-    inject('articles', [])
-    context.store.commit('setArticles', [])
-    context.store.commit('setCategories', [])
-    context.store.commit('setTags', [])
   }
-}
+
+  nuxtApp.provide('articles', articles)
+  nuxtApp.provide('categories', categories)
+  nuxtApp.provide('tags', tags)
+
+  if (articles.length > 0 || categories.length > 0 || tags.length > 0) {
+    try {
+      const { useBlogStore } = await import('~/store/blog')
+      const blogStore = useBlogStore()
+      blogStore.setArticles(articles)
+      blogStore.setCategories(categories)
+      blogStore.setTags(tags)
+    } catch (e) {
+      console.warn('[article-loader] Store init failed:', e.message)
+    }
+  }
+})

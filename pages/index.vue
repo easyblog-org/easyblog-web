@@ -230,10 +230,11 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import ArticleList from '~/components/article/ArticleList.vue'
 import Sidebar from '~/components/layout/Sidebar.vue'
 import { getBatchStats, toggleLike } from '~/utils/stats.js'
+import { useBlogStore } from '~/store/blog'
 
 const CATEGORY_COLORS = {
   '前端': '#667eea',
@@ -244,203 +245,201 @@ const CATEGORY_COLORS = {
   '生活': '#fa709a',
 }
 
-export default {
-  name: 'HomePage',
-  components: { ArticleList, Sidebar },
-  data() {
-    return {
-      currentHeroIndex: 0,
-      _heroScrollEl: null,
-      _scrollObserver: null,
-      displayCount: 10,
-      pageSize: 10,
-      loading: true,
-      _mobileViewsMap: {},
-      _mobileLikesMap: {},
-      _mobileStatsLoaded: false,
-    }
-  },
-  computed: {
-    allArticles() {
-      return this.$store ? this.$store.state.articles || [] : []
-    },
-    categories() {
-      return this.$store ? this.$store.state.categories || [] : []
-    },
-    tags() {
-      return this.$store ? this.$store.state.tags || [] : []
-    },
-    collections() {
-      return [
-        { slug: 'backend-practice', title: '后端工程实践', description: '从零构建高可用后端系统', price: '¥99', articleCount: 12 },
-        { slug: 'ai-exploration', title: 'AI 探索笔记', description: 'AI 应用开发实战记录', price: '¥49', articleCount: 8 },
-      ]
-    },
-    filteredArticles() {
-      let result = this.allArticles
-      const category = this.$route.query.category
-      const tag = this.$route.query.tag
-      const q = this.$route.query.q
-      if (category) result = result.filter((a) => a.category === category)
-      if (tag) result = result.filter((a) => a.tags && a.tags.includes(tag))
-      if (q) {
-        const lower = q.toLowerCase()
-        result = result.filter(
-          (a) =>
-            (a.title && a.title.toLowerCase().includes(lower)) ||
-            (a.summary && a.summary.toLowerCase().includes(lower))
-        )
-      }
-      return [...result].sort((a, b) => new Date(b.date) - new Date(a.date))
-    },
-    heroArticles() {
-      const allFeatured = [...this.filteredArticles].filter((a) => a.featured).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3)
-      if (allFeatured.length > 0) return allFeatured
-      return this.filteredArticles.slice(0, 1)
-    },
-    restArticles() {
-      const heroSlugs = new Set(this.heroArticles.map((a) => a.slug))
-      const rest = this.filteredArticles.filter((a) => !heroSlugs.has(a.slug))
-      const extraFeatured = rest.filter((a) => a.featured).sort((a, b) => new Date(b.date) - new Date(a.date))
-      const normal = rest.filter((a) => !a.featured)
-      return [...extraFeatured, ...normal]
-    },
-    visibleRestArticles() {
-      if (this.activeCategory) return this.filteredArticles
-      return this.restArticles.slice(0, this.displayCount)
-    },
-    allLoaded() {
-      if (this.activeCategory) return true
-      return this.displayCount >= this.restArticles.length
-    },
-    activeCategory() {
-      return this.$route.query.tag || ''
-    },
-    navCategories() {
-      return (this.tags || []).slice(0, 12)
-    },
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this._heroScrollEl = this.$el.querySelector('.overflow-x-auto')
-      if (this._heroScrollEl) {
-        this._heroScrollEl.addEventListener('scroll', this.onHeroScroll, { passive: true })
-      }
-      this.initScrollObserver()
-      if (this.allArticles.length > 0) {
-        setTimeout(() => { this.loading = false }, 80)
-      }
-      this.fetchMobileStats()
-    })
-  },
-  watch: {
-    allArticles(val) {
-      if (val.length > 0 && this.loading) {
-        setTimeout(() => { this.loading = false }, 80)
-        this.fetchMobileStats()
-      }
-    },
-  },
-  beforeDestroy() {
-    if (this._heroScrollEl) {
-      this._heroScrollEl.removeEventListener('scroll', this.onHeroScroll)
-    }
-    if (this._scrollObserver) {
-      this._scrollObserver.disconnect()
-      this._scrollObserver = null
-    }
-  },
-  methods: {
-    getCategoryColor(category) {
-      return CATEGORY_COLORS[category] || '#667eea'
-    },
-    loadMore() {
-      if (this.allLoaded) return
-      this.displayCount += this.pageSize
-    },
-    initScrollObserver() {
-      if (!('IntersectionObserver' in window)) return
-      const observeSentinel = () => {
-        const sentinel = this.$refs.scrollSentinel
-        if (!sentinel) return
-        if (this._scrollObserver) this._scrollObserver.disconnect()
-        this._scrollObserver = new IntersectionObserver((entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting && !this.allLoaded) {
-              this.loadMore()
-            }
-          })
-        }, { rootMargin: '100px' })
-        this._scrollObserver.observe(sentinel)
-      }
-      this.$nextTick(observeSentinel)
-    },
-    scrollToHero(idx) {
-      if (!this._heroScrollEl) return
-      const cards = this._heroScrollEl.querySelectorAll('a[rel][class]')
-      if (cards[idx]) {
-        cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-      }
-    },
-    onHeroScroll() {
-      if (!this._heroScrollEl) return
-      const scrollLeft = this._heroScrollEl.scrollLeft
-      const cardWidth = this._heroScrollEl.querySelector('a[rel][class]')?.offsetWidth || 0
-      if (cardWidth > 0) {
-        this.currentHeroIndex = Math.round(scrollLeft / cardWidth)
-      }
-    },
-    selectCategory(name) {
-      if (name) {
-        this.$router.push({ query: { tag: name } })
-      } else {
-        this.$router.push({ path: '/' })
-      }
-      this.displayCount = 10
-    },
-    formatDate(date) {
-      if (!date) return ''
-      const d = new Date(date)
-      const y = d.getFullYear()
-      const m = String(d.getMonth() + 1).padStart(2, '0')
-      const day = String(d.getDate()).padStart(2, '0')
-      return `${y}-${m}-${day}`
-    },
-    handleSubscribe(col) {
-      alert('订阅专栏：' + col.title + '（功能开发中）')
-    },
-    async fetchMobileStats() {
-      if (!this.restArticles.length || this._mobileStatsLoaded) return
-      this._mobileStatsLoaded = true
-      try {
-        const slugs = this.restArticles.map((a) => a.slug)
-        const { viewsMap, likesMap } = await getBatchStats(slugs)
-        this._mobileViewsMap = viewsMap || {}
-        this._mobileLikesMap = likesMap || {}
-      } catch (e) {
-        console.warn('[Index] fetchMobileStats failed:', e.message)
-        this._mobileStatsLoaded = false
-      }
-    },
-    getMobileViews(article) {
-      const val = (this._mobileViewsMap || {})[article.slug]
-      return typeof val === 'number' ? val : article.views || 0
-    },
-    getMobileLikes(article) {
-      const val = (this._mobileLikesMap || {})[article.slug]
-      return typeof val === 'number' ? val : article.likes || 0
-    },
-    async handleMobileLike(article, e) {
-      if (e) {
-        e.preventDefault()
-        e.stopPropagation()
-      }
-      const result = await toggleLike(article.slug)
-      if (!this._mobileLikesMap) this._mobileLikesMap = {}
-      this._mobileLikesMap[article.slug] = result.count
-    },
-  },
+const route = useRoute()
+const router = useRouter()
+const blogStore = useBlogStore()
+
+const currentHeroIndex = ref(0)
+const _heroScrollEl = ref(null)
+const _scrollObserver = ref(null)
+const displayCount = ref(10)
+const pageSize = ref(10)
+const loading = ref(true)
+const _mobileViewsMap = ref({})
+const _mobileLikesMap = ref({})
+const _mobileStatsLoaded = ref(false)
+const scrollSentinel = ref(null)
+
+const allArticles = computed(() => blogStore.articles || [])
+const categories = computed(() => blogStore.categories || [])
+const tags = computed(() => blogStore.tags || [])
+const collections = computed(() => [
+  { slug: 'backend-practice', title: '后端工程实践', description: '从零构建高可用后端系统', price: '¥99', articleCount: 12 },
+  { slug: 'ai-exploration', title: 'AI 探索笔记', description: 'AI 应用开发实战记录', price: '¥49', articleCount: 8 },
+])
+
+const filteredArticles = computed(() => {
+  let result = allArticles.value
+  const category = route.query.category
+  const tag = route.query.tag
+  const q = route.query.q
+  if (category) result = result.filter((a) => a.category === category)
+  if (tag) result = result.filter((a) => a.tags && a.tags.includes(tag))
+  if (q) {
+    const lower = q.toLowerCase()
+    result = result.filter(
+      (a) =>
+        (a.title && a.title.toLowerCase().includes(lower)) ||
+        (a.summary && a.summary.toLowerCase().includes(lower))
+    )
+  }
+  return [...result].sort((a, b) => new Date(b.date) - new Date(a.date))
+})
+
+const heroArticles = computed(() => {
+  const allFeatured = [...filteredArticles.value].filter((a) => a.featured).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3)
+  if (allFeatured.length > 0) return allFeatured
+  return filteredArticles.value.slice(0, 1)
+})
+
+const restArticles = computed(() => {
+  const heroSlugs = new Set(heroArticles.value.map((a) => a.slug))
+  const rest = filteredArticles.value.filter((a) => !heroSlugs.has(a.slug))
+  const extraFeatured = rest.filter((a) => a.featured).sort((a, b) => new Date(b.date) - new Date(a.date))
+  const normal = rest.filter((a) => !a.featured)
+  return [...extraFeatured, ...normal]
+})
+
+const visibleRestArticles = computed(() => {
+  if (activeCategory.value) return filteredArticles.value
+  return restArticles.value.slice(0, displayCount.value)
+})
+
+const allLoaded = computed(() => {
+  if (activeCategory.value) return true
+  return displayCount.value >= restArticles.value.length
+})
+
+const activeCategory = computed(() => route.query.tag || '')
+
+const navCategories = computed(() => (tags.value || []).slice(0, 12))
+
+function getCategoryColor(category) {
+  return CATEGORY_COLORS[category] || '#667eea'
 }
+
+function loadMore() {
+  if (allLoaded.value) return
+  displayCount.value += pageSize.value
+}
+
+function initScrollObserver() {
+  if (!('IntersectionObserver' in window)) return
+  const observeSentinel = () => {
+    const sentinel = scrollSentinel.value
+    if (!sentinel) return
+    if (_scrollObserver.value) _scrollObserver.value.disconnect()
+    _scrollObserver.value = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !allLoaded.value) {
+          loadMore()
+        }
+      })
+    }, { rootMargin: '100px' })
+    _scrollObserver.value.observe(sentinel)
+  }
+  nextTick(observeSentinel)
+}
+
+function scrollToHero(idx) {
+  if (!_heroScrollEl.value) return
+  const cards = _heroScrollEl.value.querySelectorAll('a[rel][class]')
+  if (cards[idx]) {
+    cards[idx].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+  }
+}
+
+function onHeroScroll() {
+  if (!_heroScrollEl.value) return
+  const scrollLeft = _heroScrollEl.value.scrollLeft
+  const cardWidth = _heroScrollEl.value.querySelector('a[rel][class]')?.offsetWidth || 0
+  if (cardWidth > 0) {
+    currentHeroIndex.value = Math.round(scrollLeft / cardWidth)
+  }
+}
+
+function selectCategory(name) {
+  if (name) {
+    router.push({ query: { tag: name } })
+  } else {
+    router.push({ path: '/' })
+  }
+  displayCount.value = 10
+}
+
+function formatDate(date) {
+  if (!date) return ''
+  const d = new Date(date)
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
+async function fetchMobileStats() {
+  if (!restArticles.value.length || _mobileStatsLoaded.value) return
+  _mobileStatsLoaded.value = true
+  try {
+    const slugs = restArticles.value.map((a) => a.slug)
+    const { viewsMap, likesMap } = await getBatchStats(slugs)
+    _mobileViewsMap.value = viewsMap || {}
+    _mobileLikesMap.value = likesMap || {}
+  } catch (e) {
+    console.warn('[Index] fetchMobileStats failed:', e.message)
+    _mobileStatsLoaded.value = false
+  }
+}
+
+function getMobileViews(article) {
+  const val = (_mobileViewsMap.value || {})[article.slug]
+  return typeof val === 'number' ? val : article.views || 0
+}
+
+function getMobileLikes(article) {
+  const val = (_mobileLikesMap.value || {})[article.slug]
+  return typeof val === 'number' ? val : article.likes || 0
+}
+
+async function handleMobileLike(article, e) {
+  if (e) {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+  const result = await toggleLike(article.slug)
+  if (!_mobileLikesMap.value) _mobileLikesMap.value = {}
+  _mobileLikesMap.value[article.slug] = result.count
+}
+
+onMounted(() => {
+  nextTick(() => {
+    _heroScrollEl.value = document.querySelector('.overflow-x-auto')
+    if (_heroScrollEl.value) {
+      _heroScrollEl.value.addEventListener('scroll', onHeroScroll, { passive: true })
+    }
+    initScrollObserver()
+    if (allArticles.value.length > 0) {
+      setTimeout(() => { loading.value = false }, 80)
+    }
+    fetchMobileStats()
+  })
+})
+
+watch(allArticles, (val) => {
+  if (val.length > 0 && loading.value) {
+    setTimeout(() => { loading.value = false }, 80)
+    fetchMobileStats()
+  }
+})
+
+onBeforeUnmount(() => {
+  if (_heroScrollEl.value) {
+    _heroScrollEl.value.removeEventListener('scroll', onHeroScroll)
+  }
+  if (_scrollObserver.value) {
+    _scrollObserver.value.disconnect()
+    _scrollObserver.value = null
+  }
+})
 </script>
 
 <style scoped>

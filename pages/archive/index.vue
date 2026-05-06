@@ -67,58 +67,57 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import SimpleFooter from '~/components/layout/SimpleFooter.vue'
+import { useBlogStore } from '~/store/blog'
 
-export default {
-  name: 'ArchivePage',
-  components: { SimpleFooter },
-  data() {
-    return {
-      loading: true,
-    }
-  },
-  computed: {
-    articles() {
-      return this.$store ? this.$store.state.articles || [] : []
-    },
-    groupedArticles() {
-      const map = {}
-      for (const a of this.articles) {
-        const d = a.date ? new Date(a.date) : null
-        if (!d || isNaN(d.getTime())) continue
-        const y = d.getFullYear()
-        const m = String(d.getMonth() + 1).padStart(2, '0')
-        const key = y + '-' + m
-        if (!map[key]) map[key] = { year: y, month: parseInt(m), yearMonth: key, articles: [] }
-        map[key].articles.push(a)
-      }
-      return Object.values(map)
-        .sort((a, b) => b.yearMonth.localeCompare(a.yearMonth))
-        .map((g) => ({ ...g, monthName: g.month + '月' }))
-    },
-  },
-  mounted() {
-    if (this.articles.length > 0) {
-      setTimeout(() => { this.loading = false }, 80)
-    }
-  },
-  watch: {
-    articles(val) {
-      if (val.length > 0 && this.loading) {
-        setTimeout(() => { this.loading = false }, 80)
-      }
-    },
-  },
-  methods: {
-    formatDay(date) {
-      if (!date) return ''
-      const d = new Date(date)
-      if (isNaN(d.getTime())) return ''
-      return String(d.getDate()).padStart(2, '0')
-    },
-  },
+const blogStore = useBlogStore()
+const loading = ref(true)
+
+const { data: apiData } = await useFetch('/api/articles', {
+  key: 'archive-articles',
+})
+
+const articles = computed(() => {
+  const storeArticles = blogStore.articles || []
+  if (storeArticles.length > 0) return storeArticles
+  return apiData.value?.articles || []
+})
+
+const groupedArticles = computed(() => {
+  const map = {}
+  for (const a of articles.value) {
+    const d = a.date ? new Date(a.date) : null
+    if (!d || isNaN(d.getTime())) continue
+    const y = d.getFullYear()
+    const m = String(d.getMonth() + 1).padStart(2, '0')
+    const key = y + '-' + m
+    if (!map[key]) map[key] = { year: y, month: parseInt(m), yearMonth: key, articles: [] }
+    map[key].articles.push(a)
+  }
+  return Object.values(map)
+    .sort((a, b) => b.yearMonth.localeCompare(a.yearMonth))
+    .map((g) => ({ ...g, monthName: g.month + '月' }))
+})
+
+function formatDay(date) {
+  if (!date) return ''
+  const d = new Date(date)
+  if (isNaN(d.getTime())) return ''
+  return String(d.getDate()).padStart(2, '0')
 }
+
+watch(articles, (val) => {
+  if (val.length > 0 && loading.value) {
+    setTimeout(() => { loading.value = false }, 80)
+  }
+}, { immediate: true })
+
+onMounted(() => {
+  if (articles.value.length > 0 && loading.value) {
+    setTimeout(() => { loading.value = false }, 80)
+  }
+})
 </script>
 
 <style scoped>

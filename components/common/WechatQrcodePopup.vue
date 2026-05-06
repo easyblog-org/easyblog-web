@@ -31,62 +31,60 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'WechatQrcodePopup',
-  props: {
-    value: {
-      type: Boolean,
-      default: false
-    }
-  },
-  data() {
-    return {
-      visible: this.value
-    }
-  },
-  watch: {
-    value(val) {
-      this.visible = val
-      if (val) {
-        this.$nextTick(() => this.moveToBody())
-      } else {
-        this.moveToSelf()
-      }
-    }
-  },
-  methods: {
-    close() {
-      this.$emit('input', false)
-    },
-    moveToBody() {
-      const el = this.$refs.popup
-      if (el && el.parentNode !== document.body) {
-        el.style.display = ''
-        document.body.appendChild(el)
-      }
-    },
-    moveToSelf() {
-      const el = this.$refs.popup
-      if (el && el.parentNode === document.body) {
-        el.style.display = 'none'
-        el.parentNode.removeChild(el)
-      }
-    }
-  },
-  mounted() {
-    const handleEsc = (e) => {
-      if (e.key === 'Escape' && this.value) {
-        this.close()
-      }
-    }
-    window.addEventListener('keydown', handleEsc)
-    this.$once('hook:beforeDestroy', () => {
-      window.removeEventListener('keydown', handleEsc)
-      this.moveToSelf()
-    })
+<script setup>
+const props = defineProps({
+  value: {
+    type: Boolean,
+    default: false
+  }
+})
+
+const emit = defineEmits(['input'])
+
+const popup = ref(null)
+const visible = ref(props.value)
+
+watch(() => props.value, (val) => {
+  visible.value = val
+  if (val) {
+    nextTick(() => moveToBody())
+  } else {
+    moveToSelf()
+  }
+})
+
+function close() {
+  emit('input', false)
+}
+
+function moveToBody() {
+  const el = popup.value
+  if (el && el.parentNode !== document.body) {
+    el.style.display = ''
+    document.body.appendChild(el)
   }
 }
+
+function moveToSelf() {
+  const el = popup.value
+  if (el && el.parentNode === document.body) {
+    el.style.display = 'none'
+    el.parentNode.removeChild(el)
+  }
+}
+
+onMounted(() => {
+  const handleEsc = (e) => {
+    if (e.key === 'Escape' && props.value) {
+      close()
+    }
+  }
+  window.addEventListener('keydown', handleEsc)
+  onBeforeUnmount(() => {
+    window.removeEventListener('keydown', handleEsc)
+    moveToSelf()
+  })
+})
 </script>
 
 <style scoped>
