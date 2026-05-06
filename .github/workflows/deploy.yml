@@ -24,8 +24,6 @@ jobs:
         run: npm ci
 
       - name: Sync content from oh_my_note
-        env:
-          CONTENT_REPO_URL: https://${{ secrets.GH_PAT }}@github.com/easyblog-org/oh_my_note.git
         run: node scripts/sync-content.js
 
       - name: Build
