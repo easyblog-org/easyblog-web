@@ -137,11 +137,11 @@
                     </span>
                     <span class="jj-stat-item">
                       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                      {{ article.views || Math.floor(Math.random() * 9000 + 1000).toLocaleString() }}
+                      {{ getMobileViews(article).toLocaleString() }}
                     </span>
-                    <span class="jj-stat-item">
+                    <span class="jj-stat-item cursor-pointer hover:text-red-500 transition-colors" @click="handleMobileLike(article, $event)">
                       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
-                      {{ article.likes || Math.floor(Math.random() * 500 + 10) }}
+                      {{ getMobileLikes(article) }}
                     </span>
                   </div>
                 </div>
@@ -233,6 +233,7 @@
 <script>
 import ArticleList from '~/components/article/ArticleList.vue'
 import Sidebar from '~/components/layout/Sidebar.vue'
+import { getBatchStats, toggleLike } from '~/utils/stats.js'
 
 const CATEGORY_COLORS = {
   '前端': '#667eea',
@@ -254,6 +255,9 @@ export default {
       displayCount: 10,
       pageSize: 10,
       loading: true,
+      _mobileViewsMap: {},
+      _mobileLikesMap: {},
+      _mobileStatsLoaded: false,
     }
   },
   computed: {
@@ -326,12 +330,14 @@ export default {
       if (this.allArticles.length > 0) {
         setTimeout(() => { this.loading = false }, 80)
       }
+      this.fetchMobileStats()
     })
   },
   watch: {
     allArticles(val) {
       if (val.length > 0 && this.loading) {
         setTimeout(() => { this.loading = false }, 80)
+        this.fetchMobileStats()
       }
     },
   },
@@ -402,6 +408,36 @@ export default {
     },
     handleSubscribe(col) {
       alert('订阅专栏：' + col.title + '（功能开发中）')
+    },
+    async fetchMobileStats() {
+      if (!this.restArticles.length || this._mobileStatsLoaded) return
+      this._mobileStatsLoaded = true
+      try {
+        const slugs = this.restArticles.map((a) => a.slug)
+        const { viewsMap, likesMap } = await getBatchStats(slugs)
+        this._mobileViewsMap = viewsMap || {}
+        this._mobileLikesMap = likesMap || {}
+      } catch (e) {
+        console.warn('[Index] fetchMobileStats failed:', e.message)
+        this._mobileStatsLoaded = false
+      }
+    },
+    getMobileViews(article) {
+      const val = (this._mobileViewsMap || {})[article.slug]
+      return typeof val === 'number' ? val : article.views || 0
+    },
+    getMobileLikes(article) {
+      const val = (this._mobileLikesMap || {})[article.slug]
+      return typeof val === 'number' ? val : article.likes || 0
+    },
+    async handleMobileLike(article, e) {
+      if (e) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+      const result = await toggleLike(article.slug)
+      if (!this._mobileLikesMap) this._mobileLikesMap = {}
+      this._mobileLikesMap[article.slug] = result.count
     },
   },
 }

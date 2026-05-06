@@ -26,11 +26,11 @@
               </span>
               <span class="jj-stat-item">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                {{ article.views || Math.floor(Math.random() * 90000 + 1000).toLocaleString() }}
+                {{ getViewCount(article).toLocaleString() }}
               </span>
-              <span class="jj-stat-item">
+              <span class="jj-stat-item cursor-pointer hover:text-red-500 transition-colors" @click="handleLike(article, $event)">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"/></svg>
-                {{ article.likes || Math.floor(Math.random() * 500 + 10) }}
+                {{ getLikeCount(article) }}
               </span>
             </div>
             <div v-if="article.tags && article.tags.length" class="jj-desktop-tags">
@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import { getBatchStats, toggleLike } from '~/utils/stats.js'
+
 export default {
   name: 'ArticleList',
   props: {
@@ -73,6 +75,9 @@ export default {
     return {
       displayCount: 10,
       _scrollObserver: null,
+      viewsMap: {},
+      likesMap: {},
+      _statsLoaded: false,
     }
   },
   computed: {
@@ -88,11 +93,15 @@ export default {
     articles() {
       this.displayCount = this.pageSize
       this.$nextTick(() => this.initScrollObserver())
+      this.fetchStats()
     },
   },
   mounted() {
     this.displayCount = this.pageSize
-    this.$nextTick(() => this.initScrollObserver())
+    this.$nextTick(() => {
+      this.initScrollObserver()
+      this.fetchStats()
+    })
   },
   beforeDestroy() {
     if (this._scrollObserver) {
@@ -134,6 +143,36 @@ export default {
     },
     goTag(tag) {
       this.$router.push({ path: '/', query: { tag } })
+    },
+    async fetchStats() {
+      if (!this.articles.length || this._statsLoaded) return
+      this._statsLoaded = true
+      try {
+        const slugs = this.articles.map((a) => a.slug)
+        const { viewsMap, likesMap } = await getBatchStats(slugs)
+        this.viewsMap = viewsMap || {}
+        this.likesMap = likesMap || {}
+      } catch (e) {
+        console.warn('[ArticleList] fetchStats failed:', e.message)
+        this._statsLoaded = false
+      }
+    },
+    getViewCount(article) {
+      const val = (this.viewsMap || {})[article.slug]
+      return typeof val === 'number' ? val : article.views || 0
+    },
+    getLikeCount(article) {
+      const val = (this.likesMap || {})[article.slug]
+      return typeof val === 'number' ? val : article.likes || 0
+    },
+    async handleLike(article, e) {
+      if (e) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+      const result = await toggleLike(article.slug)
+      if (!this.likesMap) this.likesMap = {}
+      this.likesMap[article.slug] = result.count
     },
   },
 }

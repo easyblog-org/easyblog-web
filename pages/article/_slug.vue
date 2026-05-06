@@ -120,6 +120,7 @@
 </template>
 
 <script>
+import { getViewCount, getLikeCount, toggleLike, getLikedStatus } from '~/utils/stats.js'
 import PostTOC from '~/components/article/PostTOC.vue'
 import AuthorCard from '~/components/article/AuthorCard.vue'
 import SimpleFooter from '~/components/layout/SimpleFooter.vue'
@@ -131,14 +132,10 @@ export default {
     const slug = params.slug
     let article = {}
     try {
-      article = await $content('articles', slug).fetch()
+      const results = await $content('articles', { deep: true }).where({ slug }).limit(1).fetch()
+      if (results.length > 0) article = results[0]
     } catch (e) {
-      try {
-        const results = await $content('articles', { deep: true }).where({ slug }).limit(1).fetch()
-        if (results.length > 0) article = results[0]
-      } catch (e2) {
-        console.warn('[article] all $content attempts failed, fallback to store:', e2.message)
-      }
+      console.warn('[article] $content query failed, fallback to store:', e.message)
     }
     if (!article.title) {
       const articles = store.state.articles || []
@@ -227,29 +224,31 @@ export default {
       })
       this.tocHeadings = headings
     },
-    loadViewCount() {
-      const key = 'view_' + this.article.slug
-      let count = parseInt(localStorage.getItem(key) || '0') + 1
-      localStorage.setItem(key, String(count))
-      this.viewCount = count
+    async loadViewCount() {
+      try {
+        this.viewCount = await getViewCount(this.article.slug)
+      } catch (e) {
+        console.warn('[ArticleDetail] loadViewCount failed:', e.message)
+        this.viewCount = 0
+      }
     },
-    loadLikeCount() {
-      const key = 'like_' + this.article.slug
-      this.likeCount = parseInt(localStorage.getItem(key) || '0')
-      this.liked = localStorage.getItem(key + '_liked') === '1'
-    },
-    toggleLike() {
-      const key = 'like_' + this.article.slug
-      if (this.liked) {
-        this.likeCount = Math.max(0, this.likeCount - 1)
-        localStorage.setItem(key, String(this.likeCount))
-        localStorage.removeItem(key + '_liked')
+    async loadLikeCount() {
+      try {
+        this.likeCount = await getLikeCount(this.article.slug)
+        this.liked = await getLikedStatus(this.article.slug)
+      } catch (e) {
+        console.warn('[ArticleDetail] loadLikeCount failed:', e.message)
+        this.likeCount = 0
         this.liked = false
-      } else {
-        this.likeCount++
-        localStorage.setItem(key, String(this.likeCount))
-        localStorage.setItem(key + '_liked', '1')
-        this.liked = true
+      }
+    },
+    async toggleLike() {
+      try {
+        const result = await toggleLike(this.article.slug)
+        this.likeCount = result.count
+        this.liked = result.liked
+      } catch (e) {
+        console.warn('[ArticleDetail] toggleLike API failed:', e.message)
       }
     },
     copyLink() {
