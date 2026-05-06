@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - master
   schedule:
     - cron: '*/30 * * * *'
   workflow_dispatch:
@@ -24,13 +25,14 @@ jobs:
         run: npm ci
 
       - name: Sync content from oh_my_note
-        run: node scripts/sync-content.js
+        run: node scripts/sync-content.js || echo "Sync skipped, continuing..."
+        continue-on-error: true
 
       - name: Build
         run: npm run generate
 
       - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v20
+        uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
