@@ -1,0 +1,31 @@
+{
+  "name": "easyblog-web-prod",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@babel/parser": "7.29.3",
+    "@vue/compiler-core": "3.5.34",
+    "@vue/compiler-dom": "3.5.34",
+    "@vue/compiler-ssr": "3.5.34",
+    "@vue/devtools-api": "6.6.4",
+    "@vue/reactivity": "3.5.34",
+    "@vue/runtime-core": "3.5.34",
+    "@vue/runtime-dom": "3.5.34",
+    "@vue/server-renderer": "3.5.34",
+    "@vue/shared": "3.5.34",
+    "devalue": "5.8.0",
+    "entities": "7.0.1",
+    "estree-walker": "2.0.2",
+    "highlight.js": "11.11.1",
+    "hookable": "6.1.1",
+    "marked": "18.0.3",
+    "perfect-debounce": "2.1.0",
+    "source-map-js": "1.2.1",
+    "ufo": "1.6.4",
+    "unhead": "2.1.13",
+    "vue": "3.5.34",
+    "vue-bundle-renderer": "2.2.0",
+    "vue-router": "4.6.4"
+  }
+}

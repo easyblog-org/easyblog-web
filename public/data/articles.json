@@ -1,0 +1,98 @@
+{
+  "articles": [
+    {
+      "title": "欢迎使用 EasyBlog",
+      "slug": "welcome-to-easyblog",
+      "date": "2026-05-01T00:00:00.000Z",
+      "updated": "2026-05-01T00:00:00.000Z",
+      "category": "公告",
+      "tags": [
+        "EasyBlog",
+        "博客"
+      ],
+      "summary": "欢迎使用 EasyBlog 静态博客系统，本文介绍系统的基本功能和使用方式。",
+      "cover": "",
+      "featured": true,
+      "status": "published",
+      "body": "## 欢迎使用 EasyBlog\n\nEasyBlog 是一个基于 **Nuxt 2 + TailwindCSS** 的静态博客系统。\n\n### 主要特性\n\n- 文章数据存储在 GitHub 仓库中\n- 通过 Webhook 触发自动构建和部署\n- 支持 Markdown 格式编写文章\n- 支持 Front Matter 元数据\n- 集成 Umami 数据统计\n- 使用 Vercel 部署\n\n### 如何编写文章\n\n在 `content/articles/` 目录下创建 `.md` 文件，使用以下格式：\n\n```markdown\n---\ntitle: 文章标题\nslug: article-slug\ndate: 2026-05-01\ncategory: 分类名称\ntags:\n  - 标签1\n  - 标签2\nsummary: 文章摘要\n---\n\n文章正文内容...\n```\n\n### 自动部署\n\n每次向 GitHub 仓库推送更新后，Vercel 会通过 Deploy Hook 自动触发重新构建，生成最新的静态页面。\n"
+    },
+    {
+      "title": "TailwindCSS 快速入门1",
+      "slug": "tailwindcss-quickstart-1",
+      "date": "2026-04-28T00:00:00.000Z",
+      "updated": "",
+      "category": "技术",
+      "tags": [
+        "TailwindCSS",
+        "CSS",
+        "前端",
+        "响应式设计",
+        "提示词工程"
+      ],
+      "summary": "一篇关于 TailwindCSS 的快速入门指南，介绍核心概念和常用工具类。",
+      "cover": "",
+      "featured": true,
+      "status": "published",
+      "body": "## TailwindCSS 快速入门\n\nTailwindCSS 是一个实用优先的 CSS 框架，它提供了大量的工具类，让你可以直接在 HTML 中构建自定义设计。\n\n### 核心概念\n\nTailwindCSS 的核心理念是**实用优先**（Utility-First），不同于 Bootstrap 等组件级框架，TailwindCSS 提供的是原子级的 CSS 类。\n\n### 常用工具类\n\n#### 布局\n\n- `flex` / `grid` - 弹性布局 / 网格布局\n- `items-center` - 垂直居中\n- `justify-between` - 两端对齐\n- `gap-4` - 间距\n\n#### 间距\n\n- `p-4` - 内边距\n- `m-4` - 外边距\n- `px-4` - 水平内边距\n- `py-2` - 垂直内边距\n\n#### 文字\n\n- `text-lg` - 大号文字\n- `font-bold` - 粗体\n- `text-gray-600` - 灰色文字\n\n### 响应式设计\n\nTailwindCSS 使用移动优先的响应式设计：\n\n- `sm:` - 640px 以上\n- `md:` - 768px 以上\n- `lg:` - 1024px 以上\n- `xl:` - 1280px 以上\n\n```html\n<template>\n  <header class=\"bg-white/80 dark:bg-gray-900/80 backdrop-blur-md sticky top-0 z-50 h-16 border-b border-gray-200 dark:border-gray-800\">\n    <div class=\"max-w-6xl mx-auto px-4 flex items-center justify-between h-full\">\n      <NuxtLink to=\"/\" class=\"text-xl font-bold text-primary no-underline\">EasyBlog</NuxtLink>\n\n      <nav class=\"hidden md:flex items-center\">\n        <NuxtLink\n          v-for=\"item in navItems\"\n          :key=\"item.path\"\n          :to=\"item.path\"\n          class=\"mx-3 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors no-underline text-sm\"\n        >\n          {{ item.label }}\n        </NuxtLink>\n      </nav>\n\n      <div class=\"flex items-center gap-3\">\n        <div class=\"relative hidden sm:block\">\n          <svg class=\"absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z\"/>\n          </svg>\n          <input\n            v-model=\"searchQuery\"\n            type=\"text\"\n            placeholder=\"搜索文章...\"\n            class=\"w-[200px] focus:w-[260px] transition-all duration-300 rounded-full bg-gray-100 dark:bg-gray-800 pl-10 pr-4 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/30 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500\"\n            @keyup.enter=\"handleSearch\"\n          />\n        </div>\n\n        <button class=\"p-1.5 rounded-lg text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors\" @click=\"toggleTheme\" :title=\"isDark ? '切换浅色' : '切换深色'\">\n          <svg v-if=\"isDark\" class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z\"/>\n          </svg>\n          <svg v-else class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z\"/>\n          </svg>\n        </button>\n\n        <a href=\"https://github.com\" target=\"_blank\" rel=\"noopener\" class=\"text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors\">\n          <svg class=\"w-5 h-5\" fill=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z\"/></svg>\n        </a>\n\n        <button class=\"md:hidden text-gray-600 dark:text-gray-400 p-1\" @click=\"mobileMenuOpen = !mobileMenuOpen\">\n          <svg v-if=\"!mobileMenuOpen\" class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"/>\n          </svg>\n          <svg v-else class=\"w-6 h-6\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n            <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M6 18L18 6M6 6l12 12\"/>\n          </svg>\n        </button>\n      </div>\n    </div>\n\n    <div v-if=\"mobileMenuOpen\" class=\"md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 px-4 py-3\">\n      <NuxtLink\n        v-for=\"item in navItems\"\n        :key=\"item.path\"\n        :to=\"item.path\"\n        class=\"block py-2.5 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors no-underline text-sm\"\n        @click.native=\"mobileMenuOpen = false\"\n      >\n        {{ item.label }}\n      </NuxtLink>\n      <div class=\"mt-2 relative\">\n        <svg class=\"absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n          <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z\"/>\n        </svg>\n        <input\n          v-model=\"searchQuery\"\n          type=\"text\"\n          placeholder=\"搜索文章...\"\n          class=\"w-full rounded-full bg-gray-100 dark:bg-gray-800 pl-10 pr-4 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/30 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500\"\n          @keyup.enter=\"handleSearch\"\n        />\n      </div>\n    </div>\n  </header>\n</template>\n\n<script>\nexport default {\n  name: 'TheHeader',\n  data() {\n    return {\n      searchQuery: '',\n      mobileMenuOpen: false,\n      isDark: false,\n      navItems: [\n        { label: '首页', path: '/' },\n        { label: '归档', path: '/archive' },\n        { label: '分类', path: '/categories' },\n        { label: '标签', path: '/tags' },\n        { label: '专栏', path: '/collections' },\n        { label: '关于', path: '/about' },\n      ],\n    }\n  },\n  mounted() {\n    const saved = localStorage.getItem('theme')\n    if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {\n      this.isDark = true\n      document.documentElement.classList.add('dark')\n    }\n  },\n  methods: {\n    handleSearch() {\n      if (this.searchQuery.trim()) {\n        this.$router.push({ path: '/', query: { q: this.searchQuery.trim() } })\n        this.mobileMenuOpen = false\n      }\n    },\n    toggleTheme() {\n      this.isDark = !this.isDark\n      if (this.isDark) {\n        document.documentElement.classList.add('dark')\n        localStorage.setItem('theme', 'dark')\n      } else {\n        document.documentElement.classList.remove('dark')\n        localStorage.setItem('theme', 'light')\n      }\n    },\n  },\n}\n</script>\n```\n"
+    },
+    {
+      "title": "TailwindCSS 快速入门",
+      "slug": "tailwindcss-quickstart",
+      "date": "2026-04-28T00:00:00.000Z",
+      "updated": "",
+      "category": "技术",
+      "tags": [
+        "TailwindCSS",
+        "CSS",
+        "前端",
+        "响应式设计",
+        "提示词工程"
+      ],
+      "summary": "一篇关于 TailwindCSS 的快速入门指南，介绍核心概念和常用工具类。",
+      "cover": "",
+      "featured": true,
+      "status": "published",
+      "body": "## TailwindCSS 快速入门\n\nTailwindCSS 是一个实用优先的 CSS 框架，它提供了大量的工具类，让你可以直接在 HTML 中构建自定义设计。\n\n### 核心概念\n\nTailwindCSS 的核心理念是**实用优先**（Utility-First），不同于 Bootstrap 等组件级框架，TailwindCSS 提供的是原子级的 CSS 类。\n\n### 常用工具类\n\n#### 布局\n\n- `flex` / `grid` - 弹性布局 / 网格布局\n- `items-center` - 垂直居中\n- `justify-between` - 两端对齐\n- `gap-4` - 间距\n\n#### 间距\n\n- `p-4` - 内边距\n- `m-4` - 外边距\n- `px-4` - 水平内边距\n- `py-2` - 垂直内边距\n\n#### 文字\n\n- `text-lg` - 大号文字\n- `font-bold` - 粗体\n- `text-gray-600` - 灰色文字\n\n### 响应式设计\n\nTailwindCSS 使用移动优先的响应式设计：\n\n- `sm:` - 640px 以上\n- `md:` - 768px 以上\n- `lg:` - 1024px 以上\n- `xl:` - 1280px 以上\n\n```java\n/**\n * 统一API响应格式\n */\n@Data\n@NoArgsConstructor\n@AllArgsConstructor\npublic class Result<T> {\n    private Integer code;    // 状态码\n    private String message;  // 消息\n    private T data;          // 数据\n    \n    // 成功响应\n    public static <T> Result<T> success() {\n        return new Result<>(200, \"操作成功\", null);\n    }\n    \n    public static <T> Result<T> success(T data) {\n        return new Result<>(200, \"操作成功\", data);\n    }\n    \n    // 失败响应\n    public static <T> Result<T> error(String message) {\n        return new Result<>(500, message, null);\n    }\n    \n    public static <T> Result<T> error(Integer code, String message) {\n        return new Result<>(code, message, null);\n    }\n}\n\n```\n"
+    }
+  ],
+  "categories": [
+    {
+      "name": "公告",
+      "count": 1
+    },
+    {
+      "name": "技术",
+      "count": 2
+    }
+  ],
+  "tags": [
+    {
+      "name": "EasyBlog",
+      "count": 1
+    },
+    {
+      "name": "博客",
+      "count": 1
+    },
+    {
+      "name": "TailwindCSS",
+      "count": 2
+    },
+    {
+      "name": "CSS",
+      "count": 2
+    },
+    {
+      "name": "前端",
+      "count": 2
+    },
+    {
+      "name": "响应式设计",
+      "count": 2
+    },
+    {
+      "name": "提示词工程",
+      "count": 2
+    }
+  ]
+}
