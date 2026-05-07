@@ -17,7 +17,7 @@
 
 ## ✨ 项目简介
 
-EasyBlog 是一款为后端工程师打造的轻量级博客系统，采用 **Nuxt 3 + TailwindCSS + Vercel** 技术栈构建。支持 Markdown 文章编写、代码语法高亮、文章统计、暗色模式等功能，具备响应式设计，适配桌面端与移动端。
+EasyBlog 是一款轻量级的博客系统，采用 **Nuxt 3 + TailwindCSS + Vercel** 技术栈构建。支持 Markdown 文章编写、代码语法高亮、文章统计、暗色模式等功能，具备响应式设计，适配桌面端与移动端。
 
 ### 🎯 核心特性
 
@@ -454,7 +454,7 @@ EasyBlog 采用**双层架构**实现文章统计数据：
 ## 🔗 相关链接
 
 - **GitHub 仓库**: https://github.com/easyblog-org/easyblog-web
-- **在线演示**: （待补充）
+- **在线演示**: [EasyBlog](https://blog.xinxinnote.tech)
 - **问题反馈**: [GitHub Issues](https://github.com/easyblog-org/easyblog-web/issues)
 
 ---
