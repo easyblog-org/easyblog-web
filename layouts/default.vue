@@ -9,4 +9,17 @@
 
 <script setup>
 import TheHeader from '~/components/layout/TheHeader.vue'
+import { useBlogStore } from '~/store/blog'
+
+const blogStore = useBlogStore()
+
+const { data } = await useAsyncData('articles', () => $fetch('/data/articles.json').catch(() => ({ articles: [], categories: [], tags: [] })), {
+  default: () => ({ articles: [], categories: [], tags: [] })
+})
+
+if (data.value) {
+  blogStore.setArticles(data.value.articles || [])
+  blogStore.setCategories(data.value.categories || [])
+  blogStore.setTags(data.value.tags || [])
+}
 </script>
