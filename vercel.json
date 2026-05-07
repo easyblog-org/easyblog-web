@@ -3,6 +3,12 @@
   "buildCommand": "npm run generate",
   "outputDirectory": ".output/public",
   "framework": null,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
   "env": {
     "NODE_ENV": "production"
   }
