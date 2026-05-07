@@ -48,6 +48,12 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'vercel',
+    serverAssets: [
+      {
+        baseName: 'content',
+        dir: 'content/articles',
+      },
+    ],
   },
 
   postcss: {
