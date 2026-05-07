@@ -48,6 +48,7 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'vercel',
+    nodeVersion: '20',
   },
 
   postcss: {
