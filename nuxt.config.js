@@ -35,7 +35,7 @@ export default defineNuxtConfig({
 
   css: ['@/assets/css/main.css'],
 
-  plugins: ['~/plugins/dateFormat', '~/plugins/article-loader'],
+  plugins: ['~/plugins/dateFormat', '~/plugins/article-loader.client'],
 
   components: [
     {
