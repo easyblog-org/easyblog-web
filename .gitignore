@@ -67,9 +67,14 @@ typings/
 
 # nuxt.js build output
 .nuxt
+.vercel
+.output
 
 # Nuxt generate
 dist
+
+# Build generated data
+public/data/
 
 # vuepress build output
 .vuepress/dist

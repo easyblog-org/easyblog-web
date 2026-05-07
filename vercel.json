@@ -1,6 +1,0 @@
-{
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "env": {
-    "NODE_ENV": "production"
-  }
-}
