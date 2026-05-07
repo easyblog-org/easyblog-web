@@ -5,12 +5,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   if (process.server) {
     try {
-      const data = await $fetch('/api/articles')
+      const data = await $fetch('/data/articles.json')
       articles = data.articles || []
       categories = data.categories || []
       tags = data.tags || []
     } catch (e) {
-      console.warn('[article-loader] API fetch failed:', e.message)
+      console.warn('[article-loader] Failed to load articles:', e.message)
     }
   }
 
