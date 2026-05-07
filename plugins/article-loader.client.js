@@ -1,13 +1,12 @@
-export default defineNuxtPlugin(async (nuxtApp) => {
+export default defineNuxtPlugin(async () => {
   try {
-    const data = await $fetch('/data/articles.json')
+    const data = await $fetch('/api/articles')
     if (data?.articles) {
       const { useBlogStore } = await import('~/store/blog')
-      const blogStore = useBlogStore()
-      blogStore.setArticles(data.articles)
-      blogStore.setCategories(data.categories || [])
-      blogStore.setTags(data.tags || [])
-      console.log(`[article-loader] Loaded ${data.articles.length} articles`)
+      const store = useBlogStore()
+      store.setArticles(data.articles)
+      store.setCategories(data.categories || [])
+      store.setTags(data.tags || [])
     }
   } catch (e) {
     console.warn('[article-loader] Failed:', e.message)

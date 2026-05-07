@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
 
   runtimeConfig: {
+    mongoUri: process.env.MONGODB_URI,
     redisUrl: process.env.REDIS_URL,
     redisToken: process.env.REDIS_TOKEN,
     enableRedisStats: process.env.ENABLE_REDIS_STATS === 'true',

@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "nuxt dev",
-    "build": "node scripts/build-articles.js && nuxt build",
+    "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate",
     "lint:js": "eslint --ext \".js,.ts,.vue\" --ignore-path .gitignore .",
@@ -23,6 +23,7 @@
     "front-matter": "^4.0.2",
     "highlight.js": "^11.11.1",
     "marked": "^18.0.3",
+    "mongodb": "^7.2.0",
     "nuxt": "^3.11.0",
     "pinia": "^2.1.7",
     "postcss": "^8.5.13",
