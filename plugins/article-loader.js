@@ -76,10 +76,10 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
         console.log(`[article-loader] Loaded ${articles.length} articles from filesystem`)
       } else {
-        console.warn('[article-loader] Content directory not found:', contentDir)
+        console.log('[article-loader] Content dir not found, will load from JSON on client')
       }
     } catch (e) {
-      console.warn('[article-loader] Load failed:', e.message)
+      console.warn('[article-loader] Filesystem load failed:', e.message)
     }
   }
 
@@ -87,7 +87,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   nuxtApp.provide('categories', categories)
   nuxtApp.provide('tags', tags)
 
-  if (articles.length > 0 || categories.length > 0 || tags.length > 0) {
+  if ((articles.length > 0 || categories.length > 0 || tags.length > 0)) {
     try {
       const { useBlogStore } = await import('~/store/blog')
       const blogStore = useBlogStore(nuxtApp.$pinia)
@@ -96,6 +96,22 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       blogStore.setTags(tags)
     } catch (e) {
       console.warn('[article-loader] Store init failed:', e.message)
+    }
+  }
+
+  if (process.client && articles.length === 0) {
+    try {
+      const data = await $fetch('/data/articles.json').catch(() => null)
+      if (data?.articles) {
+        const { useBlogStore } = await import('~/store/blog')
+        const blogStore = useBlogStore()
+        blogStore.setArticles(data.articles)
+        blogStore.setCategories(data.categories || [])
+        blogStore.setTags(data.tags || [])
+        console.log(`[article-loader] Client fallback: loaded ${data.articles.length} articles from JSON`)
+      }
+    } catch (e) {
+      console.warn('[article-loader] Client JSON load failed:', e.message)
     }
   }
 })
