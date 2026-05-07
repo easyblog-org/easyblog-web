@@ -419,7 +419,7 @@ const _routes = [
   {
     name: "archive",
     path: "/archive",
-    component: () => import('./index-B9WiWN4t.mjs')
+    component: () => import('./index-DvUdT3An.mjs')
   },
   {
     name: "privacy",
@@ -429,12 +429,12 @@ const _routes = [
   {
     name: "sitemap",
     path: "/sitemap",
-    component: () => import('./index-Cc3Dbpcr.mjs')
+    component: () => import('./index-DwVIsp6Z.mjs')
   },
   {
     name: "article-slug",
     path: "/article/:slug()",
-    component: () => import('./_slug_-CDFR8Slu.mjs')
+    component: () => import('./_slug_-D_V5qNpT.mjs')
   },
   {
     name: "disclaimer",
@@ -1260,22 +1260,16 @@ const dateFormat_SlDZxKoEr9BXdolLB8Ch0h25mVq73Oc0wikPkffNoT8 = /* @__PURE__ */ d
     return formatDates(value, fmt);
   });
 });
-const article_loader__krF5XwtQb5NeViIKaDMoN5JalJobmsXVx93391MrBA = /* @__PURE__ */ defineNuxtPlugin((nuxtApp) => {
-  nuxtApp.provide("articles", []);
-  nuxtApp.provide("categories", []);
-  nuxtApp.provide("tags", []);
-});
 const plugins = [
   unhead_k2P3m_ZDyjlr2mMYnoDPwavjsDN8hBlk9cFai0bbopU,
   plugin$1,
   revive_payload_server_MVtmlZaQpj6ApFmshWfUWl5PehCebzaBf2NuRMiIbms,
   plugin,
   components_plugin_z4hgvsiddfKkfXTP6M8M4zG5Cb7sGnDhcryKVM45Di4,
-  dateFormat_SlDZxKoEr9BXdolLB8Ch0h25mVq73Oc0wikPkffNoT8,
-  article_loader__krF5XwtQb5NeViIKaDMoN5JalJobmsXVx93391MrBA
+  dateFormat_SlDZxKoEr9BXdolLB8Ch0h25mVq73Oc0wikPkffNoT8
 ];
 const layouts = {
-  default: defineAsyncComponent(() => import('./default-DrwJCunG.mjs').then((m) => m.default || m)),
+  default: defineAsyncComponent(() => import('./default-BLb04YPz.mjs').then((m) => m.default || m)),
   error: defineAsyncComponent(() => import('./error--ifP7YYX.mjs').then((m) => m.default || m))
 };
 const routeRulesMatcher = _routeRulesMatcher;
