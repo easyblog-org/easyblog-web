@@ -27,12 +27,12 @@
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4">
       <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">标签</h3>
       <div v-if="tags.length === 0" class="text-sm text-gray-400">暂无标签</div>
-      <div v-else class="flex flex-wrap gap-2">
+      <div v-else class="flex flex-wrap" style="gap: 8px;">
         <NuxtLink
           v-for="tag in tags"
           :key="tag.name"
           :to="{ path: '/', query: { tag: tag.name } }"
-          class="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-primary/10 no-underline transition-colors"
+          class="inline-flex items-center text-xs px-2.5 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-md text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-primary/10 no-underline transition-colors"
         >
           {{ tag.name }}
         </NuxtLink>

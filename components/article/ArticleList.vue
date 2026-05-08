@@ -55,7 +55,7 @@
 
     <div ref="scrollSentinel" class="jj-sentinel"></div>
 
-    <div v-if="allLoaded && articles.length > pageSize" class="py-8 text-center">
+    <div v-if="allLoaded" class="py-8 text-center">
       <span class="text-xs tracking-widest text-gray-400 dark:text-gray-600">— 已经到底了 —</span>
     </div>
   </div>
@@ -92,8 +92,11 @@ export default {
   watch: {
     articles() {
       this.displayCount = this.pageSize
-      this.$nextTick(() => this.initScrollObserver())
-      this.fetchStats()
+      this._statsLoaded = false
+      this.$nextTick(() => {
+        this.initScrollObserver()
+        this.fetchStats()
+      })
     },
   },
   mounted() {
