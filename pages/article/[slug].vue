@@ -176,7 +176,7 @@ const article = computed(() => {
   const articles = allArticles.value || []
   const found = articles.find((a) => a.slug === slug.value)
   if (found) {
-    return { ...found, _rawBody: found.body || '' }
+    return { ...found, _rawBody: found.content || found.body || '' }
   }
   return { title: '文章未找到', slug: slug.value, date: '', _rawBody: '', tags: [], category: '' }
 })
@@ -208,8 +208,8 @@ const showToast = ref(false)
 
 const readingTime = computed(() => {
   let body = article.value._rawBody || ''
-  if (!body && typeof article.value.body === 'string') {
-    body = article.value.body
+  if (!body) {
+    body = article.value.content || article.value.body || ''
   }
   if (!body) return 1
   const text = String(body).replace(/[#*`\-()[\]{}>!|\\]/g, '').replace(/\s+/g, '')

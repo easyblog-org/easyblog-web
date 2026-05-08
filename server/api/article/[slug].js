@@ -2,7 +2,7 @@ import { getCollection } from '~/utils/mongodb'
 
 export default defineEventHandler(async (event) => {
   const slug = event.context.params.slug
-  const collection = await getCollection('articles')
+  const collection = await getCollection()
 
   const article = await collection.findOne({ slug, status: 'published' })
 

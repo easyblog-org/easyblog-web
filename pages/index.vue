@@ -18,7 +18,7 @@
     <div class="max-w-6xl mx-auto px-4 pt-4 pb-6">
     <div class="lg:hidden">
 
-      <div v-if="loading" class="jj-feed-list">
+      <div v-if="!dataLoaded" class="jj-feed-list">
         <div v-for="n in 3" :key="'sk-' + n" class="jj-feed-item">
           <div class="jj-feed-body p-4">
             <div class="skeleton-line" style="width: 70%; height: 20px; margin-bottom: 10px"></div>
@@ -163,7 +163,29 @@
 
     <div class="hidden lg:flex flex-row gap-6">
       <div class="lg:w-3/4">
-        <div v-if="filteredArticles.length === 0" class="text-center py-16 px-4">
+        <div v-if="!dataLoaded" class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
+          <div v-for="n in 4" :key="'dsk-' + n" style="padding: 18px 22px; border-bottom: 1px solid #f0f0f0" class="dark:border-gray-800">
+            <div style="display: flex; gap: 18px;">
+              <div style="flex: 1; min-width: 0;">
+                <div class="skeleton-line" style="width: 65%; height: 20px; margin-bottom: 10px"></div>
+                <div class="skeleton-line" style="width: 100%; height: 14px; margin-bottom: 8px"></div>
+                <div class="skeleton-line" style="width: 40%; height: 14px; margin-bottom: 14px"></div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div class="skeleton-avatar"></div>
+                  <div class="skeleton-line" style="width: 70px; height: 13px"></div>
+                  <div class="skeleton-line" style="width: 60px; height: 13px"></div>
+                  <div class="skeleton-line" style="width: 50px; height: 13px"></div>
+                  <div class="skeleton-line" style="width: 40px; height: 13px"></div>
+                  <div class="skeleton-tag"></div>
+                  <div class="skeleton-tag"></div>
+                  <div class="skeleton-tag"></div>
+                </div>
+              </div>
+              <div class="skeleton-cover"></div>
+            </div>
+          </div>
+        </div>
+        <div v-else-if="filteredArticles.length === 0" class="text-center py-16 px-4">
           <div v-if="$route.query.q" class="empty-state">
             <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -194,28 +216,6 @@
             </svg>
             <p class="text-base font-medium text-gray-600 dark:text-gray-400 mb-2">文章正在路上</p>
             <p class="text-sm text-gray-400 dark:text-gray-500">作者还在努力创作中，敬请期待</p>
-          </div>
-        </div>
-        <div v-if="loading" class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
-          <div v-for="n in 4" :key="'dsk-' + n" style="padding: 18px 22px; border-bottom: 1px solid #f0f0f0" class="dark:border-gray-800">
-            <div style="display: flex; gap: 18px;">
-              <div style="flex: 1; min-width: 0;">
-                <div class="skeleton-line" style="width: 65%; height: 20px; margin-bottom: 10px"></div>
-                <div class="skeleton-line" style="width: 100%; height: 14px; margin-bottom: 8px"></div>
-                <div class="skeleton-line" style="width: 40%; height: 14px; margin-bottom: 14px"></div>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                  <div class="skeleton-avatar"></div>
-                  <div class="skeleton-line" style="width: 70px; height: 13px"></div>
-                  <div class="skeleton-line" style="width: 60px; height: 13px"></div>
-                  <div class="skeleton-line" style="width: 50px; height: 13px"></div>
-                  <div class="skeleton-line" style="width: 40px; height: 13px"></div>
-                  <div class="skeleton-tag"></div>
-                  <div class="skeleton-tag"></div>
-                  <div class="skeleton-tag"></div>
-                </div>
-              </div>
-              <div class="skeleton-cover"></div>
-            </div>
           </div>
         </div>
         <ArticleList v-else :articles="filteredArticles" :key="'list-' + filteredArticles.length" />
@@ -255,6 +255,7 @@ const _scrollObserver = ref(null)
 const displayCount = ref(10)
 const pageSize = ref(10)
 const loading = ref(true)
+const dataLoaded = ref(false)
 const _mobileViewsMap = ref({})
 const _mobileLikesMap = ref({})
 const _mobileStatsLoaded = ref(false)
@@ -417,16 +418,17 @@ onMounted(() => {
       _heroScrollEl.value.addEventListener('scroll', onHeroScroll, { passive: true })
     }
     initScrollObserver()
-    if (allArticles.value.length > 0) {
-      setTimeout(() => { loading.value = false }, 80)
+    if (allArticles.value.length >= 0) {
+      setTimeout(() => { loading.value = false; dataLoaded.value = true }, 80)
     }
     fetchMobileStats()
   })
 })
 
 watch(allArticles, (val) => {
-  if (val.length > 0 && loading.value) {
-    setTimeout(() => { loading.value = false }, 80)
+  if (val.length >= 0 && loading.value) {
+    setTimeout(() => { loading.value = false; dataLoaded.value = true }, 80)
+    _mobileStatsLoaded.value = false
     fetchMobileStats()
   }
 })

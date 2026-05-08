@@ -4,6 +4,8 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     mongoUri: process.env.MONGODB_URI,
+    mongoDbName: process.env.MONGODB_DB_NAME || 'oh_my_note',
+    mongoCollectionName: process.env.MONGODB_COLLECTION || 'articles',
     redisUrl: process.env.REDIS_URL,
     redisToken: process.env.REDIS_TOKEN,
     enableRedisStats: process.env.ENABLE_REDIS_STATS === 'true',
