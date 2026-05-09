@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div v-if="navCategories.length > 0" class="lg:hidden jj-nav-bar">
+  <PageContainer has-sidebar mobile-padding="px-0">
+    <div v-if="isMounted && navCategories.length > 0" class="lg:hidden jj-nav-bar">
       <div class="jj-nav-scroll">
         <button
           :class="['jj-nav-tab', { 'jj-nav-tab--active': !activeCategory }]"
@@ -15,8 +15,7 @@
       </div>
     </div>
 
-    <div class="max-w-6xl mx-auto px-4 pt-4 pb-6">
-    <div class="lg:hidden">
+    <div v-if="isMounted" class="lg:hidden">
 
       <div v-if="!dataLoaded" class="jj-feed-list">
         <div v-for="n in 3" :key="'sk-' + n" class="jj-feed-item">
@@ -161,8 +160,7 @@
       </template>
     </div>
 
-    <div class="hidden lg:flex flex-row gap-6">
-      <div class="lg:w-3/4">
+    <div v-if="isMounted" class="hidden lg:block">
         <div v-if="!dataLoaded" class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
           <div v-for="n in 4" :key="'dsk-' + n" style="padding: 18px 22px; border-bottom: 1px solid #f0f0f0" class="dark:border-gray-800">
             <div style="display: flex; gap: 18px;">
@@ -220,17 +218,15 @@
         </div>
         <ArticleList v-else :articles="filteredArticles" :key="'list-' + filteredArticles.length" />
       </div>
-      <div class="lg:w-1/4">
-        <div class="sticky top-20">
-          <Sidebar :categories="categories" :tags="tags" :collections="collections" />
-        </div>
-      </div>
-    </div>
-  </div>
-  </div>
+
+    <template #sidebar>
+      <Sidebar :categories="categories" :tags="tags" :collections="collections" />
+    </template>
+  </PageContainer>
 </template>
 
 <script setup>
+import PageContainer from '~/components/common/PageContainer.vue'
 import ArticleList from '~/components/article/ArticleList.vue'
 import Sidebar from '~/components/layout/Sidebar.vue'
 import { getBatchStats, toggleLike } from '~/utils/stats.js'
@@ -256,6 +252,7 @@ const displayCount = ref(10)
 const pageSize = ref(10)
 const loading = ref(true)
 const dataLoaded = ref(false)
+const isMounted = ref(false)
 const _mobileViewsMap = ref({})
 const _mobileLikesMap = ref({})
 const _mobileStatsLoaded = ref(false)
@@ -288,9 +285,10 @@ const filteredArticles = computed(() => {
 })
 
 const heroArticles = computed(() => {
+  if (activeCategory.value) return []
+  if (filteredArticles.value.length < 3) return []
   const allFeatured = [...filteredArticles.value].filter((a) => a.featured).sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3)
-  if (allFeatured.length > 0) return allFeatured
-  return filteredArticles.value.slice(0, 1)
+  return allFeatured.length > 0 ? allFeatured : filteredArticles.value.slice(0, 1)
 })
 
 const restArticles = computed(() => {
@@ -412,6 +410,7 @@ async function handleMobileLike(article, e) {
 }
 
 onMounted(() => {
+  isMounted.value = true
   nextTick(() => {
     _heroScrollEl.value = document.querySelector('.overflow-x-auto')
     if (_heroScrollEl.value) {
@@ -456,6 +455,32 @@ onBeforeUnmount(() => {
 
 .dark .jj-feed-list {
   background: var(--color-card-bg);
+}
+
+@media (max-width: 1023px) {
+  .jj-feed-list {
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .dark .jj-feed-list {
+    background: transparent;
+  }
+
+  .jj-feed-item {
+    background: #fff;
+    /* margin-bottom: 12px; */
+    border-radius: var(--radius-card);
+    border-bottom: none;
+  }
+
+  .dark .jj-feed-item {
+    background: var(--color-card-bg);
+  }
+
+  .jj-feed-body {
+    padding: 16px;
+  }
 }
 
 .jj-feed-item {

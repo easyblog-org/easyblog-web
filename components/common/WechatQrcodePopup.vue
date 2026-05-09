@@ -1,8 +1,8 @@
 <template>
-  <div ref="popup" v-if="visible" class="wechat-popup-wrapper" style="display: none;">
-    <div class="fixed inset-0 z-[9999] flex items-center justify-center" @click.self="close">
+  <Teleport to="body">
+    <div v-if="visible" class="fixed inset-0 z-[9999] flex items-center justify-center" @click.self="close">
       <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="close"></div>
-      <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 mx-4 max-w-xs w-full z-10">
+      <div class="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 mx-4 max-w-xs w-full z-10 animate-in">
         <button
           @click="close"
           class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
@@ -28,7 +28,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <script setup>
@@ -41,36 +41,14 @@ const props = defineProps({
 
 const emit = defineEmits(['input'])
 
-const popup = ref(null)
 const visible = ref(props.value)
 
 watch(() => props.value, (val) => {
   visible.value = val
-  if (val) {
-    nextTick(() => moveToBody())
-  } else {
-    moveToSelf()
-  }
 })
 
 function close() {
   emit('input', false)
-}
-
-function moveToBody() {
-  const el = popup.value
-  if (el && el.parentNode !== document.body) {
-    el.style.display = ''
-    document.body.appendChild(el)
-  }
-}
-
-function moveToSelf() {
-  const el = popup.value
-  if (el && el.parentNode === document.body) {
-    el.style.display = 'none'
-    el.parentNode.removeChild(el)
-  }
 }
 
 onMounted(() => {
@@ -82,18 +60,17 @@ onMounted(() => {
   window.addEventListener('keydown', handleEsc)
   onBeforeUnmount(() => {
     window.removeEventListener('keydown', handleEsc)
-    moveToSelf()
   })
 })
 </script>
 
 <style scoped>
-.wechat-popup-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 9999;
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-in {
+  animation: fadeIn 0.2s ease-out;
 }
 </style>
