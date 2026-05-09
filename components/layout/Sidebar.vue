@@ -27,12 +27,12 @@
     <div class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4">
       <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">标签</h3>
       <div v-if="tags.length === 0" class="text-sm text-gray-400">暂无标签</div>
-      <div v-else class="flex flex-wrap" style="gap: 8px;">
+      <div v-else class="flex flex-wrap gap-2">
         <NuxtLink
           v-for="tag in tags"
           :key="tag.name"
           :to="{ path: '/', query: { tag: tag.name } }"
-          class="inline-flex items-center text-xs px-2.5 py-1.5 bg-gray-100 dark:bg-gray-800 rounded-md text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-primary/10 no-underline transition-colors"
+          class="jj-tag-item"
         >
           {{ tag.name }}
         </NuxtLink>
@@ -211,5 +211,39 @@ export default {
   flex-shrink: 0;
   font-size: 12px;
   color: #bbb;
+}
+
+.jj-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px !important;
+}
+
+.jj-tag-item {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  padding: 6px 10px;
+  background-color: #f3f4f6;
+  border-radius: 6px;
+  color: #6b7280;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.jj-tag-item:hover {
+  color: var(--color-primary, #1e80ff);
+  background-color: rgba(30, 128, 255, 0.08);
+}
+
+.dark .jj-tag-item {
+  background-color: #1f2937;
+  color: #9ca3af;
+}
+
+.dark .jj-tag-item:hover {
+  color: var(--color-primary, #60a5fa);
+  background-color: rgba(96, 165, 250, 0.12);
 }
 </style>

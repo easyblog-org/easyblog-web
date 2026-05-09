@@ -68,5 +68,29 @@ export default defineNuxtConfig({
         interval: 2000,
       },
     },
+    plugins: [
+      {
+        name: 'fix-app-manifest',
+        enforce: 'pre',
+        resolveId(id) {
+          if (id === '#app-manifest' || id === 'virtual:app-manifest') {
+            return 'virtual:app-manifest'
+          }
+        },
+        load(id) {
+          if (id === 'virtual:app-manifest') {
+            return 'export default {}'
+          }
+        },
+        transform(code, id) {
+          if (id.includes('nuxt/dist/app/composables/manifest')) {
+            return code.replace(
+              /import\(\s*\/\*\s*webpackIgnore:\s*true\s*\*\/\s*\/\*\s*@vite-ignore\s*\*\/\s*["']#app-manifest["']\s*\)/g,
+              'import("virtual:app-manifest")'
+            )
+          }
+        },
+      },
+    ],
   },
 })

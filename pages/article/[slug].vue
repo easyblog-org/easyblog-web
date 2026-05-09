@@ -1,113 +1,126 @@
 <template>
-  <div class="min-h-screen flex flex-col">
-    <transition name="toast">
-      <div v-if="showToast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-sm px-4 py-2 rounded-lg shadow-lg pointer-events-none">
-        链接已复制到剪贴板
-      </div>
-    </transition>
-    <div class="max-w-6xl mx-auto px-4 py-6 w-full flex-1">
-    <div class="flex flex-col-reverse lg:flex-row gap-6">
-      <div class="lg:w-3/4">
-        <article :class="['bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 md:p-8 article-fade-in', { 'is-loaded': loaded }]">
-          <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">{{ article.title || '加载中...' }}</h1>
-          <div :class="['flex items-center gap-3 mb-6 text-sm text-gray-400 dark:text-gray-500 flex-wrap article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 80ms">
-            <span>{{ formatDate(article.date) }}</span>
-            <span v-if="article.category">· {{ article.category }}</span>
-            <span>· {{ viewCount }} 次阅读</span>
-            <span>· 阅读约 {{ readingTime }} 分钟</span>
-          </div>
-
-          <div class="nuxt-content prose prose-sm dark:prose-invert max-w-none article-fade-in" :class="{ 'is-loaded': loaded }" style="transition-delay: 160ms">
-            <div v-html="renderedBody" class="text-gray-700 dark:text-gray-300 leading-relaxed"></div>
-          </div>
-
-          <div :class="['mt-8 pt-6 border-t border-gray-100 dark:border-gray-800 article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 200ms">
-            <div class="flex items-center justify-between">
-              <button
-                class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
-                @click="handleToggleLike"
-              >
-                <svg :class="['w-5 h-5', liked ? 'text-red-500 fill-red-500' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                </svg>
-                <span>{{ likeCount }}</span>
-              </button>
-              <button
-                class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
-                @click="copyLink"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
-                </svg>
-                <span>分享</span>
-              </button>
-            </div>
-          </div>
-        </article>
-
-        <div v-if="prevArticle || nextArticle" :class="['mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 260ms">
-          <NuxtLink
-            v-if="prevArticle"
-            :to="'/article/' + prevArticle.slug"
-            class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4 no-underline hover:border-primary/30 dark:hover:border-primary/30 transition-colors group"
-          >
-            <span class="text-xs text-gray-400 dark:text-gray-500">← 上一篇</span>
-            <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 group-hover:text-primary transition-colors line-clamp-1">{{ prevArticle.title }}</p>
-          </NuxtLink>
-          <div v-else class="hidden sm:block"></div>
-          <NuxtLink
-            v-if="nextArticle"
-            :to="'/article/' + nextArticle.slug"
-            class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4 no-underline hover:border-primary/30 dark:hover:border-primary/30 transition-colors group text-right"
-          >
-            <span class="text-xs text-gray-400 dark:text-gray-500">下一篇 →</span>
-            <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 group-hover:text-primary transition-colors line-clamp-1">{{ nextArticle.title }}</p>
-          </NuxtLink>
-        </div>
-
-        <div :class="['mt-8 bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 320ms">
-          <h3 class="font-semibold text-gray-900 dark:text-white mb-4 text-sm">评论</h3>
-          <p class="text-sm text-gray-400 dark:text-gray-500">评论功能即将上线，敬请期待...</p>
-        </div>
+  <transition name="toast">
+    <div v-if="showToast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 text-sm px-4 py-2 rounded-lg shadow-lg pointer-events-none">
+      链接已复制到剪贴板
+    </div>
+  </transition>
+  <PageContainer has-sidebar>
+    <article :class="['bg-white dark:bg-gray-900 lg:rounded-xl lg:shadow-sm lg:border lg:border-gray-100 dark:lg:border-gray-800 p-6 lg:p-8']">
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">{{ article.title || '加载中...' }}</h1>
+      <div :class="['flex items-center gap-3 mb-6 text-sm text-gray-400 dark:text-gray-500 flex-wrap', 'page-slide-up', { 'is-loaded': loaded }]" style="transition-delay: 80ms">
+        <span>{{ formatDate(article.date) }}</span>
+        <span v-if="article.category">· {{ article.category }}</span>
+        <span>· {{ viewCount }} 次阅读</span>
+        <span>· 阅读约 {{ readingTime }} 分钟</span>
       </div>
 
-      <div class="lg:w-1/4 hidden lg:block">
-        <div class="sticky top-20 space-y-4">
-          <div :class="['bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4 article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 200ms">
-            <PostTOC :headings="tocHeadings" />
-          </div>
+      <div class="nuxt-content prose prose-sm dark:prose-invert max-w-none page-slide-up" :class="{ 'is-loaded': loaded }" style="transition-delay: 160ms">
+        <div v-html="renderedBody" class="text-gray-700 dark:text-gray-300 leading-relaxed"></div>
+      </div>
 
-          <div v-if="relatedArticles.length > 0" :class="['bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4 article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 280ms">
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">📌 推荐阅读</h3>
-            <div class="space-y-3">
-              <NuxtLink
-                v-for="ra in relatedArticles"
-                :key="ra.slug"
-                :to="'/article/' + ra.slug"
-                class="block group no-underline"
-              >
-                <p class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors line-clamp-2 leading-snug">{{ ra.title }}</p>
-                <span v-if="ra.category" class="text-xs text-gray-400 dark:text-gray-500 mt-1 block">{{ ra.category }}</span>
-              </NuxtLink>
-            </div>
-          </div>
-
-          <div v-if="article.tags && article.tags.length > 0" :class="['bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4 article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 360ms">
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">🏷️ 文章标签</h3>
-            <div class="flex flex-wrap gap-2">
-              <span v-for="tag in article.tags" :key="tag" class="text-xs px-2 py-1 bg-primary/10 dark:bg-primary/20 text-primary rounded-full">{{ tag }}</span>
-            </div>
-          </div>
-
-          <div :class="['article-fade-in', { 'is-loaded': loaded }]" style="transition-delay: 420ms">
-            <AuthorCard />
-          </div>
+      <div :class="['mt-8 pt-6 border-t border-gray-100 dark:border-gray-800', 'page-slide-up', { 'is-loaded': loaded }]" style="transition-delay: 200ms">
+        <div class="flex items-center justify-between">
+          <button
+            class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
+            @click="handleToggleLike"
+          >
+            <svg :class="['w-5 h-5', liked ? 'text-red-500 fill-red-500' : '']" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+            <span>{{ likeCount }}</span>
+          </button>
+          <button
+            class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-primary transition-colors"
+            @click="copyLink"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.16m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+            </svg>
+            <span>分享</span>
+          </button>
         </div>
+      </div>
+    </article>
+
+    <div v-if="prevArticle || nextArticle" :class="['mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4', 'page-slide-up', { 'is-loaded': loaded }]" style="transition-delay: 260ms">
+      <NuxtLink
+        v-if="prevArticle"
+        :to="'/article/' + prevArticle.slug"
+        class="lg:bg-white dark:lg:bg-gray-900 lg:rounded-xl lg:shadow-sm lg:border lg:border-gray-100 dark:lg:border-gray-800 p-4 no-underline hover:opacity-80 transition-opacity group"
+      >
+        <span class="text-xs text-gray-400 dark:text-gray-500">← 上一篇</span>
+        <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 group-hover:text-primary transition-colors line-clamp-1">{{ prevArticle.title }}</p>
+      </NuxtLink>
+      <div v-else class="hidden sm:block"></div>
+      <NuxtLink
+        v-if="nextArticle"
+        :to="'/article/' + nextArticle.slug"
+        class="lg:bg-white dark:lg:bg-gray-900 lg:rounded-xl lg:shadow-sm lg:border lg:border-gray-100 dark:lg:border-gray-800 p-4 no-underline hover:opacity-80 transition-opacity group text-right"
+      >
+        <span class="text-xs text-gray-400 dark:text-gray-500">下一篇 →</span>
+        <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 group-hover:text-primary transition-colors line-clamp-1">{{ nextArticle.title }}</p>
+      </NuxtLink>
+    </div>
+
+    <div :class="['mt-8 bg-white dark:bg-gray-900 lg:rounded-xl lg:shadow-sm lg:border lg:border-gray-100 dark:lg:border-gray-800 p-6 lg:p-8', 'page-slide-up', { 'is-loaded': loaded }]" style="transition-delay: 320ms">
+      <h3 class="font-semibold text-gray-900 dark:text-white mb-4 text-sm">评论</h3>
+      <p class="text-sm text-gray-400 dark:text-gray-500">评论功能即将上线，敬请期待...</p>
+    </div>
+
+    <div v-if="relatedArticles.length > 0" :class="['mt-6 lg:hidden bg-white dark:bg-gray-900 p-6 lg:p-8', 'page-slide-up', { 'is-loaded': loaded }]" style="transition-delay: 340ms">
+      <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">📌 推荐阅读</h3>
+      <div class="space-y-3">
+        <NuxtLink
+          v-for="ra in relatedArticles"
+          :key="ra.slug"
+          :to="'/article/' + ra.slug"
+          class="block group no-underline pb-3 border-b border-gray-100 dark:border-gray-800 last:border-0 last:pb-0"
+        >
+          <p class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors line-clamp-2 leading-snug">{{ ra.title }}</p>
+          <span v-if="ra.category" class="text-xs text-gray-400 dark:text-gray-500 mt-1 block">{{ ra.category }}</span>
+        </NuxtLink>
       </div>
     </div>
+
+    <div v-if="article.tags && article.tags.length > 0" :class="['mt-6 lg:hidden bg-white dark:bg-gray-900 p-6 lg:p-8', 'page-slide-up', { 'is-loaded': loaded }]" style="transition-delay: 360ms">
+      <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">🏷️ 文章标签</h3>
+      <div class="flex flex-wrap gap-2">
+        <span v-for="tag in article.tags" :key="tag" class="text-xs px-2 py-1 bg-primary/10 dark:bg-primary/20 text-primary rounded-full">{{ tag }}</span>
+      </div>
     </div>
-    <SimpleFooter />
-  </div>
+
+    <template #sidebar>
+      <div :class="['bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4', 'page-slide-up', { 'is-loaded': loaded }]" style="transition-delay: 200ms">
+        <PostTOC :headings="tocHeadings" />
+      </div>
+
+      <div v-if="relatedArticles.length > 0" :class="['bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4', 'page-slide-up', { 'is-loaded': loaded }]" style="transition-delay: 280ms">
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">📌 推荐阅读</h3>
+        <div class="space-y-3">
+          <NuxtLink
+            v-for="ra in relatedArticles"
+            :key="ra.slug"
+            :to="'/article/' + ra.slug"
+            class="block group no-underline"
+          >
+            <p class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors line-clamp-2 leading-snug">{{ ra.title }}</p>
+            <span v-if="ra.category" class="text-xs text-gray-400 dark:text-gray-500 mt-1 block">{{ ra.category }}</span>
+          </NuxtLink>
+        </div>
+      </div>
+
+      <div v-if="article.tags && article.tags.length > 0" :class="['bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-4', 'page-slide-up', { 'is-loaded': loaded }]" style="transition-delay: 360ms">
+        <h3 class="font-semibold text-gray-900 dark:text-white mb-3 text-sm">🏷️ 文章标签</h3>
+        <div class="flex flex-wrap gap-2">
+          <span v-for="tag in article.tags" :key="tag" class="text-xs px-2 py-1 bg-primary/10 dark:bg-primary/20 text-primary rounded-full">{{ tag }}</span>
+        </div>
+      </div>
+
+      <div :class="['page-slide-up', { 'is-loaded': loaded }]" style="transition-delay: 420ms">
+        <AuthorCard />
+      </div>
+    </template>
+  </PageContainer>
 </template>
 
 <script setup>
@@ -115,6 +128,7 @@ import { marked } from 'marked'
 import hljs from 'highlight.js'
 import { getViewCount, getLikeCount, toggleLike, getLikedStatus } from '~/utils/stats.js'
 import { useBlogStore } from '~/store/blog'
+import PageContainer from '~/components/common/PageContainer.vue'
 
 const renderer = new marked.Renderer()
 renderer.code = function({ text, lang }) {
@@ -310,15 +324,15 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.article-fade-in {
+.page-slide-up {
   opacity: 0;
-  transform: translateX(24px);
-  transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+  transform: translateY(24px);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
-.article-fade-in.is-loaded {
+.page-slide-up.is-loaded {
   opacity: 1;
-  transform: translateX(0);
+  transform: translateY(0);
 }
 
 .toast-enter-active,

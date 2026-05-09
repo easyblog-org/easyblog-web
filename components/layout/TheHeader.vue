@@ -66,34 +66,46 @@
       </div>
     </div>
 
-    <div v-if="mobileMenuOpen" class="md:hidden bg-white dark:bg-gray-900 border-t border-[var(--color-divider)] px-4 py-3">
-      <NuxtLink
-        v-for="item in navItems"
-        :key="item.path"
-        :to="item.path"
-        :class="[
-          'block py-2.5 text-sm no-underline transition-colors',
-          isActive(item.path)
-            ? 'text-primary font-medium'
-            : 'text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary'
-        ]"
-        @click.native="mobileMenuOpen = false"
-      >
-        {{ item.label }}
-      </NuxtLink>
-      <div class="mt-2 relative">
-        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-        </svg>
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="搜索文章..."
-          class="w-full rounded-full bg-gray-100 dark:bg-gray-800 pl-10 pr-4 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/30 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
-          @keyup.enter="handleSearch"
-        />
+    <transition
+      name="mobile-menu"
+      @enter="onMenuEnter"
+      @leave="onMenuLeave"
+    >
+      <div v-if="mobileMenuOpen" class="md:hidden bg-white dark:bg-gray-900 border-t border-[var(--color-divider)] overflow-hidden">
+        <div class="px-4 py-3 space-y-3">
+          <div class="relative">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <input
+              ref="mobileSearchInput"
+              v-model="searchQuery"
+              type="text"
+              placeholder="搜索文章..."
+              class="w-full rounded-full bg-gray-100 dark:bg-gray-800 pl-10 pr-4 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/30 text-gray-800 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 transition-all duration-200"
+              @keyup.enter="handleSearch"
+            />
+          </div>
+          <div class="flex items-center justify-center gap-1">
+            <NuxtLink
+              v-for="(item, idx) in navItems"
+              :key="item.path"
+              :to="item.path"
+              :class="[
+                'flex-1 py-2.5 text-sm no-underline text-center rounded-lg transition-all duration-200 menu-item',
+                isActive(item.path)
+                  ? 'text-primary font-medium bg-primary/10'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800/50'
+              ]"
+              :style="{ animationDelay: `${idx * 60}ms` }"
+              @click.native="mobileMenuOpen = false"
+            >
+              {{ item.label }}
+            </NuxtLink>
+          </div>
+        </div>
       </div>
-    </div>
+    </transition>
   </header>
 </template>
 
@@ -148,6 +160,38 @@ export default {
       if (path === '/') return this.$route.path === '/'
       return this.$route.path.startsWith(path)
     },
+    onMenuEnter(el) {
+      el.style.height = '0'
+      el.style.opacity = '0'
+      requestAnimationFrame(() => {
+        el.style.transition = 'height 0.25s ease-out, opacity 0.25s ease-out'
+        el.style.height = el.scrollHeight + 'px'
+        el.style.opacity = '1'
+      })
+    },
+    onMenuLeave(el) {
+      el.style.height = el.scrollHeight + 'px'
+      requestAnimationFrame(() => {
+        el.style.transition = 'height 0.2s ease-in, opacity 0.2s ease-in'
+        el.style.height = '0'
+        el.style.opacity = '0'
+      })
+    },
   },
 }
 </script>
+
+<style scoped>
+.menu-item {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: menuItemIn 0.3s ease-out forwards;
+}
+
+@keyframes menuItemIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
