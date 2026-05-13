@@ -260,13 +260,14 @@ export default {
 
 .jj-desktop-summary {
   font-size: 14px;
-  line-height: 1.65;
+  line-height: 1.6;
   color: #888;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: break-word;
+  height: 44.8px;
 }
 
 .dark .jj-desktop-summary {

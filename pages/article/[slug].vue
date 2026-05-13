@@ -5,20 +5,20 @@
     </div>
   </transition>
   <PageContainer has-sidebar>
-    <article :class="['bg-white dark:bg-gray-900 lg:rounded-xl lg:shadow-sm lg:border lg:border-gray-100 dark:lg:border-gray-800 p-6 lg:p-8']">
+    <article v-if="loaded" :class="['bg-white dark:bg-gray-900 lg:rounded-xl lg:shadow-sm lg:border lg:border-gray-100 dark:lg:border-gray-800 p-6 lg:p-8']">
       <h1 class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-3">{{ article.title || '加载中...' }}</h1>
-      <div :class="['flex items-center gap-3 mb-6 text-sm text-gray-400 dark:text-gray-500 flex-wrap', 'page-slide-up', { 'is-loaded': loaded }]" style="transition-delay: 80ms">
+      <div :class="['flex items-center gap-3 mb-6 text-sm text-gray-400 dark:text-gray-500 flex-wrap', 'page-slide-up is-loaded']" style="transition-delay: 80ms">
         <span>{{ formatDate(article.date) }}</span>
         <span v-if="article.category">· {{ article.category }}</span>
         <span>· {{ viewCount }} 次阅读</span>
         <span>· 阅读约 {{ readingTime }} 分钟</span>
       </div>
 
-      <div class="nuxt-content prose prose-sm dark:prose-invert max-w-none page-slide-up" :class="{ 'is-loaded': loaded }" style="transition-delay: 160ms">
+      <div class="nuxt-content prose prose-sm dark:prose-invert max-w-none page-slide-up is-loaded" style="transition-delay: 160ms">
         <div v-html="renderedBody" class="text-gray-700 dark:text-gray-300 leading-relaxed"></div>
       </div>
 
-      <div :class="['mt-8 pt-6 border-t border-gray-100 dark:border-gray-800', 'page-slide-up', { 'is-loaded': loaded }]" style="transition-delay: 200ms">
+      <div :class="['mt-8 pt-6 border-t border-gray-100 dark:border-gray-800', 'page-slide-up is-loaded']" style="transition-delay: 200ms">
         <div class="flex items-center justify-between">
           <button
             class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
@@ -39,6 +39,28 @@
             <span>分享</span>
           </button>
         </div>
+      </div>
+    </article>
+
+    <article v-else :class="['bg-white dark:bg-gray-900 lg:rounded-xl lg:shadow-sm lg:border lg:border-gray-100 dark:lg:border-gray-800 p-6 lg:p-8']">
+      <div class="skeleton-line" style="width: 60%; height: 28px; margin-bottom: 16px; border-radius: 6px;"></div>
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+        <div class="skeleton-line" style="width: 80px; height: 14px;"></div>
+        <div class="skeleton-line" style="width: 60px; height: 14px;"></div>
+        <div class="skeleton-line" style="width: 90px; height: 14px;"></div>
+        <div class="skeleton-line" style="width: 70px; height: 14px;"></div>
+      </div>
+      <div class="skeleton-line" style="width: 100%; height: 16px; margin-bottom: 12px;"></div>
+      <div class="skeleton-line" style="width: 100%; height: 16px; margin-bottom: 12px;"></div>
+      <div class="skeleton-line" style="width: 95%; height: 16px; margin-bottom: 12px;"></div>
+      <div class="skeleton-line" style="width: 100%; height: 16px; margin-bottom: 12px;"></div>
+      <div class="skeleton-line" style="width: 88%; height: 16px; margin-bottom: 12px;"></div>
+      <div class="skeleton-line" style="width: 100%; height: 16px; margin-bottom: 12px;"></div>
+      <div class="skeleton-line" style="width: 92%; height: 16px; margin-bottom: 12px;"></div>
+      <div class="skeleton-line" style="width: 75%; height: 16px; margin-bottom: 24px;"></div>
+      <div style="display: flex; gap: 16px;">
+        <div class="skeleton-line" style="width: 60px; height: 14px;"></div>
+        <div class="skeleton-line" style="width: 50px; height: 14px;"></div>
       </div>
     </article>
 
@@ -176,14 +198,25 @@ const blogStore = useBlogStore()
 
 const slug = computed(() => route.params.slug)
 
-const { data: apiData } = await useFetch('/api/articles', {
-  key: 'articles-data',
-})
-
 const allArticles = computed(() => {
   const storeArticles = blogStore.articles || []
   if (storeArticles.length > 0) return storeArticles
-  return apiData.value?.articles || []
+  return []
+})
+
+const { data: apiData } = useFetch('/api/articles', {
+  key: 'articles-data',
+  lazy: true,
+  server: false,
+  immediate: allArticles.value.length === 0,
+})
+
+watch(() => apiData.value, (val) => {
+  if (val?.articles && val.articles.length > 0 && blogStore.articles.length === 0) {
+    blogStore.setArticles(val.articles)
+    blogStore.setCategories(val.categories || [])
+    blogStore.setTags(val.tags || [])
+  }
 })
 
 const article = computed(() => {
@@ -314,12 +347,23 @@ function copyLink() {
 
 
 onMounted(() => {
+  if (allArticles.value.length > 0 && article.value._rawBody) {
+    loaded.value = true
+  }
   loadViewCount()
   loadLikeCount()
-  setTimeout(() => { loaded.value = true }, 50)
   nextTick(() => {
     setTimeout(() => extractHeadings(), 300)
   })
+})
+
+watch(allArticles, (val) => {
+  if (val.length > 0 && !loaded.value) {
+    nextTick(() => {
+      loaded.value = true
+      setTimeout(() => extractHeadings(), 300)
+    })
+  }
 })
 </script>
 
@@ -333,6 +377,23 @@ onMounted(() => {
 .page-slide-up.is-loaded {
   opacity: 1;
   transform: translateY(0);
+}
+
+.skeleton-line {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+
+:deep(.dark) .skeleton-line {
+  background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.10) 50%, rgba(255,255,255,0.06) 75%);
+  background-size: 200% 100%;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 .toast-enter-active,

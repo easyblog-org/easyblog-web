@@ -1,24 +1,46 @@
-export default defineNuxtPlugin(async () => {
-  console.log('[article-loader] Plugin starting...')
-  try {
-    const data = await $fetch('/api/articles')
-    console.log('[article-loader] API response:', data ? `✅ ${data.articles?.length || 0} articles` : '❌ null')
+import { useBlogStore } from '~/store/blog'
 
-    if (data?.articles) {
-      const { useBlogStore } = await import('~/store/blog')
-      const store = useBlogStore()
-      store.setArticles(data.articles)
-      store.setCategories(data.categories || [])
-      store.setTags(data.tags || [])
-      console.log('[article-loader] Store updated ✅')
-      console.log('[article-loader] Articles:', data.articles.length)
-      console.log('[article-loader] Categories:', (data.categories || []).length)
-      console.log('[article-loader] Tags:', (data.tags || []).length)
-    } else {
-      console.warn('[article-loader] No articles in response')
-    }
-  } catch (e) {
-    console.error('[article-loader] Failed:', e.message)
-    console.error('[article-loader] Stack:', e.stack?.slice(0, 300))
+export default defineNuxtPlugin(() => {
+  const store = useBlogStore()
+
+  const hydrated = store.hydrateFromCache()
+
+  if (hydrated && !store.isCacheExpired()) {
+    store._apiLoaded = true
+    return
   }
+
+  if (!hydrated) {
+    const cached = loadExpiredCache()
+    if (cached) {
+      store.articles = cached.articles || []
+      store.categories = cached.categories || []
+      store.tags = cached.tags || []
+    }
+  }
+
+  $fetch('/api/articles')
+    .then((data) => {
+      if (data?.articles) {
+        store.setArticles(data.articles)
+        store.setCategories(data.categories || [])
+        store.setTags(data.tags || [])
+      }
+      store._apiLoaded = true
+    })
+    .catch((e) => {
+      console.error('[article-loader] Failed:', e.message)
+      store._apiLoaded = true
+    })
 })
+
+function loadExpiredCache() {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = localStorage.getItem('easyblog_cache')
+    if (!raw) return null
+    return JSON.parse(raw)
+  } catch {
+    return null
+  }
+}

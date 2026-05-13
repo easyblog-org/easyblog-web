@@ -97,6 +97,16 @@ body {
   opacity: 0;
 }
 
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
+
 .nuxt-content {
   @apply text-gray-700 dark:text-gray-300;
   font-size: 15px;
