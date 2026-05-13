@@ -2,6 +2,15 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: false },
 
+  loadingIndicator: {
+    name: 'chasing-dots',
+    color: '#1e80ff',
+    height: '3px',
+    throttle: 0,
+  },
+
+  pageTransition: { name: 'page', mode: 'out-in' },
+
   runtimeConfig: {
     mongoUri: process.env.MONGODB_URI,
     mongoDbName: process.env.MONGODB_DB_NAME || 'oh_my_note',

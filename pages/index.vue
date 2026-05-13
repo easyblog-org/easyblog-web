@@ -1,39 +1,49 @@
 <template>
   <PageContainer has-sidebar mobile-padding="px-0">
-    <div v-if="isMounted && navCategories.length > 0" class="lg:hidden jj-nav-bar">
-      <div class="jj-nav-scroll">
-        <button
-          :class="['jj-nav-tab', { 'jj-nav-tab--active': !activeCategory }]"
-          @click="selectCategory('')"
-        >全部</button>
-        <button
-          v-for="cat in navCategories"
-          :key="cat.name"
-          :class="['jj-nav-tab', { 'jj-nav-tab--active': activeCategory === cat.name }]"
-          @click="selectCategory(cat.name)"
-        >{{ cat.name }}</button>
-      </div>
-    </div>
+    <div class="lg:hidden">
 
-    <div v-if="isMounted" class="lg:hidden">
-
-      <div v-if="!dataLoaded" class="jj-feed-list">
-        <div v-for="n in 3" :key="'sk-' + n" class="jj-feed-item">
-          <div class="jj-feed-body p-4">
-            <div class="skeleton-line" style="width: 70%; height: 20px; margin-bottom: 10px"></div>
-            <div class="skeleton-line" style="width: 100%; height: 14px; margin-bottom: 8px"></div>
-            <div class="skeleton-line" style="width: 45%; height: 14px; margin-bottom: 12px"></div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-              <div class="skeleton-avatar"></div>
-              <div class="skeleton-line" style="width: 60px; height: 13px"></div>
-              <div class="skeleton-line" style="width: 80px; height: 13px"></div>
-              <div class="skeleton-line" style="width: 50px; height: 13px"></div>
+      <div v-if="!dataLoaded" class="px-4">
+        <div class="rounded-xl overflow-hidden mb-3" style="aspect-ratio: 16/9; background: linear-gradient(135deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%); background-size: 200% 100%; animation: skeleton-shimmer 1.5s infinite;">
+          <div style="padding: 16px; display: flex; flex-direction: column; justify-content: flex-end; height: 100%;">
+            <div class="skeleton-line" style="width: 50px; height: 18px; margin-bottom: 8px; border-radius: 4px;"></div>
+            <div class="skeleton-line" style="width: 75%; height: 20px; margin-bottom: 6px; border-radius: 4px;"></div>
+            <div class="skeleton-line" style="width: 90%; height: 14px; border-radius: 4px;"></div>
+          </div>
+        </div>
+        <div class="jj-feed-list">
+          <div v-for="n in 3" :key="'sk-' + n" class="jj-feed-item">
+            <div class="jj-feed-body p-4">
+              <div class="skeleton-line" style="width: 70%; height: 20px; margin-bottom: 10px"></div>
+              <div class="skeleton-line" style="width: 100%; height: 14px; margin-bottom: 8px"></div>
+              <div class="skeleton-line" style="width: 45%; height: 14px; margin-bottom: 12px"></div>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="skeleton-avatar"></div>
+                <div class="skeleton-line" style="width: 60px; height: 13px"></div>
+                <div class="skeleton-line" style="width: 80px; height: 13px"></div>
+                <div class="skeleton-line" style="width: 50px; height: 13px"></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div v-else-if="filteredArticles.length === 0" class="text-center py-16 px-4">
+      <template v-else-if="isMounted">
+      <div v-if="isMounted && navCategories.length > 0" class="lg:hidden jj-nav-bar">
+        <div class="jj-nav-scroll">
+          <button
+            :class="['jj-nav-tab', { 'jj-nav-tab--active': !activeCategory }]"
+            @click="selectCategory('')"
+          >全部</button>
+          <button
+            v-for="cat in navCategories"
+            :key="cat.name"
+            :class="['jj-nav-tab', { 'jj-nav-tab--active': activeCategory === cat.name }]"
+            @click="selectCategory(cat.name)"
+          >{{ cat.name }}</button>
+        </div>
+      </div>
+
+      <div v-if="filteredArticles.length === 0" class="text-center py-16 px-4">
         <div v-if="$route.query.q" class="empty-state">
           <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -68,38 +78,38 @@
 
       <template v-else>
         <div v-if="heroArticles.length > 0" class="relative mb-3">
-          <div class="overflow-x-auto snap-x snap-mandatory scrollbar-hide flex gap-4 pb-2 pl-2 pr-5">
+          <div class="overflow-x-auto snap-x snap-mandatory scrollbar-hide flex gap-3 pb-2 pr-5" style="padding-left: 16px; scroll-padding-left: 16px;">
             <NuxtLink
               v-for="(article, idx) in heroArticles"
               :key="article.slug"
               :to="'/article/' + article.slug"
-              :class="['flex-shrink-0 w-[calc(100%-1rem)] no-underline group snap-start mobile-card overflow-hidden', idx === heroArticles.length - 1 ? 'mr-4' : '']"
+              :class="['flex-shrink-0 w-[calc(100%-2rem)] no-underline group snap-start mobile-card overflow-hidden', idx === heroArticles.length - 1 ? 'mr-4' : '']"
             >
               <div class="relative rounded-[var(--radius-card)] overflow-hidden h-full">
                 <div v-if="article.cover" class="aspect-[16/9] w-full overflow-hidden">
                   <img :src="article.cover" :alt="article.title" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
                   <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-                  <div class="absolute bottom-0 left-0 right-0 p-5">
-                    <div class="flex items-center gap-2 mb-2">
+                  <div class="absolute bottom-0 left-0 right-0 p-4">
+                    <div class="flex items-center gap-2 mb-1.5">
                       <span v-if="article.category" class="mobile-hero-tag text-white font-medium">{{ article.category }}</span>
                     </div>
-                    <h2 class="text-[20px] font-bold text-white leading-snug line-clamp-2" style="text-shadow: 0 1px 3px rgba(0,0,0,0.3)">{{ article.title }}</h2>
-                    <p v-if="article.summary" class="mt-1.5 text-[13px] text-white/80 leading-relaxed line-clamp-2">{{ article.summary }}</p>
+                    <h2 class="text-[17px] font-bold text-white leading-snug line-clamp-2" style="text-shadow: 0 1px 3px rgba(0,0,0,0.3)">{{ article.title }}</h2>
+                    <p class="mt-1 text-[12px] text-white/80 leading-[1.5] line-clamp-2 h-[36px]">{{ article.summary || '' }}</p>
                   </div>
                 </div>
-                <div v-else class="relative overflow-hidden p-6 pb-7 min-h-[160px]" style="background: var(--gradient-hero)">
-                  <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/4"></div>
-                  <div class="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4"></div>
-                  <div class="absolute top-1/2 right-8 w-2 h-20 bg-white/20 rounded-full -translate-y-1/2 rotate-12"></div>
-                  <div class="absolute top-8 left-12 w-16 h-2 bg-white/15 rounded-full rotate-[-20deg]"></div>
+                <div v-else class="relative overflow-hidden p-4 pb-5 min-h-[140px]" style="background: var(--gradient-hero)">
+                  <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/4"></div>
+                  <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4"></div>
+                  <div class="absolute top-1/2 right-6 w-1.5 h-16 bg-white/20 rounded-full -translate-y-1/2 rotate-12"></div>
+                  <div class="absolute top-6 left-10 w-12 h-1.5 bg-white/15 rounded-full rotate-[-20deg]"></div>
                   <div class="relative z-10">
-                    <div class="flex items-center gap-2 mb-3">
+                    <div class="flex items-center gap-2 mb-2">
                       <span class="mobile-hero-tag inline-flex items-center gap-1 text-white font-semibold">★ 精选</span>
                       <span v-if="article.category" class="mobile-hero-tag text-white/80">{{ article.category }}</span>
                       <span class="text-xs text-white/60">{{ formatDate(article.date) }}</span>
                     </div>
-                    <h2 class="text-[20px] font-bold text-white leading-snug line-clamp-2" style="text-shadow: 0 1px 3px rgba(0,0,0,0.2)">{{ article.title }}</h2>
-                    <p v-if="article.summary" class="mt-2 text-[13px] text-white/80 leading-relaxed line-clamp-2">{{ article.summary }}</p>
+                    <h2 class="text-[17px] font-bold text-white leading-snug line-clamp-2" style="text-shadow: 0 1px 3px rgba(0,0,0,0.2)">{{ article.title }}</h2>
+                    <p class="mt-1.5 text-[12px] text-white/80 leading-[1.5] line-clamp-2 h-[36px]">{{ article.summary || '' }}</p>
                   </div>
                 </div>
               </div>
@@ -158,9 +168,10 @@
           <span class="text-xs tracking-widest" style="color: var(--color-meta)">— 已经到底了 —</span>
         </div>
       </template>
+      </template>
     </div>
 
-    <div v-if="isMounted" class="hidden lg:block">
+    <div class="hidden lg:block">
         <div v-if="!dataLoaded" class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800">
           <div v-for="n in 4" :key="'dsk-' + n" style="padding: 18px 22px; border-bottom: 1px solid #f0f0f0" class="dark:border-gray-800">
             <div style="display: flex; gap: 18px;">
@@ -183,7 +194,8 @@
             </div>
           </div>
         </div>
-        <div v-else-if="filteredArticles.length === 0" class="text-center py-16 px-4">
+        <template v-else-if="isMounted">
+        <div v-if="filteredArticles.length === 0" class="text-center py-16 px-4">
           <div v-if="$route.query.q" class="empty-state">
             <svg class="w-14 h-14 mx-auto mb-4 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
@@ -217,6 +229,7 @@
           </div>
         </div>
         <ArticleList v-else :articles="filteredArticles" :key="'list-' + filteredArticles.length" />
+        </template>
       </div>
 
     <template #sidebar>
@@ -417,16 +430,18 @@ onMounted(() => {
       _heroScrollEl.value.addEventListener('scroll', onHeroScroll, { passive: true })
     }
     initScrollObserver()
-    if (allArticles.value.length >= 0) {
-      setTimeout(() => { loading.value = false; dataLoaded.value = true }, 80)
+    if (blogStore._apiLoaded) {
+      loading.value = false
+      dataLoaded.value = true
     }
     fetchMobileStats()
   })
 })
 
-watch(allArticles, (val) => {
-  if (val.length >= 0 && loading.value) {
-    setTimeout(() => { loading.value = false; dataLoaded.value = true }, 80)
+watch(() => blogStore._apiLoaded, (loaded) => {
+  if (loaded) {
+    loading.value = false
+    dataLoaded.value = true
     _mobileStatsLoaded.value = false
     fetchMobileStats()
   }
