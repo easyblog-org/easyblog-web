@@ -74,15 +74,7 @@ import { useBlogStore } from '~/store/blog'
 const blogStore = useBlogStore()
 const loading = ref(true)
 
-const { data: apiData } = await useFetch('/api/articles', {
-  key: 'archive-articles',
-})
-
-const articles = computed(() => {
-  const storeArticles = blogStore.articles || []
-  if (storeArticles.length > 0) return storeArticles
-  return apiData.value?.articles || []
-})
+const articles = computed(() => blogStore.articles || [])
 
 const groupedArticles = computed(() => {
   const map = {}
@@ -107,15 +99,15 @@ function formatDay(date) {
   return String(d.getDate()).padStart(2, '0')
 }
 
-watch(articles, (val) => {
-  if (val.length > 0 && loading.value) {
-    setTimeout(() => { loading.value = false }, 80)
-  }
-}, { immediate: true })
-
 onMounted(() => {
-  if (articles.value.length > 0 && loading.value) {
-    setTimeout(() => { loading.value = false }, 80)
+  if (blogStore._apiLoaded) {
+    loading.value = false
+  }
+})
+
+watch(() => blogStore._apiLoaded, (loaded) => {
+  if (loaded) {
+    loading.value = false
   }
 })
 </script>
